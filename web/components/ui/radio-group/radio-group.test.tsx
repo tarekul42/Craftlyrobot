@@ -8,7 +8,7 @@ describe("RadioGroup", () => {
       <RadioGroup>
         <RadioGroupItem value="a" id="a" />
         <RadioGroupItem value="b" id="b" />
-      </RadioGroup>
+      </RadioGroup>,
     );
     expect(screen.getAllByRole("radio").length).toBe(2);
   });

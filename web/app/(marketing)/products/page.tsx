@@ -4,11 +4,7 @@ import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  SectionHeading,
-} from "@/components/ui";
+import { Card, CardContent, SectionHeading } from "@/components/ui";
 import { ProductCard } from "@/components/cards";
 import { products, foundationProducts } from "@/config/products";
 
@@ -57,7 +53,7 @@ export default function ProductsPage() {
               <Card key={product.slug}>
                 <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {product.description}
                   </p>
                 </CardContent>
@@ -71,7 +67,10 @@ export default function ProductsPage() {
         title="Want to help build?"
         description="These products need contributors. Engineering, design, community, operations — there's a place for you."
         primaryCta={{ label: "See open roles", href: "/contribute/roles" }}
-        secondaryCta={{ label: "Learn about Craftly", href: "/what-is-craftly" }}
+        secondaryCta={{
+          label: "Learn about Craftly",
+          href: "/what-is-craftly",
+        }}
       />
     </>
   );

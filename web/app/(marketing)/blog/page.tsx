@@ -3,12 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Badge,
-  Eyebrow,
-} from "@/components/ui";
+import { Card, CardContent, Badge, Eyebrow } from "@/components/ui";
 import { BlogPostCard } from "@/components/cards";
 import { Newsletter } from "@/components/sections/newsletter";
 import { getAllPosts, getAllCategories } from "@/lib/mdx";
@@ -34,13 +29,13 @@ export default function BlogPage() {
   return (
     <>
       {/* Hero */}
-      <Section spacing="lg" className="border-b border-border">
+      <Section spacing="lg" className="border-border border-b">
         <Container>
           <Eyebrow className="mb-4">Blog</Eyebrow>
           <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl">
             What we&apos;re building
           </h1>
-          <p className="mt-6 max-w-prose text-lg text-foreground/80">
+          <p className="text-foreground/80 mt-6 max-w-prose text-lg">
             Updates, engineering deep-dives, and stories from Craftly. Written
             by the people building it.
           </p>
@@ -60,10 +55,10 @@ export default function BlogPage() {
                     <h2 className="mt-3 text-3xl font-bold tracking-tight">
                       {featuredPost.title}
                     </h2>
-                    <p className="mt-3 text-muted-foreground">
+                    <p className="text-muted-foreground mt-3">
                       {featuredPost.excerpt}
                     </p>
-                    <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="text-muted-foreground mt-4 flex items-center gap-4 text-xs">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3.5 w-3.5" />
                         {formatDate(featuredPost.date)}
@@ -76,7 +71,7 @@ export default function BlogPage() {
                     </div>
                   </div>
                   <div className="flex items-end justify-end">
-                    <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
+                    <span className="text-foreground inline-flex items-center gap-1 text-sm font-medium">
                       Read post
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
@@ -105,7 +100,7 @@ export default function BlogPage() {
           </div>
 
           {otherPosts.length === 0 ? (
-            <p className="mt-12 text-center text-muted-foreground">
+            <p className="text-muted-foreground mt-12 text-center">
               No posts yet. Check back soon.
             </p>
           ) : (

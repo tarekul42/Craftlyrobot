@@ -6,12 +6,7 @@ import { CTABand } from "@/components/sections/cta-band";
 import { StatStrip } from "@/components/sections/stat-strip";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Button,
-  SectionHeading,
-} from "@/components/ui";
+import { Card, CardContent, Button, SectionHeading } from "@/components/ui";
 import { DepartmentCard } from "@/components/cards";
 import { departments } from "@/config/departments";
 import { communityStats } from "@/config/community";
@@ -128,18 +123,18 @@ function ChannelCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col p-6">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
+        <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
           {icon}
         </div>
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="mt-2 flex-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-2 flex-1 text-sm">
           {description}
         </p>
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+          className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
         >
           {cta}
           <ArrowRight className="h-3.5 w-3.5" />

@@ -6,7 +6,9 @@ import { MobileNav } from "./mobile-nav";
 describe("MobileNav", () => {
   it("renders trigger button", () => {
     render(<MobileNav items={[{ title: "Home", href: "/" }]} />);
-    expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /open menu/i }),
+    ).toBeInTheDocument();
   });
 
   it("opens panel on click", async () => {

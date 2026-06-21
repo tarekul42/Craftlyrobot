@@ -15,8 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default function DepartmentsPage() {
-  const totalContributors = departments.reduce((sum, d) => sum + d.contributorCount, 0);
-  const totalOpenings = departments.reduce((sum, d) => sum + (d.openings?.length ?? 0), 0);
+  const totalContributors = departments.reduce(
+    (sum, d) => sum + d.contributorCount,
+    0,
+  );
+  const totalOpenings = departments.reduce(
+    (sum, d) => sum + (d.openings?.length ?? 0),
+    0,
+  );
 
   return (
     <>
@@ -28,20 +34,32 @@ export default function DepartmentsPage() {
       />
 
       {/* Stats */}
-      <Section spacing="sm" className="border-y border-border bg-muted/30">
+      <Section spacing="sm" className="border-border bg-muted/30 border-y">
         <Container>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div className="text-center">
-              <div className="text-4xl font-bold tabular-nums">{departments.length}</div>
-              <div className="mt-1 text-sm text-muted-foreground">Departments</div>
+              <div className="text-4xl font-bold tabular-nums">
+                {departments.length}
+              </div>
+              <div className="text-muted-foreground mt-1 text-sm">
+                Departments
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold tabular-nums">{totalContributors}</div>
-              <div className="mt-1 text-sm text-muted-foreground">Contributors</div>
+              <div className="text-4xl font-bold tabular-nums">
+                {totalContributors}
+              </div>
+              <div className="text-muted-foreground mt-1 text-sm">
+                Contributors
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold tabular-nums">{totalOpenings}</div>
-              <div className="mt-1 text-sm text-muted-foreground">Open roles</div>
+              <div className="text-4xl font-bold tabular-nums">
+                {totalOpenings}
+              </div>
+              <div className="text-muted-foreground mt-1 text-sm">
+                Open roles
+              </div>
             </div>
           </div>
         </Container>

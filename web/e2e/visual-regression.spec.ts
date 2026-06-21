@@ -42,7 +42,9 @@ test.describe("Visual regression — mobile", () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
   for (const page of pagesToSnapshot) {
-    test(`${page.name} mobile matches baseline`, async ({ page: browserPage }) => {
+    test(`${page.name} mobile matches baseline`, async ({
+      page: browserPage,
+    }) => {
       await browserPage.goto(page.url);
       await browserPage.waitForLoadState("networkidle");
       await expect(browserPage).toHaveScreenshot(`${page.name}-mobile.png`, {
@@ -59,7 +61,11 @@ test.describe("Visual regression — dark mode", () => {
   test("homepage dark mode matches baseline", async ({ page }) => {
     await page.goto("/");
     // Switch to dark mode
-    await page.getByRole("button", { name: /switch to dark mode|switch to light mode/i }).click();
+    await page
+      .getByRole("button", {
+        name: /switch to dark mode|switch to light mode/i,
+      })
+      .click();
     await page.waitForTimeout(500);
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveScreenshot("homepage-dark.png", {

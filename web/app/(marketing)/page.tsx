@@ -28,7 +28,10 @@ export default function HomePage() {
         eyebrow="Craftly Robot"
         title="From dream to reality, with one command"
         description="Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build."
-        primaryCta={{ label: "Get early free access", href: "/contribute/apply" }}
+        primaryCta={{
+          label: "Get early free access",
+          href: "/contribute/apply",
+        }}
         secondaryCta={{ label: "See the foundation", href: "/products" }}
       />
 
@@ -88,12 +91,12 @@ export default function HomePage() {
                 />
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {product.description}
                   </p>
                   <Link
                     href={`/products/${product.slug}`}
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                    className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                   >
                     Learn more
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -112,12 +115,13 @@ export default function HomePage() {
             <div>
               <Eyebrow className="mb-4">People of Craftly</Eyebrow>
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Join Bangladesh&apos;s first real effort to build a global tech company
+                Join Bangladesh&apos;s first real effort to build a global tech
+                company
               </h2>
-              <p className="mt-6 text-lg text-muted-foreground">
-                We&apos;re not trying to build another startup. We&apos;re building
-                something that competes with Google, Microsoft, and Apple — from
-                Dhaka, with ambition.
+              <p className="text-muted-foreground mt-6 text-lg">
+                We&apos;re not trying to build another startup. We&apos;re
+                building something that competes with Google, Microsoft, and
+                Apple — from Dhaka, with ambition.
               </p>
               <div className="mt-8">
                 <Button asChild size="lg">
@@ -160,8 +164,14 @@ export default function HomePage() {
         variant="dark"
         title="Help us today, get support back tomorrow"
         description="Keep an eye on our social media channels for promotional offers."
-        primaryCta={{ label: "Start Crafting with Craftly", href: "/contribute/apply" }}
-        secondaryCta={{ label: "Watch on YouTube", href: siteConfig.social.youtube }}
+        primaryCta={{
+          label: "Start Crafting with Craftly",
+          href: "/contribute/apply",
+        }}
+        secondaryCta={{
+          label: "Watch on YouTube",
+          href: siteConfig.social.youtube,
+        }}
       />
 
       {/* ===== FAQ ===== */}
@@ -194,14 +204,16 @@ function EntryPointCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col p-6">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
+        <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
           {icon}
         </div>
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="mt-2 flex-1 text-sm text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground mt-2 flex-1 text-sm">
+          {description}
+        </p>
         <Link
           href={href}
-          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+          className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
         >
           {cta}
           <ArrowRight className="h-3.5 w-3.5" />
@@ -221,8 +233,8 @@ function StatCard({
   label: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-background p-4">
-      <div className="flex items-center gap-2 text-muted-foreground">
+    <div className="border-border bg-background rounded-lg border p-4">
+      <div className="text-muted-foreground flex items-center gap-2">
         {icon}
         <span className="text-xs uppercase tracking-wider">{label}</span>
       </div>

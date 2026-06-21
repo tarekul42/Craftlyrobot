@@ -59,7 +59,9 @@ export default async function ProjectDetailPage({
   const status = statusConfig[project.status];
   const projectRoles = roles.filter((r) => r.department === project.department);
   const relatedProjects = projects
-    .filter((p) => p.slug !== project.slug && p.department === project.department)
+    .filter(
+      (p) => p.slug !== project.slug && p.department === project.department,
+    )
     .slice(0, 3);
 
   return (
@@ -71,7 +73,7 @@ export default async function ProjectDetailPage({
       />
 
       {/* Stats */}
-      <Section spacing="sm" className="border-y border-border bg-muted/30">
+      <Section spacing="sm" className="border-border bg-muted/30 border-y">
         <Container>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-4">
             <Stat
@@ -113,8 +115,11 @@ export default async function ProjectDetailPage({
             />
             <ul className="mt-8 space-y-3">
               {project.goals.map((goal, i) => (
-                <li key={i} className="flex items-start gap-3 rounded-lg border border-border bg-background p-4">
-                  <Target className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <li
+                  key={i}
+                  className="border-border bg-background flex items-start gap-3 rounded-lg border p-4"
+                >
+                  <Target className="text-primary mt-0.5 h-5 w-5 shrink-0" />
                   <span className="text-sm">{goal}</span>
                 </li>
               ))}
@@ -128,9 +133,11 @@ export default async function ProjectDetailPage({
         <Section spacing="sm">
           <Container size="narrow">
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-sm text-muted-foreground">Tags:</span>
+              <span className="text-muted-foreground text-sm">Tags:</span>
               {project.tags.map((tag) => (
-                <Badge key={tag} variant="outline">#{tag}</Badge>
+                <Badge key={tag} variant="outline">
+                  #{tag}
+                </Badge>
               ))}
             </div>
           </Container>
@@ -152,19 +159,19 @@ export default async function ProjectDetailPage({
                   <CardContent className="flex h-full flex-col p-6">
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <Badge variant="outline">{role.department}</Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         {role.commitment === "fulltime"
                           ? "Full-time"
                           : `${role.commitment}/week`}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold">{role.title}</h3>
-                    <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-2 flex-1 text-sm">
                       {role.description}
                     </p>
                     <Link
                       href="/contribute/apply"
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                      className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                     >
                       Apply for this role
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -198,13 +205,13 @@ export default async function ProjectDetailPage({
                         <Badge variant={statusConfig[other.status].variant}>
                           {statusConfig[other.status].label}
                         </Badge>
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span className="text-muted-foreground flex items-center gap-1 text-xs">
                           <Users className="h-3 w-3" />
                           {other.contributorCount}
                         </span>
                       </div>
                       <h3 className="font-semibold">{other.name}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
+                      <p className="text-muted-foreground mt-1 text-sm">
                         {other.description}
                       </p>
                     </CardContent>
@@ -220,7 +227,10 @@ export default async function ProjectDetailPage({
         title={`Want to work on ${project.name}?`}
         description="Apply to Craftly and tell us this is the project you want to join."
         primaryCta={{ label: "Apply to Craftly", href: "/contribute/apply" }}
-        secondaryCta={{ label: "See all projects", href: "/community/projects" }}
+        secondaryCta={{
+          label: "See all projects",
+          href: "/community/projects",
+        }}
       />
     </>
   );

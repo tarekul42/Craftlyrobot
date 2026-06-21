@@ -5,12 +5,7 @@ import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Badge,
-  SectionHeading,
-} from "@/components/ui";
+import { Card, CardContent, Badge, SectionHeading } from "@/components/ui";
 import { projects, getActiveProjects } from "@/config/projects";
 
 export const metadata: Metadata = {
@@ -59,10 +54,10 @@ export default function ProjectsPage() {
                       <Badge variant="outline">{project.department}</Badge>
                     </div>
                     <h3 className="text-lg font-semibold">{project.name}</h3>
-                    <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-2 flex-1 text-sm">
                       {project.description}
                     </p>
-                    <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="text-muted-foreground mt-4 flex items-center gap-4 text-xs">
                       <span className="flex items-center gap-1">
                         <Users className="h-3 w-3" />
                         {project.contributorCount} contributors
@@ -75,7 +70,11 @@ export default function ProjectsPage() {
                     {project.tags.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-1">
                         {project.tags.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             #{tag}
                           </Badge>
                         ))}
@@ -83,7 +82,7 @@ export default function ProjectsPage() {
                     )}
                     <Link
                       href={`/community/projects/${project.slug}`}
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                      className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                     >
                       Learn more
                       <ArrowRight className="h-3.5 w-3.5" />

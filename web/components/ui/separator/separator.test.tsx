@@ -11,6 +11,8 @@ describe("Separator", () => {
 
   it("renders vertical when orientation set", () => {
     render(<Separator orientation="vertical" data-testid="sep" />);
-    expect(screen.getByTestId("sep").getAttribute("data-orientation")).toBe("vertical");
+    expect(screen.getByTestId("sep").getAttribute("data-orientation")).toBe(
+      "vertical",
+    );
   });
 });

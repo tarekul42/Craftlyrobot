@@ -22,7 +22,13 @@ describe("Pagination", () => {
   it("calls onPageChange when next is clicked", async () => {
     const user = userEvent.setup();
     const onPageChange = vi.fn();
-    render(<Pagination currentPage={1} totalPages={10} onPageChange={onPageChange} />);
+    render(
+      <Pagination
+        currentPage={1}
+        totalPages={10}
+        onPageChange={onPageChange}
+      />,
+    );
     await user.click(screen.getByLabelText("Next page"));
     expect(onPageChange).toHaveBeenCalledWith(2);
   });

@@ -55,13 +55,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(
-        dmSans.variable,
-        pacifico.variable,
-        jetBrainsMono.variable
-      )}
+      className={cn(dmSans.variable, pacifico.variable, jetBrainsMono.variable)}
     >
-      <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
+      <body className="bg-background text-foreground min-h-dvh font-sans antialiased">
         <ThemeProvider>
           {children}
           <Toaster />

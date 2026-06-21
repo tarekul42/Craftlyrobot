@@ -3,11 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Eyebrow,
-} from "@/components/ui";
+import { Card, CardContent, Eyebrow } from "@/components/ui";
 import { BlogPostCard } from "@/components/cards";
 import { Newsletter } from "@/components/sections/newsletter";
 import { getAllPosts, getAllCategories } from "@/lib/mdx";
@@ -54,16 +50,16 @@ export default async function BlogCategoryPage({
 
   const allPosts = getAllPosts();
   const posts = allPosts.filter(
-    (p) => p.category.toLowerCase() === category.toLowerCase()
+    (p) => p.category.toLowerCase() === category.toLowerCase(),
   );
 
   return (
     <>
-      <Section spacing="lg" className="border-b border-border">
+      <Section spacing="lg" className="border-border border-b">
         <Container>
           <Link
             href="/blog"
-            className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to blog
@@ -73,7 +69,7 @@ export default async function BlogCategoryPage({
           <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl">
             {categoryName}
           </h1>
-          <p className="mt-6 max-w-prose text-lg text-foreground/80">
+          <p className="text-foreground/80 mt-6 max-w-prose text-lg">
             {posts.length} post{posts.length === 1 ? "" : "s"} in this category.
           </p>
         </Container>
@@ -89,7 +85,7 @@ export default async function BlogCategoryPage({
                 </p>
                 <Link
                   href="/blog"
-                  className="mt-4 inline-block text-foreground underline underline-offset-4"
+                  className="text-foreground mt-4 inline-block underline underline-offset-4"
                 >
                   View all posts
                 </Link>

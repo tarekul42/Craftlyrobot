@@ -6,7 +6,9 @@ import { Checkbox } from "./checkbox";
 describe("Checkbox", () => {
   it("renders unchecked by default", () => {
     render(<Checkbox data-testid="cb" />);
-    expect(screen.getByTestId("cb").getAttribute("data-state")).toBe("unchecked");
+    expect(screen.getByTestId("cb").getAttribute("data-state")).toBe(
+      "unchecked",
+    );
   });
 
   it("toggles on click", async () => {

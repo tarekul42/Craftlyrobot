@@ -6,7 +6,9 @@ import { Switch } from "./switch";
 describe("Switch", () => {
   it("renders unchecked by default", () => {
     render(<Switch data-testid="switch" />);
-    expect(screen.getByTestId("switch").getAttribute("data-state")).toBe("unchecked");
+    expect(screen.getByTestId("switch").getAttribute("data-state")).toBe(
+      "unchecked",
+    );
   });
 
   it("toggles on click", async () => {

@@ -7,7 +7,7 @@ describe("Avatar", () => {
     render(
       <Avatar>
         <AvatarFallback>JD</AvatarFallback>
-      </Avatar>
+      </Avatar>,
     );
     expect(screen.getByText("JD")).toBeInTheDocument();
   });
@@ -16,7 +16,7 @@ describe("Avatar", () => {
     render(
       <Avatar data-testid="avatar">
         <AvatarFallback>X</AvatarFallback>
-      </Avatar>
+      </Avatar>,
     );
     expect(screen.getByTestId("avatar").className).toContain("h-10");
     expect(screen.getByTestId("avatar").className).toContain("rounded-full");

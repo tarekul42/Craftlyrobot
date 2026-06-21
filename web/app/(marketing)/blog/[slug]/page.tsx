@@ -69,11 +69,11 @@ export default async function BlogPostPage({
       <ReadingProgress />
 
       {/* Header */}
-      <Section spacing="sm" className="border-b border-border">
+      <Section spacing="sm" className="border-border border-b">
         <Container size="prose">
           <Link
             href="/blog"
-            className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to blog
@@ -85,10 +85,13 @@ export default async function BlogPostPage({
           <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
             {post.title}
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">{post.excerpt}</p>
+          <p className="text-muted-foreground mt-4 text-lg">{post.excerpt}</p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <span>By {post.author}{post.authorRole ? `, ${post.authorRole}` : ""}</span>
+          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-4 text-sm">
+            <span>
+              By {post.author}
+              {post.authorRole ? `, ${post.authorRole}` : ""}
+            </span>
             <span className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5" />
               {formatDate(post.date)}
@@ -102,7 +105,9 @@ export default async function BlogPostPage({
           {post.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant="outline">#{tag}</Badge>
+                <Badge key={tag} variant="outline">
+                  #{tag}
+                </Badge>
               ))}
             </div>
           )}
@@ -153,15 +158,17 @@ export default async function BlogPostPage({
                   href={`/blog/${related.slug}`}
                   className="block h-full"
                 >
-                  <div className="flex h-full flex-col rounded-lg border border-border bg-background p-6 transition-all hover:border-foreground/20 hover:shadow-md">
+                  <div className="border-border bg-background hover:border-foreground/20 flex h-full flex-col rounded-lg border p-6 transition-all hover:shadow-md">
                     <Badge variant="secondary" className="self-start">
                       {related.category}
                     </Badge>
-                    <h3 className="mt-3 text-lg font-semibold">{related.title}</h3>
-                    <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                    <h3 className="mt-3 text-lg font-semibold">
+                      {related.title}
+                    </h3>
+                    <p className="text-muted-foreground mt-2 flex-1 text-sm">
                       {related.excerpt}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground">
+                    <span className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium">
                       Read post
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
@@ -176,11 +183,11 @@ export default async function BlogPostPage({
       {/* CTA */}
       <Section>
         <Container size="prose">
-          <div className="rounded-lg border border-border bg-muted/30 p-8 text-center">
+          <div className="border-border bg-muted/30 rounded-lg border p-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight">
               Want to build with us?
             </h2>
-            <p className="mt-2 text-muted-foreground">
+            <p className="text-muted-foreground mt-2">
               We&apos;re always looking for contributors.
             </p>
             <Button asChild className="mt-6">
