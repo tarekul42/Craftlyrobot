@@ -1,51 +1,40 @@
 import Link from "next/link";
-import { ArrowRight, Users, Wrench, Heart } from "lucide-react";
+import { ArrowRight, Wrench, Users, Heart, Cpu, Sparkles } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
-import { Button, Eyebrow, SectionHeading, Card, CardContent } from "@/components/ui";
+import {
+  Button,
+  Eyebrow,
+  SectionHeading,
+  Card,
+  CardContent,
+} from "@/components/ui";
+import { HeroDefault } from "@/components/sections/hero/hero-default";
+import { CTABand } from "@/components/sections/cta-band";
+import { FAQSection } from "@/components/sections/faq";
+import { EcosystemMap } from "@/components/sections/ecosystem-map";
+import { AnimatedTerminal } from "@/components/blocks/animated-terminal";
+import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
+import { PeopleBar } from "@/components/blocks/people-bar";
 import { siteConfig } from "@/config/site";
+import { foundationProducts } from "@/config/products";
+import { homepageFaqs } from "@/config/faqs";
+import { communityStats } from "@/config/community";
 
-/**
- * Homepage — the canonical entry point for Craftly.
- *
- * This is a minimal-but-real homepage that proves the full stack works:
- * fonts load, tokens apply, primitives render, layout wraps, theme toggles.
- *
- * The full homepage (with AnimatedTerminal, ScreenshotShowcase, etc.)
- * will be built in Priority 3.
- */
 export default function HomePage() {
   return (
     <>
-      {/* ===== HERO ===== */}
-      <Section spacing="lg" className="border-b border-border">
-        <Container>
-          <div className="max-w-3xl">
-            <Eyebrow className="mb-4">Craftly</Eyebrow>
-            <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl lg:text-7xl">
-              From dream to reality, with one command
-            </h1>
-            <p className="mt-6 max-w-prose text-lg leading-relaxed text-foreground/80 sm:text-xl">
-              {siteConfig.description}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href="/contribute/apply">
-                  Get early free access
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/what-is-craftly">
-                  Explore the ecosystem
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </Section>
+      {/* ===== HERO with AnimatedTerminal ===== */}
+      <HeroDefault
+        eyebrow="Craftly Robot"
+        title="From dream to reality, with one command"
+        description="Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build."
+        primaryCta={{ label: "Get early free access", href: "/contribute/apply" }}
+        secondaryCta={{ label: "See the foundation", href: "/products" }}
+        visual={<AnimatedTerminal />}
+      />
 
-      {/* ===== ECOSYSTEM CONTRACT — the 3 entry points ===== */}
+      {/* ===== ECOSYSTEM ENTRY POINTS ===== */}
       <Section background="muted">
         <Container>
           <SectionHeading
@@ -81,40 +70,107 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== CTA BAND ===== */}
-      <Section background="default">
+      {/* ===== FOUNDATION PRODUCTS (preserved from craftlyrobot.com) ===== */}
+      <Section>
         <Container>
-          <div className="rounded-lg border border-border bg-primary p-8 text-center text-primary-foreground md:p-12">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Help us today, get support back tomorrow
-            </h2>
-            <p className="mx-auto mt-4 max-w-prose text-primary-foreground/80">
-              Join Bangladesh&apos;s first real effort to build a tech company
-              that competes with Google, Microsoft, and Apple.
-            </p>
-            <div className="mt-8 flex justify-center">
-              <Button
-                asChild
-                size="lg"
-                variant="secondary"
-              >
-                <Link href="/contribute/apply">
-                  Start Crafting with Craftly
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
+          <SectionHeading
+            eyebrow="Being built with care"
+            title="From the proprietary knowledge we are learning continuously"
+            description="Three products taught Craftly what it knows. They're being battle-tested every day."
+            align="center"
+          />
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {foundationProducts.map((product) => (
+              <Card key={product.slug} className="overflow-hidden">
+                <ScreenshotShowcase
+                  images={product.screenshots ?? ["/placeholder.png"]}
+                  alt={product.name}
+                  className="rounded-none border-0 border-b"
+                />
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold">{product.name}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {product.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* ===== PEOPLE OF CRAFTLY (from hello.craftlyrobot.com) ===== */}
+      <Section background="muted">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <Eyebrow className="mb-4">People of Craftly</Eyebrow>
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                Join Bangladesh&apos;s first real effort to build a global tech company
+              </h2>
+              <p className="mt-6 text-lg text-muted-foreground">
+                We&apos;re not trying to build another startup. We&apos;re building
+                something that competes with Google, Microsoft, and Apple — from
+                Dhaka, with ambition.
+              </p>
+              <div className="mt-8">
+                <Button asChild size="lg">
+                  <Link href="/contribute/apply">
+                    Join the team
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <PeopleBar
+                count={communityStats.contributorsJoined}
+                target={communityStats.targetContributors}
+                label="Contributors Joined"
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <StatCard
+                  icon={<Cpu className="h-5 w-5" />}
+                  value={communityStats.activeProjects}
+                  label="Active projects"
+                />
+                <StatCard
+                  icon={<Sparkles className="h-5 w-5" />}
+                  value={communityStats.departments}
+                  label="Departments"
+                />
+              </div>
             </div>
           </div>
         </Container>
       </Section>
+
+      {/* ===== ECOSYSTEM MAP ===== */}
+      <EcosystemMap />
+
+      {/* ===== CTA BAND ===== */}
+      <CTABand
+        variant="dark"
+        title="Help us today, get support back tomorrow"
+        description="Keep an eye on our social media channels for promotional offers."
+        primaryCta={{ label: "Start Crafting with Craftly", href: "/contribute/apply" }}
+        secondaryCta={{ label: "Watch on YouTube", href: siteConfig.social.youtube }}
+      />
+
+      {/* ===== FAQ ===== */}
+      <FAQSection
+        eyebrow="Common questions"
+        title="Frequently asked"
+        items={homepageFaqs}
+      />
     </>
   );
 }
 
-/**
- * EntryPointCard — a card showing one of the 3 ecosystem entry points.
- * Used in the "What is Craftly" section.
- */
+// ===== Local helper components (kept in page file — only used here) =====
+
 interface EntryPointCardProps {
   icon: React.ReactNode;
   title: string;
@@ -137,9 +193,7 @@ function EntryPointCard({
           {icon}
         </div>
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="mt-2 flex-1 text-sm text-muted-foreground">
-          {description}
-        </p>
+        <p className="mt-2 flex-1 text-sm text-muted-foreground">{description}</p>
         <Link
           href={href}
           className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
@@ -149,5 +203,25 @@ function EntryPointCard({
         </Link>
       </CardContent>
     </Card>
+  );
+}
+
+function StatCard({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: number;
+  label: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-background p-4">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        {icon}
+        <span className="text-xs uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="mt-2 text-2xl font-bold tabular-nums">{value}</div>
+    </div>
   );
 }

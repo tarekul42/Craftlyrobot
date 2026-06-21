@@ -1,3 +1,4 @@
 plans/
-
 node_modules
+.next
+*.zip
