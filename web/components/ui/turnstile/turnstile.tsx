@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -65,25 +65,28 @@ export function Turnstile({
   onError,
   className,
 }: TurnstileProps) {
-  const containerRef = useCallback((node: HTMLDivElement | null) => {
-    if (!node) return;
+  const containerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node) return;
 
-    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-    if (!siteKey) return;
+      const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+      if (!siteKey) return;
 
-    scriptPromise.then(() => {
-      if (!window.turnstile) return;
-      while (node.firstChild) node.removeChild(node.firstChild);
-      window.turnstile.render(node, {
-        sitekey: siteKey,
-        callback: onVerify,
-        "error-callback": onError,
-        "expired-callback": onExpire,
-        theme: "auto",
-        size: "normal",
+      scriptPromise.then(() => {
+        if (!window.turnstile) return;
+        while (node.firstChild) node.removeChild(node.firstChild);
+        window.turnstile.render(node, {
+          sitekey: siteKey,
+          callback: onVerify,
+          "error-callback": onError,
+          "expired-callback": onExpire,
+          theme: "auto",
+          size: "normal",
+        });
       });
-    });
-  }, [onVerify, onExpire, onError]);
+    },
+    [onVerify, onExpire, onError],
+  );
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -91,12 +94,12 @@ export function Turnstile({
     return (
       <div
         className={cn(
-          "rounded-md border border-dashed border-border bg-muted/30 p-4 text-sm text-muted-foreground",
-          className
+          "border-border bg-muted/30 text-muted-foreground rounded-md border border-dashed p-4 text-sm",
+          className,
         )}
       >
         Bot protection is disabled. Set{" "}
-        <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
+        <code className="bg-muted rounded px-1 py-0.5 font-mono text-xs">
           NEXT_PUBLIC_TURNSTILE_SITE_KEY
         </code>{" "}
         to enable Cloudflare Turnstile.

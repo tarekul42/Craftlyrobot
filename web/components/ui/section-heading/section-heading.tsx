@@ -33,8 +33,8 @@ function SectionHeading({
     <div
       className={cn(
         "space-y-3",
-        align === "center" && "text-center mx-auto max-w-2xl",
-        className
+        align === "center" && "mx-auto max-w-2xl text-center",
+        className,
       )}
     >
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
@@ -42,7 +42,7 @@ function SectionHeading({
         {title}
       </Heading>
       {description && (
-        <p className="text-lg text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground text-lg">{description}</p>
       )}
     </div>
   );

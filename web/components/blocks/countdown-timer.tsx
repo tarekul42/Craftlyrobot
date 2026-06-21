@@ -56,16 +56,22 @@ export function CountdownTimer({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center justify-center gap-2 text-sm font-mono",
-        className
+        "flex flex-wrap items-center justify-center gap-2 font-mono text-sm",
+        className,
       )}
       aria-label={`${label}: ${timeLeft.days} days ${timeLeft.hours} hours ${timeLeft.minutes} minutes ${timeLeft.seconds} seconds`}
     >
       <span className="text-muted-foreground">{label}:</span>
-      <span className="rounded-md bg-muted px-2 py-1">{timeLeft.days}d</span>
-      <span className="rounded-md bg-muted px-2 py-1">{pad(timeLeft.hours)}h</span>
-      <span className="rounded-md bg-muted px-2 py-1">{pad(timeLeft.minutes)}m</span>
-      <span className="rounded-md bg-muted px-2 py-1">{pad(timeLeft.seconds)}s</span>
+      <span className="bg-muted rounded-md px-2 py-1">{timeLeft.days}d</span>
+      <span className="bg-muted rounded-md px-2 py-1">
+        {pad(timeLeft.hours)}h
+      </span>
+      <span className="bg-muted rounded-md px-2 py-1">
+        {pad(timeLeft.minutes)}m
+      </span>
+      <span className="bg-muted rounded-md px-2 py-1">
+        {pad(timeLeft.seconds)}s
+      </span>
     </div>
   );
 }

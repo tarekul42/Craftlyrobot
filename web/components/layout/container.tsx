@@ -24,12 +24,12 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto px-section w-full",
+        "px-section mx-auto w-full",
         size === "prose" && "max-w-prose",
         size === "narrow" && "max-w-screen-narrow",
         size === "default" && "max-w-screen-default",
         size === "wide" && "max-w-screen-wide",
-        className
+        className,
       )}
       {...props}
     />

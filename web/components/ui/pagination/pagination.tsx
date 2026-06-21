@@ -13,7 +13,12 @@ interface PaginationProps {
  * Pagination — page navigation for lists.
  * Shows current page, prev/next, and up to 5 page numbers.
  */
-function Pagination({ currentPage, totalPages, onPageChange, className }: PaginationProps) {
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+}: PaginationProps) {
   const pages = React.useMemo(() => {
     const result: (number | "...")[] = [];
     const maxVisible = 5;
@@ -32,19 +37,25 @@ function Pagination({ currentPage, totalPages, onPageChange, className }: Pagina
   }, [currentPage, totalPages]);
 
   return (
-    <nav aria-label="Pagination" className={cn("flex items-center gap-1", className)}>
+    <nav
+      aria-label="Pagination"
+      className={cn("flex items-center gap-1", className)}
+    >
       <button
         onClick={() => onPageChange?.(currentPage - 1)}
         disabled={currentPage === 1}
-        className="flex h-9 w-9 items-center justify-center rounded-md border border-input text-sm transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+        className="border-input hover:bg-muted flex h-9 w-9 items-center justify-center rounded-md border text-sm transition-colors disabled:pointer-events-none disabled:opacity-50"
         aria-label="Previous page"
       >
         <ChevronLeft className="h-4 w-4" />
       </button>
       {pages.map((page, index) =>
         page === "..." ? (
-          <span key={`ellipsis-${index}`} className="flex h-9 w-9 items-center justify-center">
-            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          <span
+            key={`ellipsis-${index}`}
+            className="flex h-9 w-9 items-center justify-center"
+          >
+            <MoreHorizontal className="text-muted-foreground h-4 w-4" />
           </span>
         ) : (
           <button
@@ -55,17 +66,17 @@ function Pagination({ currentPage, totalPages, onPageChange, className }: Pagina
               "flex h-9 w-9 items-center justify-center rounded-md border text-sm transition-colors",
               page === currentPage
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-input hover:bg-muted"
+                : "border-input hover:bg-muted",
             )}
           >
             {page}
           </button>
-        )
+        ),
       )}
       <button
         onClick={() => onPageChange?.(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="flex h-9 w-9 items-center justify-center rounded-md border border-input text-sm transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+        className="border-input hover:bg-muted flex h-9 w-9 items-center justify-center rounded-md border text-sm transition-colors disabled:pointer-events-none disabled:opacity-50"
         aria-label="Next page"
       >
         <ChevronRight className="h-4 w-4" />

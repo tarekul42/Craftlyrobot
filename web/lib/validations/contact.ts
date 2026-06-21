@@ -27,9 +27,7 @@ export const contactSchema = z.object({
     .min(20, "Please tell us more (at least 20 characters)")
     .max(2000, "Message is too long (max 2000 characters)"),
 
-  turnstileToken: z
-    .string()
-    .min(1, "Please verify you're human"),
+  turnstileToken: z.string().min(1, "Please verify you're human"),
 });
 
 export type ContactFormValues = z.infer<typeof contactSchema>;

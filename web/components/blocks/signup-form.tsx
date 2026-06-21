@@ -5,7 +5,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { Button, FormField, Input, UploadButton, Card, CardContent } from "@/components/ui";
+import {
+  Button,
+  FormField,
+  Input,
+  UploadButton,
+  Card,
+  CardContent,
+} from "@/components/ui";
 import { CheckCircle2 } from "lucide-react";
 
 const signupSchema = z.object({
@@ -52,10 +59,11 @@ export function SignupForm({ className }: SignupFormProps) {
     return (
       <Card className={cn("border-success/30 bg-success/5", className)}>
         <CardContent className="flex flex-col items-center p-8 text-center">
-          <CheckCircle2 className="h-12 w-12 text-success" />
+          <CheckCircle2 className="text-success h-12 w-12" />
           <h3 className="mt-4 text-xl font-bold">You&apos;re on the list</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            We&apos;ll WhatsApp you when Craftly Robot is ready. Keep an eye out.
+          <p className="text-muted-foreground mt-2 text-sm">
+            We&apos;ll WhatsApp you when Craftly Robot is ready. Keep an eye
+            out.
           </p>
         </CardContent>
       </Card>
@@ -65,7 +73,11 @@ export function SignupForm({ className }: SignupFormProps) {
   return (
     <Card className={className}>
       <CardContent className="p-6">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" noValidate>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-5"
+          noValidate
+        >
           <FormField
             label="WhatsApp Number"
             htmlFor="phoneNumber"
@@ -90,7 +102,7 @@ export function SignupForm({ className }: SignupFormProps) {
           </div>
 
           {submitError && (
-            <p role="alert" className="text-sm text-destructive">
+            <p role="alert" className="text-destructive text-sm">
               {submitError}
             </p>
           )}

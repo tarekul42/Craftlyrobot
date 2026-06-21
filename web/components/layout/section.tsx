@@ -35,7 +35,7 @@ export function Section({
         spacing === "lg" && "py-32",
         background === "muted" && "bg-muted",
         background === "accent" && "bg-accent/30",
-        className
+        className,
       )}
       {...props}
     />

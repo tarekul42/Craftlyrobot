@@ -80,9 +80,11 @@ export function AnimatedTerminal({
     <div
       className={[
         "w-full max-w-lg overflow-hidden rounded-lg border bg-[#0d0d0e] shadow-2xl",
-        "text-[#f6f5f2] font-mono",
+        "font-mono text-[#f6f5f2]",
         className,
-      ].filter(Boolean).join(" ")}
+      ]
+        .filter(Boolean)
+        .join(" ")}
       role="region"
       aria-label="Craftly Robot terminal demo"
     >

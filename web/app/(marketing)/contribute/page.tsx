@@ -105,11 +105,11 @@ export default function ContributePage() {
             {valueProps.map((prop, i) => (
               <Card key={i}>
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                  <div className="bg-primary text-primary-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
                     {prop.icon}
                   </div>
                   <h3 className="text-lg font-semibold">{prop.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {prop.description}
                   </p>
                 </CardContent>
@@ -133,19 +133,19 @@ export default function ContributePage() {
                 <CardContent className="flex h-full flex-col p-6">
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <Badge variant="secondary">{role.department}</Badge>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {role.commitment === "fulltime"
                         ? "Full-time"
                         : `${role.commitment}/week`}
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold">{role.title}</h3>
-                  <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm">
                     {role.description}
                   </p>
                   <Link
                     href="/contribute/apply"
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                    className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                   >
                     Apply for this role
                     <ArrowRight className="h-3.5 w-3.5" />

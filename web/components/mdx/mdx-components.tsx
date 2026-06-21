@@ -22,21 +22,25 @@ const mdxComponents = {
 
   // Styled HTML elements
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="mt-10 mb-4 text-4xl font-bold tracking-tight" {...props} />
+    <h1 className="mb-4 mt-10 text-4xl font-bold tracking-tight" {...props} />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="mt-8 mb-4 text-3xl font-bold tracking-tight" {...props} />
+    <h2 className="mb-4 mt-8 text-3xl font-bold tracking-tight" {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="mt-6 mb-3 text-2xl font-semibold" {...props} />
+    <h3 className="mb-3 mt-6 text-2xl font-semibold" {...props} />
   ),
   h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="mt-6 mb-3 text-xl font-semibold" {...props} />
+    <h4 className="mb-3 mt-6 text-xl font-semibold" {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p className="my-4 leading-relaxed" {...props} />
   ),
-  a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  a: ({
+    href,
+    children,
+    ...props
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const isExternal = href?.startsWith("http");
     if (isExternal) {
       return (
@@ -44,7 +48,7 @@ const mdxComponents = {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-foreground underline underline-offset-4 hover:text-muted-foreground"
+          className="text-foreground hover:text-muted-foreground underline underline-offset-4"
           {...props}
         >
           {children}
@@ -54,7 +58,7 @@ const mdxComponents = {
     return (
       <Link
         href={href ?? "#"}
-        className="text-foreground underline underline-offset-4 hover:text-muted-foreground"
+        className="text-foreground hover:text-muted-foreground underline underline-offset-4"
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {children}
@@ -72,17 +76,21 @@ const mdxComponents = {
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="my-6 border-l-4 border-border pl-4 italic text-muted-foreground"
+      className="border-border text-muted-foreground my-6 border-l-4 pl-4 italic"
       {...props}
     />
   ),
-  code: ({ className, children, ...props }: React.HTMLAttributes<HTMLElement>) => {
+  code: ({
+    className,
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLElement>) => {
     // Inline code (no newline in children) vs block code
     const isInline = !className?.includes("language-");
     if (isInline) {
       return (
         <code
-          className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm"
+          className="bg-muted rounded px-1.5 py-0.5 font-mono text-sm"
           {...props}
         >
           {children}
@@ -97,19 +105,15 @@ const mdxComponents = {
   },
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
     <pre
-      className="my-6 overflow-x-auto rounded-lg border border-border bg-muted/50 p-4 font-mono text-sm"
+      className="border-border bg-muted/50 my-6 overflow-x-auto rounded-lg border p-4 font-mono text-sm"
       {...props}
     />
   ),
   hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
-    <hr className="my-8 border-border" {...props} />
+    <hr className="border-border my-8" {...props} />
   ),
   img: ({ src, alt, className }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <Image
-      src={src as string ?? ""}
-      alt={alt ?? ""}
-      className={className}
-    />
+    <Image src={(src as string) ?? ""} alt={alt ?? ""} className={className} />
   ),
   table: (props: React.HTMLAttributes<HTMLTableElement>) => (
     <div className="my-6 overflow-x-auto">
@@ -117,10 +121,13 @@ const mdxComponents = {
     </div>
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <th className="border border-border bg-muted p-2 text-left font-semibold" {...props} />
+    <th
+      className="border-border bg-muted border p-2 text-left font-semibold"
+      {...props}
+    />
   ),
   td: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <td className="border border-border p-2" {...props} />
+    <td className="border-border border p-2" {...props} />
   ),
 };
 

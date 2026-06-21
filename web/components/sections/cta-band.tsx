@@ -46,15 +46,23 @@ export function CTABand({
   return (
     <section className={cn("py-section-y", className)}>
       <Container>
-        <div className={cn("rounded-lg border p-8 text-center md:p-12", variantClasses, !isDark && "border-border")}>
+        <div
+          className={cn(
+            "rounded-lg border p-8 text-center md:p-12",
+            variantClasses,
+            !isDark && "border-border",
+          )}
+        >
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             {title}
           </h2>
           {description && (
-            <p className={cn(
-              "mx-auto mt-4 max-w-prose",
-              isDark ? "text-primary-foreground/80" : "text-muted-foreground"
-            )}>
+            <p
+              className={cn(
+                "mx-auto mt-4 max-w-prose",
+                isDark ? "text-primary-foreground/80" : "text-muted-foreground",
+              )}
+            >
               {description}
             </p>
           )}
@@ -74,7 +82,11 @@ export function CTABand({
                   asChild
                   size="lg"
                   variant={isDark ? "ghost" : "outline"}
-                  className={isDark ? "text-primary-foreground hover:bg-primary-foreground/10" : ""}
+                  className={
+                    isDark
+                      ? "text-primary-foreground hover:bg-primary-foreground/10"
+                      : ""
+                  }
                 >
                   <Link href={secondaryCta.href}>{secondaryCta.label}</Link>
                 </Button>

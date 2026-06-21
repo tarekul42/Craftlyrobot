@@ -74,14 +74,16 @@ export function ApplyForm({ className }: ApplyFormProps) {
       if (!res.ok) {
         const error = await res.json().catch(() => ({}));
         throw new Error(
-          error.message ?? `Request failed with status ${res.status}`
+          error.message ?? `Request failed with status ${res.status}`,
         );
       }
 
       setSubmitted(true);
     } catch (e) {
       setSubmitError(
-        e instanceof Error ? e.message : "Something went wrong. Please try again."
+        e instanceof Error
+          ? e.message
+          : "Something went wrong. Please try again.",
       );
     }
   };
@@ -91,9 +93,9 @@ export function ApplyForm({ className }: ApplyFormProps) {
     return (
       <Card className={cn("border-success/30 bg-success/5", className)}>
         <CardContent className="flex flex-col items-center p-8 text-center">
-          <CheckCircle2 className="h-12 w-12 text-success" />
+          <CheckCircle2 className="text-success h-12 w-12" />
           <h3 className="mt-4 text-xl font-bold">Application received</h3>
-          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-2 max-w-sm text-sm">
             We&apos;ll review your application and reply within 7 days. Check
             your email (including spam folder) for a confirmation.
           </p>
@@ -198,7 +200,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
                   form.setValue(
                     "department",
                     v as ApplyFormValues["department"],
-                    { shouldValidate: true }
+                    { shouldValidate: true },
                   )
                 }
               >
@@ -229,7 +231,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
                 form.setValue(
                   "commitment",
                   v as ApplyFormValues["commitment"],
-                  { shouldValidate: true }
+                  { shouldValidate: true },
                 )
               }
             >
@@ -261,7 +263,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
                       "flex cursor-pointer items-center gap-2 rounded-md border p-2 text-sm transition-colors",
                       checked
                         ? "border-primary bg-primary/5"
-                        : "border-border hover:bg-muted"
+                        : "border-border hover:bg-muted",
                     )}
                   >
                     <Checkbox
@@ -276,7 +278,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
                           form.setValue(
                             "skills",
                             current.filter((s) => s !== skill),
-                            { shouldValidate: true }
+                            { shouldValidate: true },
                           );
                         }
                       }}
@@ -287,7 +289,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
               })}
             </div>
             {form.formState.errors.skills && (
-              <p role="alert" className="text-xs text-destructive">
+              <p role="alert" className="text-destructive text-xs">
                 {form.formState.errors.skills.message}
               </p>
             )}
@@ -329,11 +331,13 @@ export function ApplyForm({ className }: ApplyFormProps) {
               onVerify={(token) =>
                 form.setValue("turnstileToken", token, { shouldValidate: true })
               }
-              onError={() => setSubmitError("Bot verification failed. Please try again.")}
+              onError={() =>
+                setSubmitError("Bot verification failed. Please try again.")
+              }
               onExpire={() => form.setValue("turnstileToken", "")}
             />
             {form.formState.errors.turnstileToken && (
-              <p role="alert" className="mt-1 text-xs text-destructive">
+              <p role="alert" className="text-destructive mt-1 text-xs">
                 {form.formState.errors.turnstileToken.message}
               </p>
             )}
@@ -343,7 +347,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
           {submitError && (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
+              className="border-destructive/30 bg-destructive/5 text-destructive flex items-start gap-2 rounded-md border p-3 text-sm"
             >
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{submitError}</span>
@@ -360,7 +364,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
             Submit application
           </Button>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-center text-xs">
             We review applications weekly. You&apos;ll hear back within 7 days.
           </p>
         </form>

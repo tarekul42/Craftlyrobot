@@ -1,6 +1,12 @@
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/layout/container";
-import { SectionHeading, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui";
+import {
+  SectionHeading,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui";
 import type { FAQItem } from "@/types/content";
 
 interface FAQSectionProps {

@@ -1,0 +1,161 @@
+/* ============================================================================
+   Print Styles
+   Applied when users print a page (Ctrl/Cmd + P).
+   Particularly useful for legal pages (privacy, terms, security).
+   ============================================================================ */
+
+@media print {
+  /* Force white background and black text for print */
+  html {
+    background: #ffffff !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Hide non-essential UI */
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Expand containers to full width */
+  .max-w-prose,
+  .max-w-screen-narrow,
+  .max-w-screen-default,
+  .max-w-screen-wide {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Remove padding from sections */
+  section {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Make headings print-friendly */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #000000 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h1 {
+    font-size: 24pt;
+  }
+  h2 {
+    font-size: 18pt;
+  }
+  h3 {
+    font-size: 14pt;
+  }
+  h4 {
+    font-size: 12pt;
+  }
+
+  /* Make links visible (show URL after link text) */
+  a {
+    color: #000000 !important;
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666666;
+  }
+
+  /* Internal links don't need the URL */
+  a[href^="/"]::after,
+  a[href^="#"]::after {
+    content: "";
+  }
+
+  /* Avoid page breaks inside these elements */
+  p,
+  li,
+  blockquote,
+  figure,
+  table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Force page break before major sections (optional) */
+  h2 {
+    page-break-before: auto;
+  }
+
+  /* Make code blocks print-friendly */
+  pre,
+  code {
+    background: #f5f5f5 !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+  }
+
+  pre {
+    page-break-inside: avoid;
+    font-size: 10pt;
+    overflow: visible;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Make borders visible */
+  hr {
+    border: none !important;
+    border-top: 1px solid #000000 !important;
+    margin: 1em 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid #000000 !important;
+    padding: 0.5em;
+  }
+
+  /* Hide interactive elements that don't make sense on paper */
+  button,
+  [role="button"],
+  .interactive {
+    display: none !important;
+  }
+
+  /* Show URLs for legal/contact info */
+  .print-show-url a::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666666;
+  }
+
+  /* Add print-only header with date */
+  body::before {
+    content: "Craftly — Printed on " counter(page) "/" counter(pages);
+    display: block;
+    font-size: 10pt;
+    color: #999999;
+    margin-bottom: 1em;
+    text-align: right;
+  }
+}

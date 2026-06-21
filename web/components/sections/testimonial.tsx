@@ -23,19 +23,18 @@ export function TestimonialSection({
   return (
     <section className={cn("py-section-y", className)}>
       <Container>
-        <SectionHeading
-          eyebrow={eyebrow}
-          title={title}
-          align="center"
-        />
+        <SectionHeading eyebrow={eyebrow} title={title} align="center" />
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <figure
               key={i}
-              className="flex h-full flex-col rounded-lg border border-border bg-background p-6"
+              className="border-border bg-background flex h-full flex-col rounded-lg border p-6"
             >
-              <Quote className="h-8 w-8 text-muted-foreground/40" aria-hidden="true" />
-              <blockquote className="mt-4 flex-1 text-base leading-relaxed text-foreground/90">
+              <Quote
+                className="text-muted-foreground/40 h-8 w-8"
+                aria-hidden="true"
+              />
+              <blockquote className="text-foreground/90 mt-4 flex-1 text-base leading-relaxed">
                 {t.quote}
               </blockquote>
               <figcaption className="mt-6 flex items-center gap-3">
@@ -43,8 +42,10 @@ export function TestimonialSection({
                   <AvatarFallback>{t.author.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <div className="text-sm font-semibold text-foreground">{t.author}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
+                  <div className="text-foreground text-sm font-semibold">
+                    {t.author}
+                  </div>
+                  <div className="text-muted-foreground text-xs">{t.role}</div>
                 </div>
               </figcaption>
             </figure>

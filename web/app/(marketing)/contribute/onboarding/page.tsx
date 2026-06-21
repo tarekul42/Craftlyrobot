@@ -84,7 +84,7 @@ export default function OnboardingPage() {
             title="Most contributor funnels die in onboarding"
             align="center"
           />
-          <div className="mt-6 space-y-4 text-lg leading-relaxed text-foreground/80">
+          <div className="text-foreground/80 mt-6 space-y-4 text-lg leading-relaxed">
             <p>
               The single biggest drop-off in any contributor funnel isn&apos;t
               at the application stage — it&apos;s between acceptance and first
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
               <Card key={i}>
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {item.description}
                   </p>
                 </CardContent>

@@ -34,7 +34,8 @@ interface EmailResult {
  */
 export async function sendEmail(params: EmailParams): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
-  const fromAddress = params.from ?? process.env.EMAIL_FROM ?? "hello@craftlyrobot.com";
+  const fromAddress =
+    params.from ?? process.env.EMAIL_FROM ?? "hello@craftlyrobot.com";
 
   // Development mode — log instead of sending
   if (!apiKey) {
@@ -86,7 +87,7 @@ export async function sendEmail(params: EmailParams): Promise<EmailResult> {
  */
 export async function sendApplicationConfirmation(
   email: string,
-  name: string
+  name: string,
 ): Promise<void> {
   await sendEmail({
     to: email,
@@ -100,7 +101,7 @@ export async function sendApplicationConfirmation(
  */
 export async function sendContactConfirmation(
   email: string,
-  name: string
+  name: string,
 ): Promise<void> {
   await sendEmail({
     to: email,

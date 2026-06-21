@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   if (!limit.success) {
     return NextResponse.json(
       { message: "Too many messages. Please try again later." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -35,14 +35,20 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ message: "Invalid request body." }, { status: 400 });
+    return NextResponse.json(
+      { message: "Invalid request body." },
+      { status: 400 },
+    );
   }
 
   const result = contactSchema.safeParse(body);
   if (!result.success) {
     return NextResponse.json(
-      { message: "Validation failed.", errors: result.error.flatten().fieldErrors },
-      { status: 400 }
+      {
+        message: "Validation failed.",
+        errors: result.error.flatten().fieldErrors,
+      },
+      { status: 400 },
     );
   }
 
@@ -50,7 +56,10 @@ export async function POST(req: Request) {
 
   const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
   if (!turnstileOk) {
-    return NextResponse.json({ message: "Bot verification failed." }, { status: 400 });
+    return NextResponse.json(
+      { message: "Bot verification failed." },
+      { status: 400 },
+    );
   }
 
   try {
@@ -71,12 +80,18 @@ export async function POST(req: Request) {
 
     console.log("[contact] Processed:", { id: saved?.id, name: data.name, ip });
 
-    return NextResponse.json({ ok: true, message: "Message received." }, { status: 200 });
+    return NextResponse.json(
+      { ok: true, message: "Message received." },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("[contact] Failed:", error);
     return NextResponse.json(
-      { message: "Something went wrong. Please try again or email hello@craftlyrobot.com." },
-      { status: 500 }
+      {
+        message:
+          "Something went wrong. Please try again or email hello@craftlyrobot.com.",
+      },
+      { status: 500 },
     );
   }
 }
@@ -84,6 +99,6 @@ export async function POST(req: Request) {
 export function GET() {
   return NextResponse.json(
     { message: "Method not allowed. Use POST." },
-    { status: 405, headers: { Allow: "POST" } }
+    { status: 405, headers: { Allow: "POST" } },
   );
 }

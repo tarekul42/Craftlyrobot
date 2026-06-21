@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronRight, MoreHorizontal } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BreadcrumbsProps extends React.HTMLAttributes<HTMLElement> {
@@ -18,24 +18,38 @@ interface BreadcrumbsProps extends React.HTMLAttributes<HTMLElement> {
  *   { label: "Engineering" },
  * ]} />
  */
-function Breadcrumbs({ items, separator, className, ...props }: BreadcrumbsProps) {
+function Breadcrumbs({
+  items,
+  separator,
+  className,
+  ...props
+}: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className={cn("flex", className)} {...props}>
-      <ol className="flex items-center gap-1.5 text-sm text-muted-foreground">
+      <ol className="text-muted-foreground flex items-center gap-1.5 text-sm">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
             <li key={index} className="flex items-center gap-1.5">
               {item.href && !isLast ? (
-                <a href={item.href} className="hover:text-foreground transition-colors">
+                <a
+                  href={item.href}
+                  className="hover:text-foreground transition-colors"
+                >
                   {item.label}
                 </a>
               ) : (
-                <span className={cn(isLast && "text-foreground font-medium")} aria-current={isLast ? "page" : undefined}>
+                <span
+                  className={cn(isLast && "text-foreground font-medium")}
+                  aria-current={isLast ? "page" : undefined}
+                >
                   {item.label}
                 </span>
               )}
-              {!isLast && (separator ?? <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />)}
+              {!isLast &&
+                (separator ?? (
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                ))}
             </li>
           );
         })}

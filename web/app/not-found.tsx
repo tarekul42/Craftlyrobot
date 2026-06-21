@@ -9,11 +9,11 @@ import { Container } from "@/components/layout/container";
 export default function NotFound() {
   return (
     <Container className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-      <p className="font-logo text-9xl text-muted-foreground/20">404</p>
+      <p className="font-logo text-muted-foreground/20 text-9xl">404</p>
       <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
         This page drifted off the map
       </h1>
-      <p className="mt-3 max-w-md text-muted-foreground">
+      <p className="text-muted-foreground mt-3 max-w-md">
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
         Let&apos;s get you back on track.
       </p>
@@ -26,7 +26,7 @@ export default function NotFound() {
         </Button>
       </div>
 
-      <div className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+      <div className="text-muted-foreground mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
         <Link href="/products" className="hover:text-foreground">
           Products
         </Link>

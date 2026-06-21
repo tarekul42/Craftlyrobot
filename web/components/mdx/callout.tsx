@@ -12,7 +12,12 @@ interface CalloutProps {
 
 const calloutConfig: Record<
   CalloutType,
-  { icon: React.ElementType; container: string; title: string; iconColor: string }
+  {
+    icon: React.ElementType;
+    container: string;
+    title: string;
+    iconColor: string;
+  }
 > = {
   info: {
     icon: Info,
@@ -55,12 +60,15 @@ export function Callout({ type = "info", title, children }: CalloutProps) {
   return (
     <div className={cn("my-6 rounded-lg border p-4", config.container)}>
       <div className="flex gap-3">
-        <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", config.iconColor)} aria-hidden="true" />
+        <Icon
+          className={cn("mt-0.5 h-5 w-5 shrink-0", config.iconColor)}
+          aria-hidden="true"
+        />
         <div className="flex-1">
           {title && (
             <p className={cn("mb-1 font-semibold", config.title)}>{title}</p>
           )}
-          <div className="text-sm text-foreground/80 [&>p]:my-0 [&>p:last-child]:mb-0">
+          <div className="text-foreground/80 text-sm [&>p:last-child]:mb-0 [&>p]:my-0">
             {children}
           </div>
         </div>

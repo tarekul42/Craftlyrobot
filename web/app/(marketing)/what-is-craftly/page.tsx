@@ -14,12 +14,7 @@ import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Eyebrow,
-  SectionHeading,
-} from "@/components/ui";
+import { Eyebrow, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "What is Craftly",
@@ -141,16 +136,16 @@ export default function WhatIsCraftlyPage() {
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             What Craftly is, in one paragraph
           </h2>
-          <p className="mt-6 text-xl leading-relaxed text-foreground/80">
+          <p className="text-foreground/80 mt-6 text-xl leading-relaxed">
             Craftly is a contributor-driven ecosystem building tools that turn
             ideas into shipped products. We are not a single product, not a
-            single company in the conventional sense, and not a single community.
-            We are an organization that contains products, a community,
-            contributors, departments, projects, internal tools, onboarding
-            flows, and future initiatives — all connected, all declared, all
-            navigable.
+            single company in the conventional sense, and not a single
+            community. We are an organization that contains products, a
+            community, contributors, departments, projects, internal tools,
+            onboarding flows, and future initiatives — all connected, all
+            declared, all navigable.
           </p>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="text-muted-foreground mt-4 text-lg">
             From Bangladesh, with ambition.
           </p>
         </Container>
@@ -165,20 +160,22 @@ export default function WhatIsCraftlyPage() {
             description="Every layer is declared and navigable. Click any layer to go deeper."
             align="center"
           />
-          <div className="mt-12 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {ecosystemLayers.map((layer, i) => {
               const content = (
-                <div className="flex h-full items-start gap-4 rounded-lg border border-border bg-background p-6 transition-all hover:border-foreground/20 hover:shadow-md">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                <div className="border-border bg-background hover:border-foreground/20 flex h-full items-start gap-4 rounded-lg border p-6 transition-all hover:shadow-md">
+                  <div className="bg-primary text-primary-foreground flex h-12 w-12 shrink-0 items-center justify-center rounded-md">
                     {layer.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground">{layer.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <h3 className="text-foreground font-semibold">
+                      {layer.title}
+                    </h3>
+                    <p className="text-muted-foreground mt-1 text-sm">
                       {layer.description}
                     </p>
                     {layer.cta && (
-                      <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-foreground">
+                      <span className="text-foreground mt-3 inline-flex items-center gap-1 text-xs font-medium">
                         {layer.cta}
                         <ArrowRight className="h-3 w-3" />
                       </span>
@@ -209,7 +206,7 @@ export default function WhatIsCraftlyPage() {
             title="Why we exist"
             align="center"
           />
-          <div className="mt-6 space-y-4 text-lg leading-relaxed text-foreground/80">
+          <div className="text-foreground/80 mt-6 space-y-4 text-lg leading-relaxed">
             <p>
               Bangladesh has tens of thousands of talented engineers, designers,
               and builders. Most end up working for companies elsewhere. The
@@ -242,10 +239,10 @@ export default function WhatIsCraftlyPage() {
             {glossary.map((item) => (
               <div
                 key={item.term}
-                className="rounded-lg border border-border bg-background p-6"
+                className="border-border bg-background rounded-lg border p-6"
               >
-                <dt className="font-semibold text-foreground">{item.term}</dt>
-                <dd className="mt-2 text-sm text-muted-foreground">
+                <dt className="text-foreground font-semibold">{item.term}</dt>
+                <dd className="text-muted-foreground mt-2 text-sm">
                   {item.definition}
                 </dd>
               </div>

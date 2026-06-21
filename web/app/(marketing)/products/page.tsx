@@ -5,12 +5,7 @@ import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Badge,
-  SectionHeading,
-} from "@/components/ui";
+import { Card, CardContent, Badge, SectionHeading } from "@/components/ui";
 import { products, foundationProducts } from "@/config/products";
 
 export const metadata: Metadata = {
@@ -54,22 +49,22 @@ export default function ProductsPage() {
                         product.status === "live"
                           ? "success"
                           : product.status === "coming-soon"
-                          ? "warning"
-                          : "secondary"
+                            ? "warning"
+                            : "secondary"
                       }
                     >
                       {product.status === "coming-soon"
                         ? "Coming soon"
                         : product.status === "internal"
-                        ? "Internal"
-                        : "Live"}
+                          ? "Internal"
+                          : "Live"}
                     </Badge>
                   </div>
                   <h3 className="text-2xl font-semibold">{product.name}</h3>
-                  <p className="mt-1 text-sm italic text-muted-foreground">
+                  <p className="text-muted-foreground mt-1 text-sm italic">
                     {product.tagline}
                   </p>
-                  <p className="mt-4 flex-1 text-sm text-foreground/80">
+                  <p className="text-foreground/80 mt-4 flex-1 text-sm">
                     {product.description}
                   </p>
                   {product.features && product.features.length > 0 && (
@@ -77,9 +72,9 @@ export default function ProductsPage() {
                       {product.features.slice(0, 3).map((feature, i) => (
                         <li
                           key={i}
-                          className="flex items-start gap-2 text-sm text-muted-foreground"
+                          className="text-muted-foreground flex items-start gap-2 text-sm"
                         >
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                          <CheckCircle2 className="text-success mt-0.5 h-4 w-4 shrink-0" />
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -87,7 +82,7 @@ export default function ProductsPage() {
                   )}
                   <Link
                     href={`/products/${product.slug}`}
-                    className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                    className="text-foreground mt-6 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                   >
                     Learn more
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -113,7 +108,7 @@ export default function ProductsPage() {
               <Card key={product.slug}>
                 <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {product.description}
                   </p>
                 </CardContent>
@@ -128,7 +123,10 @@ export default function ProductsPage() {
         title="Want to help build?"
         description="These products need contributors. Engineering, design, community, operations — there's a place for you."
         primaryCta={{ label: "See open roles", href: "/contribute/roles" }}
-        secondaryCta={{ label: "Learn about Craftly", href: "/what-is-craftly" }}
+        secondaryCta={{
+          label: "Learn about Craftly",
+          href: "/what-is-craftly",
+        }}
       />
     </>
   );

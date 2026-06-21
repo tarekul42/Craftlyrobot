@@ -41,8 +41,8 @@ export function ScreenshotShowcase({
   return (
     <div
       className={cn(
-        "relative aspect-[3/4] w-full overflow-hidden rounded-lg border border-border bg-muted",
-        className
+        "border-border bg-muted relative aspect-[3/4] w-full overflow-hidden rounded-lg border",
+        className,
       )}
     >
       <AnimatePresence mode="wait">
@@ -69,8 +69,8 @@ export function ScreenshotShowcase({
               className={cn(
                 "h-1.5 rounded-full transition-all",
                 i === activeIndex
-                  ? "w-6 bg-foreground"
-                  : "w-1.5 bg-foreground/40 hover:bg-foreground/60"
+                  ? "bg-foreground w-6"
+                  : "bg-foreground/40 hover:bg-foreground/60 w-1.5",
               )}
             />
           ))}

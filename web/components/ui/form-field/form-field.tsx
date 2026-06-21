@@ -41,26 +41,32 @@ function FormField({
       <Label htmlFor={htmlFor} className="flex items-center gap-1">
         {label}
         {required && (
-          <span className="text-destructive" aria-hidden="true">*</span>
+          <span className="text-destructive" aria-hidden="true">
+            *
+          </span>
         )}
       </Label>
-      {React.cloneElement(children as React.ReactElement, {
-        id: htmlFor,
-        "aria-invalid": !!error || undefined,
-        "aria-required": required || undefined,
-        "aria-describedby": describedBy,
-        className: cn(
-          ((children as React.ReactElement).props as Record<string, unknown>).className as string | undefined,
-          error && "border-destructive focus-visible:ring-destructive"
-        ),
-      } as Record<string, unknown>)}
+      {React.cloneElement(
+        children as React.ReactElement,
+        {
+          id: htmlFor,
+          "aria-invalid": !!error || undefined,
+          "aria-required": required || undefined,
+          "aria-describedby": describedBy,
+          className: cn(
+            ((children as React.ReactElement).props as Record<string, unknown>)
+              .className as string | undefined,
+            error && "border-destructive focus-visible:ring-destructive",
+          ),
+        } as Record<string, unknown>,
+      )}
       {hint && !error && (
-        <p id={hintId} className="text-xs text-muted-foreground">
+        <p id={hintId} className="text-muted-foreground text-xs">
           {hint}
         </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-xs text-destructive">
+        <p id={errorId} role="alert" className="text-destructive text-xs">
           {error}
         </p>
       )}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Users, Target, Briefcase } from "lucide-react";
+import { ArrowRight, Users } from "lucide-react";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
 import { HeroCentered } from "@/components/sections/hero/hero-centered";
@@ -13,10 +13,7 @@ import {
   SectionHeading,
   Stat,
 } from "@/components/ui";
-import {
-  departments,
-  getDepartmentBySlug,
-} from "@/config/departments";
+import { departments, getDepartmentBySlug } from "@/config/departments";
 import { roles } from "@/config/roles";
 
 export async function generateStaticParams() {
@@ -63,7 +60,7 @@ export default async function DepartmentPage({
       />
 
       {/* Stats */}
-      <Section spacing="sm" className="border-y border-border bg-muted/30">
+      <Section spacing="sm" className="border-border bg-muted/30 border-y">
         <Container>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <Stat
@@ -96,7 +93,7 @@ export default async function DepartmentPage({
             title={`What ${dept.name} does`}
             align="center"
           />
-          <p className="mt-6 text-lg leading-relaxed text-foreground/80">
+          <p className="text-foreground/80 mt-6 text-lg leading-relaxed">
             {dept.focus} The {dept.name.toLowerCase()} department
             {dept.lead ? ` is led by ${dept.lead}` : ""} and has{" "}
             {dept.contributorCount} active contributor
@@ -120,19 +117,19 @@ export default async function DepartmentPage({
                   <CardContent className="flex h-full flex-col p-6">
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <Badge variant="secondary">{role.department}</Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         {role.commitment === "fulltime"
                           ? "Full-time"
                           : `${role.commitment}/week`}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold">{role.title}</h3>
-                    <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-2 flex-1 text-sm">
                       {role.description}
                     </p>
                     <Link
                       href="/contribute/apply"
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                      className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                     >
                       Apply for this role
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -164,10 +161,10 @@ export default async function DepartmentPage({
                   <Card interactive className="h-full">
                     <CardContent className="p-6">
                       <div className="mb-2 flex items-center gap-2">
-                        <Users className="h-5 w-5 text-muted-foreground" />
+                        <Users className="text-muted-foreground h-5 w-5" />
                         <h3 className="font-semibold">{other.name}</h3>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         {other.focus}
                       </p>
                     </CardContent>

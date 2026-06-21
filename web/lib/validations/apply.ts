@@ -28,14 +28,14 @@ export const applySchema = z.object({
     ["frontend", "backend", "devops", "design", "community", "ops", "other"],
     {
       errorMap: () => ({ message: "Please select a role" }),
-    }
+    },
   ),
 
   department: z.enum(
     ["engineering", "design", "community", "operations", "undecided"],
     {
       errorMap: () => ({ message: "Please select a department" }),
-    }
+    },
   ),
 
   commitment: z.enum(["5h", "10h", "20h", "fulltime"], {
@@ -58,9 +58,7 @@ export const applySchema = z.object({
     .min(50, "Please tell us more (at least 50 characters)")
     .max(1000, "Please keep it under 1000 characters"),
 
-  turnstileToken: z
-    .string()
-    .min(1, "Please verify you're human"),
+  turnstileToken: z.string().min(1, "Please verify you're human"),
 });
 
 export type ApplyFormValues = z.infer<typeof applySchema>;

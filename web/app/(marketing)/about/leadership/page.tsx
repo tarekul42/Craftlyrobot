@@ -63,11 +63,7 @@ export default function LeadershipPage() {
       {/* Leaders */}
       <Section>
         <Container size="narrow">
-          <SectionHeading
-            eyebrow="The team"
-            title="Founders"
-            align="center"
-          />
+          <SectionHeading eyebrow="The team" title="Founders" align="center" />
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             {leaders.map((leader) => (
               <Card key={leader.name}>
@@ -80,17 +76,19 @@ export default function LeadershipPage() {
                     </Avatar>
                     <div>
                       <h3 className="text-lg font-semibold">{leader.name}</h3>
-                      <p className="text-sm text-muted-foreground">{leader.role}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {leader.role}
+                      </p>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-4 text-sm">
                     {leader.bio}
                   </p>
                 </CardContent>
               </Card>
             ))}
           </div>
-          <p className="mt-8 text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-8 text-center text-sm">
             Department leads will be added here as they&apos;re formally
             appointed. Craftly is contributor-driven — leadership emerges from
             sustained contribution.
@@ -111,11 +109,11 @@ export default function LeadershipPage() {
             {governance.map((tier, i) => (
               <Card key={i}>
                 <CardContent className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                  <div className="bg-primary text-primary-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
                     {tier.icon}
                   </div>
                   <h3 className="text-lg font-semibold">{tier.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 text-sm">
                     {tier.description}
                   </p>
                 </CardContent>

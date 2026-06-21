@@ -23,12 +23,12 @@ interface TurnstileVerifyResponse {
  */
 export async function verifyTurnstile(
   token: string,
-  remoteip?: string
+  remoteip?: string,
 ): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
     console.warn(
-      "TURNSTILE_SECRET_KEY not set — skipping verification. Do NOT use in production."
+      "TURNSTILE_SECRET_KEY not set — skipping verification. Do NOT use in production.",
     );
     return true; // Allow in development when secret isn't set
   }
@@ -46,7 +46,7 @@ export async function verifyTurnstile(
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body,
-      }
+      },
     );
 
     const data = (await res.json()) as TurnstileVerifyResponse;

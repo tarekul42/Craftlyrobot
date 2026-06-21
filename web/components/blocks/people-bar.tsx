@@ -48,7 +48,7 @@ export function PeopleBar({
           requestAnimationFrame(animate);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     const el = document.getElementById("people-bar");
@@ -64,26 +64,26 @@ export function PeopleBar({
     <div
       id="people-bar"
       className={cn(
-        "rounded-lg border border-border bg-muted/30 p-6",
-        className
+        "border-border bg-muted/30 rounded-lg border p-6",
+        className,
       )}
       role="region"
       aria-label={`${label} progress`}
     >
       <div className="flex items-baseline justify-between">
         <div>
-          <span className="text-4xl font-bold tabular-nums text-foreground">
+          <span className="text-foreground text-4xl font-bold tabular-nums">
             {formattedCount}
           </span>
-          <span className="ml-2 text-sm text-muted-foreground">{label}</span>
+          <span className="text-muted-foreground ml-2 text-sm">{label}</span>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           Target <span className="font-semibold">{formattedTarget}</span>
         </div>
       </div>
 
       <div
-        className="mt-4 h-3 w-full overflow-hidden rounded-full bg-secondary"
+        className="bg-secondary mt-4 h-3 w-full overflow-hidden rounded-full"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={target}
@@ -91,7 +91,7 @@ export function PeopleBar({
         aria-label={`Progress toward ${formattedTarget} ${label.toLowerCase()}`}
       >
         <motion.div
-          className="h-full rounded-full bg-primary"
+          className="bg-primary h-full rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 1.5, ease: "easeOut" }}

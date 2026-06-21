@@ -14,7 +14,11 @@ interface PageShellProps {
   hideFooter?: boolean;
 }
 
-export function PageShell({ children, hideHeader, hideFooter }: PageShellProps) {
+export function PageShell({
+  children,
+  hideHeader,
+  hideFooter,
+}: PageShellProps) {
   return (
     <>
       <SkipLink href="#main-content">Skip to content</SkipLink>

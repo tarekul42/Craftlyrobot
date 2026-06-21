@@ -2,7 +2,12 @@
 
 import * as React from "react";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 interface NavItem {
@@ -43,7 +48,7 @@ function MobileNav({ items, logo }: MobileNavProps) {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors"
+              className="text-foreground hover:bg-muted rounded-md px-3 py-2 text-base font-medium transition-colors"
             >
               {item.title}
             </a>

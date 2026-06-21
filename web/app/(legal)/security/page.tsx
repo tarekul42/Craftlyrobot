@@ -3,7 +3,8 @@ import { Prose } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Security",
-  description: "How Craftly approaches security and how to report vulnerabilities.",
+  description:
+    "How Craftly approaches security and how to report vulnerabilities.",
   alternates: { canonical: "/security" },
   robots: { index: true, follow: true },
 };
@@ -28,8 +29,8 @@ export default function SecurityPage() {
         </li>
         <li>
           <strong>Security headers.</strong> We set HSTS, X-Frame-Options,
-          X-Content-Type-Options, Referrer-Policy, and Permissions-Policy headers
-          on all responses.
+          X-Content-Type-Options, Referrer-Policy, and Permissions-Policy
+          headers on all responses.
         </li>
         <li>
           <strong>Content Security Policy.</strong> We use a strict CSP to
@@ -72,10 +73,17 @@ export default function SecurityPage() {
       <ol>
         <li>
           Email us at{" "}
-          <a href="mailto:security@craftlyrobot.com">security@craftlyrobot.com</a>
+          <a href="mailto:security@craftlyrobot.com">
+            security@craftlyrobot.com
+          </a>
         </li>
-        <li>Include a description of the vulnerability and steps to reproduce</li>
-        <li>Do not publicly disclose the vulnerability until we&apos;ve had time to respond</li>
+        <li>
+          Include a description of the vulnerability and steps to reproduce
+        </li>
+        <li>
+          Do not publicly disclose the vulnerability until we&apos;ve had time
+          to respond
+        </li>
       </ol>
       <p>
         We acknowledge all vulnerability reports within 48 hours and provide a
@@ -93,12 +101,17 @@ export default function SecurityPage() {
       <p>The following are in scope for vulnerability reports:</p>
       <ul>
         <li>craftlyrobot.com and all subdomains</li>
-        <li>Craftly products (Craftly Robot, Hello, Workspace, Agent Console)</li>
+        <li>
+          Craftly products (Craftly Robot, Hello, Workspace, Agent Console)
+        </li>
         <li>Our public API endpoints</li>
       </ul>
       <p>The following are out of scope:</p>
       <ul>
-        <li>Self-XSS (attacks requiring the user to paste code into their own console)</li>
+        <li>
+          Self-XSS (attacks requiring the user to paste code into their own
+          console)
+        </li>
         <li>Rate-limiting or denial-of-service via automated tools</li>
         <li>Social engineering attacks</li>
         <li>Physical attacks</li>
@@ -109,7 +122,8 @@ export default function SecurityPage() {
         For non-security inquiries, use our{" "}
         <a href="/about/contact">contact form</a>. For security reports only,
         email{" "}
-        <a href="mailto:security@craftlyrobot.com">security@craftlyrobot.com</a>.
+        <a href="mailto:security@craftlyrobot.com">security@craftlyrobot.com</a>
+        .
       </p>
     </Prose>
   );

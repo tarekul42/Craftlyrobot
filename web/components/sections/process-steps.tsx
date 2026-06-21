@@ -38,12 +38,12 @@ export function ProcessSteps({
         <ol className="mx-auto mt-12 max-w-3xl space-y-8">
           {steps.map((step, i) => (
             <li key={i} className="relative flex gap-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+              <div className="bg-primary text-primary-foreground flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-bold">
                 {i + 1}
               </div>
               <div className="flex-1 pt-1">
                 <h3 className="text-xl font-semibold">{step.title}</h3>
-                <p className="mt-2 text-muted-foreground">{step.description}</p>
+                <p className="text-muted-foreground mt-2">{step.description}</p>
               </div>
             </li>
           ))}

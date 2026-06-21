@@ -5,7 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { contactSchema, type ContactFormValues } from "@/lib/validations/contact";
+import {
+  contactSchema,
+  type ContactFormValues,
+} from "@/lib/validations/contact";
 import {
   Button,
   FormField,
@@ -51,14 +54,16 @@ export function ContactForm({ className }: ContactFormProps) {
       if (!res.ok) {
         const error = await res.json().catch(() => ({}));
         throw new Error(
-          error.message ?? `Request failed with status ${res.status}`
+          error.message ?? `Request failed with status ${res.status}`,
         );
       }
 
       setSubmitted(true);
     } catch (e) {
       setSubmitError(
-        e instanceof Error ? e.message : "Something went wrong. Please try again."
+        e instanceof Error
+          ? e.message
+          : "Something went wrong. Please try again.",
       );
     }
   };
@@ -67,9 +72,9 @@ export function ContactForm({ className }: ContactFormProps) {
     return (
       <Card className={cn("border-success/30 bg-success/5", className)}>
         <CardContent className="flex flex-col items-center p-8 text-center">
-          <CheckCircle2 className="h-12 w-12 text-success" />
+          <CheckCircle2 className="text-success h-12 w-12" />
           <h3 className="mt-4 text-xl font-bold">Message sent</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-2 text-sm">
             We&apos;ll get back to you within 2 business days.
           </p>
         </CardContent>
@@ -150,7 +155,7 @@ export function ContactForm({ className }: ContactFormProps) {
               onExpire={() => form.setValue("turnstileToken", "")}
             />
             {form.formState.errors.turnstileToken && (
-              <p role="alert" className="mt-1 text-xs text-destructive">
+              <p role="alert" className="text-destructive mt-1 text-xs">
                 {form.formState.errors.turnstileToken.message}
               </p>
             )}
@@ -159,7 +164,7 @@ export function ContactForm({ className }: ContactFormProps) {
           {submitError && (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
+              className="border-destructive/30 bg-destructive/5 text-destructive flex items-start gap-2 rounded-md border p-3 text-sm"
             >
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{submitError}</span>

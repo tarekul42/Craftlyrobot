@@ -60,18 +60,21 @@ export default function ApplyPage() {
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {beforeYouApply.map((item, i) => (
-              <div key={i} className="rounded-lg border border-border bg-background p-6">
+              <div
+                key={i}
+                className="border-border bg-background rounded-lg border p-6"
+              >
                 <h3 className="font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="text-muted-foreground mt-2 text-sm">
                   {item.description}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 rounded-lg border border-border bg-background p-6">
+          <div className="border-border bg-background mt-12 rounded-lg border p-6">
             <h3 className="font-semibold">Questions before applying?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Email us at{" "}
               <a
                 href={`mailto:${siteConfig.contact.email}`}

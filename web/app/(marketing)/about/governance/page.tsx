@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { CheckCircle2, XCircle, FileText, Scale, Users } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  SectionHeading,
-  Badge,
-} from "@/components/ui";
+import { Card, CardContent, SectionHeading, Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Governance",
@@ -23,21 +18,34 @@ const decisionTiers = [
     tier: "Tier 1",
     title: "Operational decisions",
     who: "The contributor doing the work",
-    examples: ["What task to take next", "How to implement a feature", "What tool to use"],
+    examples: [
+      "What task to take next",
+      "How to implement a feature",
+      "What tool to use",
+    ],
     made: "Made by the person closest to the work. No escalation required.",
   },
   {
     tier: "Tier 2",
     title: "Coordination decisions",
     who: "Project or department lead",
-    examples: ["What goes in the next release", "Who works on what", "Technical disagreements"],
+    examples: [
+      "What goes in the next release",
+      "Who works on what",
+      "Technical disagreements",
+    ],
     made: "Made by the designated lead, with input from the team.",
   },
   {
     tier: "Tier 3",
     title: "Strategic decisions",
     who: "Founders + leads (RFC process)",
-    examples: ["New department", "New product", "Governance changes", "Partnerships"],
+    examples: [
+      "New department",
+      "New product",
+      "Governance changes",
+      "Partnerships",
+    ],
     made: "Made through the RFC process — public proposal, discussion, decision.",
   },
 ];
@@ -105,17 +113,21 @@ export default function GovernancePage() {
                     {tier.tier}
                   </Badge>
                   <h3 className="mt-3 text-lg font-semibold">{tier.title}</h3>
-                  <p className="mt-1 text-sm font-medium text-foreground">
+                  <p className="text-foreground mt-1 text-sm font-medium">
                     {tier.who}
                   </p>
-                  <p className="mt-3 flex-1 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-3 flex-1 text-sm">
                     {tier.made}
                   </p>
                   <div className="mt-4">
-                    <p className="text-xs font-medium text-muted-foreground">Examples:</p>
+                    <p className="text-muted-foreground text-xs font-medium">
+                      Examples:
+                    </p>
                     <ul className="mt-1 space-y-1">
                       {tier.examples.map((ex, i) => (
-                        <li key={i} className="text-xs text-muted-foreground">• {ex}</li>
+                        <li key={i} className="text-muted-foreground text-xs">
+                          • {ex}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -138,12 +150,12 @@ export default function GovernancePage() {
           <ol className="mx-auto mt-12 max-w-3xl space-y-6">
             {rfcSteps.map((step, i) => (
               <li key={i} className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                <div className="bg-primary text-primary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold">
                   {i + 1}
                 </div>
                 <div className="flex-1 pt-1">
                   <h3 className="text-lg font-semibold">{step.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-1 text-sm">
                     {step.description}
                   </p>
                 </div>
@@ -160,13 +172,13 @@ export default function GovernancePage() {
             <Card className="border-success/30">
               <CardContent className="p-6">
                 <div className="mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-success" />
+                  <CheckCircle2 className="text-success h-5 w-5" />
                   <h3 className="font-semibold">What we do</h3>
                 </div>
                 <ul className="space-y-2">
                   {doDont.do.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                      <CheckCircle2 className="text-success mt-0.5 h-4 w-4 shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -176,13 +188,13 @@ export default function GovernancePage() {
             <Card className="border-destructive/30">
               <CardContent className="p-6">
                 <div className="mb-4 flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-destructive" />
+                  <XCircle className="text-destructive h-5 w-5" />
                   <h3 className="font-semibold">What we don&apos;t</h3>
                 </div>
                 <ul className="space-y-2">
                   {doDont.dont.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
-                      <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                      <XCircle className="text-destructive mt-0.5 h-4 w-4 shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -201,17 +213,17 @@ export default function GovernancePage() {
             title="How contributors advance"
             align="center"
           />
-          <p className="mt-6 text-lg leading-relaxed text-foreground/80">
-            Contributor advancement is based on declared criteria, not favoritism.
-            The path: Visitor → Applicant → Probationary → Active Contributor →
-            Lead → Leadership Group. Each transition has criteria, a declared
-            decision-maker, and a timeline.
+          <p className="text-foreground/80 mt-6 text-lg leading-relaxed">
+            Contributor advancement is based on declared criteria, not
+            favoritism. The path: Visitor → Applicant → Probationary → Active
+            Contributor → Lead → Leadership Group. Each transition has criteria,
+            a declared decision-maker, and a timeline.
           </p>
-          <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-            As Craftly grows past ~150 contributors, we&apos;ll add a contributor
-            council — elected representatives who advise the leadership group.
-            At 500+, we&apos;ll formalize further. Governance scales with the
-            ecosystem.
+          <p className="text-foreground/80 mt-4 text-lg leading-relaxed">
+            As Craftly grows past ~150 contributors, we&apos;ll add a
+            contributor council — elected representatives who advise the
+            leadership group. At 500+, we&apos;ll formalize further. Governance
+            scales with the ecosystem.
           </p>
         </Container>
       </Section>

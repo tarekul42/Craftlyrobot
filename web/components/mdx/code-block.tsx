@@ -23,7 +23,12 @@ interface CodeBlockProps {
  *   const x = 1;
  * </CodeBlock>
  */
-export function CodeBlock({ language, filename, children, className }: CodeBlockProps) {
+export function CodeBlock({
+  language,
+  filename,
+  children,
+  className,
+}: CodeBlockProps) {
   const { copied, copy } = useCopyToClipboard();
   const codeRef = React.useRef<HTMLPreElement>(null);
 
@@ -33,15 +38,20 @@ export function CodeBlock({ language, filename, children, className }: CodeBlock
   };
 
   return (
-    <div className={cn("my-6 overflow-hidden rounded-lg border border-border bg-muted/50", className)}>
+    <div
+      className={cn(
+        "border-border bg-muted/50 my-6 overflow-hidden rounded-lg border",
+        className,
+      )}
+    >
       {(filename || language) && (
-        <div className="flex items-center justify-between border-b border-border bg-muted px-4 py-2">
-          <span className="font-mono text-xs text-muted-foreground">
+        <div className="border-border bg-muted flex items-center justify-between border-b px-4 py-2">
+          <span className="text-muted-foreground font-mono text-xs">
             {filename ?? language}
           </span>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 rounded text-xs text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1 rounded text-xs transition-colors"
             aria-label="Copy code"
           >
             {copied ? (

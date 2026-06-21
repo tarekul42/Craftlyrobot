@@ -50,7 +50,7 @@ function UploadButton({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-input bg-muted/50 px-4 py-6 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        className="border-input bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground flex w-full items-center justify-center gap-2 rounded-md border border-dashed px-4 py-6 text-sm transition-colors"
       >
         <UploadCloud className="h-5 w-5" aria-hidden="true" />
         {label}
@@ -58,12 +58,15 @@ function UploadButton({
       {files.length > 0 && (
         <ul className="space-y-1">
           {files.map((file, index) => (
-            <li key={index} className="flex items-center justify-between rounded-md border bg-background px-3 py-1.5 text-sm">
+            <li
+              key={index}
+              className="bg-background flex items-center justify-between rounded-md border px-3 py-1.5 text-sm"
+            >
               <span className="truncate">{file.name}</span>
               <button
                 type="button"
                 onClick={() => removeFile(index)}
-                className="ml-2 rounded-sm p-1 hover:bg-muted"
+                className="hover:bg-muted ml-2 rounded-sm p-1"
                 aria-label={`Remove ${file.name}`}
               >
                 <X className="h-3 w-3" />

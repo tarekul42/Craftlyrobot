@@ -15,7 +15,7 @@ export default function LegalLayout({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="border-b border-border">
+      <header className="border-border border-b">
         <Container size="prose" className="flex h-16 items-center">
           <Link href="/" aria-label="Craftly — home">
             <Logo />
@@ -29,10 +29,10 @@ export default function LegalLayout({
         </Container>
       </main>
 
-      <footer className="border-t border-border">
+      <footer className="border-border border-t">
         <Container
           size="prose"
-          className="flex h-16 flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground"
+          className="text-muted-foreground flex h-16 flex-wrap items-center justify-between gap-4 text-sm"
         >
           <span>© {new Date().getFullYear()} Craftly</span>
           <nav className="flex gap-4" aria-label="Legal">

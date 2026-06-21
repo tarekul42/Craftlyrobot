@@ -7,7 +7,7 @@ describe("Button", () => {
   it("renders children", () => {
     render(<Button>Click me</Button>);
     expect(
-      screen.getByRole("button", { name: /click me/i })
+      screen.getByRole("button", { name: /click me/i }),
     ).toBeInTheDocument();
   });
 
@@ -25,7 +25,7 @@ describe("Button", () => {
     render(
       <Button onClick={onClick} disabled>
         Click
-      </Button>
+      </Button>,
     );
     await user.click(screen.getByRole("button"));
     expect(onClick).not.toHaveBeenCalled();
@@ -37,7 +37,7 @@ describe("Button", () => {
     render(
       <Button onClick={onClick} isLoading>
         Submit
-      </Button>
+      </Button>,
     );
     await user.click(screen.getByRole("button"));
     expect(onClick).not.toHaveBeenCalled();
@@ -75,9 +75,7 @@ describe("Button", () => {
   });
 
   it("renders left icon", () => {
-    render(
-      <Button leftIcon={<span data-testid="icon">←</span>}>Back</Button>
-    );
+    render(<Button leftIcon={<span data-testid="icon">←</span>}>Back</Button>);
     expect(screen.getByTestId("icon")).toBeInTheDocument();
   });
 
@@ -85,7 +83,7 @@ describe("Button", () => {
     render(
       <Button asChild>
         <a href="/test">Link Button</a>
-      </Button>
+      </Button>,
     );
     const link = screen.getByRole("link", { name: /link button/i });
     expect(link).toHaveAttribute("href", "/test");

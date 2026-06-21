@@ -13,7 +13,15 @@
   ],
   "redirects": [
     { "source": "/hello", "destination": "/community", "permanent": true },
-    { "source": "/join", "destination": "/contribute/apply", "permanent": true },
-    { "source": "/early-access", "destination": "/contribute/apply", "permanent": true }
+    {
+      "source": "/join",
+      "destination": "/contribute/apply",
+      "permanent": true
+    },
+    {
+      "source": "/early-access",
+      "destination": "/contribute/apply",
+      "permanent": true
+    }
   ]
 }

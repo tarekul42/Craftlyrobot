@@ -24,11 +24,19 @@ interface StatStripProps {
  */
 export function StatStrip({ stats, className }: StatStripProps) {
   return (
-    <section className={cn("border-y border-border bg-muted/30 py-12", className)}>
+    <section
+      className={cn("border-border bg-muted/30 border-y py-12", className)}
+    >
       <Container>
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat, i) => (
-            <Stat key={i} value={stat.value} label={stat.label} size="md" className="text-center" />
+            <Stat
+              key={i}
+              value={stat.value}
+              label={stat.label}
+              size="md"
+              className="text-center"
+            />
           ))}
         </div>
       </Container>

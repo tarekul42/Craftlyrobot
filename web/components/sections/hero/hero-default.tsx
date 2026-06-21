@@ -43,7 +43,12 @@ export function HeroDefault({
   className,
 }: HeroDefaultProps) {
   return (
-    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+    <section
+      className={cn(
+        "border-border relative overflow-hidden border-b",
+        className,
+      )}
+    >
       <Container>
         <div className="grid gap-12 py-20 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:py-32">
           <div className="flex flex-col justify-center">
@@ -52,12 +57,12 @@ export function HeroDefault({
               {title}
             </h1>
             {subtitle && (
-              <p className="mt-4 text-xl font-medium text-muted-foreground">
+              <p className="text-muted-foreground mt-4 text-xl font-medium">
                 {subtitle}
               </p>
             )}
             {description && (
-              <p className="mt-6 max-w-prose text-lg leading-relaxed text-foreground/80">
+              <p className="text-foreground/80 mt-6 max-w-prose text-lg leading-relaxed">
                 {description}
               </p>
             )}

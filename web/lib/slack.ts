@@ -22,7 +22,7 @@ interface SlackMessage {
  * In development (no webhook URL), logs to console.
  */
 export async function sendSlackMessage(
-  message: SlackMessage
+  message: SlackMessage,
 ): Promise<boolean> {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
 

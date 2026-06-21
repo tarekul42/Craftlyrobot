@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Wrench, Users, Heart, Cpu, Building2, Target, Crown } from "lucide-react";
+import {
+  Wrench,
+  Users,
+  Heart,
+  Cpu,
+  Building2,
+  Target,
+  Crown,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/ui";
@@ -73,16 +81,18 @@ export function EcosystemMap({ className }: EcosystemMapProps) {
           description="Seven layers, all connected. Click any layer to explore."
           align="center"
         />
-        <div className="mt-12 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {layers.map((layer, i) => {
             const content = (
-              <div className="flex h-full items-start gap-4 rounded-lg border border-border bg-background p-6 transition-all hover:border-foreground/20 hover:shadow-md">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <div className="border-border bg-background hover:border-foreground/20 flex h-full items-start gap-4 rounded-lg border p-6 transition-all hover:shadow-md">
+                <div className="bg-primary text-primary-foreground flex h-12 w-12 shrink-0 items-center justify-center rounded-md">
                   {layer.icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground">{layer.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <h3 className="text-foreground font-semibold">
+                    {layer.title}
+                  </h3>
+                  <p className="text-muted-foreground mt-1 text-sm">
                     {layer.description}
                   </p>
                 </div>

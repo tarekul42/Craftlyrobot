@@ -18,13 +18,13 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-muted/30">
+    <footer className="border-border bg-muted/30 border-t">
       <Container className="py-16">
         <div className="grid gap-12 lg:grid-cols-[1fr_3fr]">
           {/* Brand */}
           <div>
             <Logo />
-            <p className="mt-4 max-w-xs text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-4 max-w-xs text-sm">
               {siteConfig.description}
             </p>
           </div>
@@ -33,7 +33,7 @@ export function SiteFooter() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {Object.entries(footerNav).map(([category, items]) => (
               <div key={category}>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                <h3 className="text-muted-foreground text-xs font-bold uppercase tracking-widest">
                   {category}
                 </h3>
                 <ul className="mt-4 space-y-2">
@@ -41,7 +41,7 @@ export function SiteFooter() {
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="text-sm text-foreground/80 hover:text-foreground transition-colors"
+                        className="text-foreground/80 hover:text-foreground text-sm transition-colors"
                         {...(item.external
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
@@ -57,7 +57,7 @@ export function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
+        <div className="border-border mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
           {/* Social + theme */}
           <div className="flex items-center gap-3">
             <SocialIcons />
@@ -65,7 +65,7 @@ export function SiteFooter() {
           </div>
 
           {/* Copyright + legal */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+          <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-xs">
             <span>
               © {year} {siteConfig.name}
             </span>
@@ -99,10 +99,7 @@ function SocialIcons() {
       >
         <Facebook className="h-5 w-5" />
       </SocialLink>
-      <SocialLink
-        href={siteConfig.social.youtube}
-        label="Watch us on YouTube"
-      >
+      <SocialLink href={siteConfig.social.youtube} label="Watch us on YouTube">
         <Youtube className="h-5 w-5" />
       </SocialLink>
       <SocialLink href={siteConfig.social.github} label="View on GitHub">
@@ -127,7 +124,7 @@ function SocialLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="text-muted-foreground hover:bg-muted hover:text-foreground flex h-9 w-9 items-center justify-center rounded-md transition-colors"
     >
       {children}
     </a>

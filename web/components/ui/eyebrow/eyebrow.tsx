@@ -16,8 +16,8 @@ const Eyebrow = React.forwardRef<
   <Comp
     ref={ref}
     className={cn(
-      "text-xs font-bold uppercase tracking-widest text-muted-foreground",
-      className
+      "text-muted-foreground text-xs font-bold uppercase tracking-widest",
+      className,
     )}
     {...props}
   />

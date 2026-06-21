@@ -17,7 +17,7 @@ function SkipLink({ href, children, ...props }: SkipLinkProps) {
   return (
     <a
       href={href}
-      className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:shadow-lg focus:border focus:border-border"
+      className="focus:bg-background focus:border-border sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:border focus:px-4 focus:py-2 focus:shadow-lg"
       {...props}
     >
       {children}

@@ -14,7 +14,11 @@ type EventProps = Record<string, string | number | boolean | undefined>;
 export function trackEvent(name: string, props?: EventProps): void {
   if (typeof window === "undefined") return;
 
-  const plausible = (window as unknown as { plausible?: (event: string, options?: { props?: EventProps }) => void }).plausible;
+  const plausible = (
+    window as unknown as {
+      plausible?: (event: string, options?: { props?: EventProps }) => void;
+    }
+  ).plausible;
 
   if (!plausible) return;
 
@@ -30,14 +34,11 @@ export const analytics = {
   applicationSubmitted: (role: string) =>
     trackEvent("application_submitted", { role }),
 
-  contactSubmitted: () =>
-    trackEvent("contact_submitted"),
+  contactSubmitted: () => trackEvent("contact_submitted"),
 
-  newsletterSignup: () =>
-    trackEvent("newsletter_signup"),
+  newsletterSignup: () => trackEvent("newsletter_signup"),
 
-  blogPostView: (slug: string) =>
-    trackEvent("blog_post_view", { slug }),
+  blogPostView: (slug: string) => trackEvent("blog_post_view", { slug }),
 
   themeToggle: (theme: "light" | "dark") =>
     trackEvent("theme_toggle", { theme }),

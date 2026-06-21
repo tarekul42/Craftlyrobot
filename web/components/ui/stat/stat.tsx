@@ -14,26 +14,20 @@ interface StatProps extends React.HTMLAttributes<HTMLDivElement> {
  * @example
  * <Stat value="42" label="Active contributors" />
  */
-function Stat({
-  value,
-  label,
-  size = "md",
-  className,
-  ...props
-}: StatProps) {
+function Stat({ value, label, size = "md", className, ...props }: StatProps) {
   return (
     <div className={cn("flex flex-col", className)} {...props}>
       <span
         className={cn(
-          "font-bold tracking-tight text-foreground tabular-nums",
+          "text-foreground font-bold tabular-nums tracking-tight",
           size === "sm" && "text-2xl",
           size === "md" && "text-4xl",
-          size === "lg" && "text-5xl"
+          size === "lg" && "text-5xl",
         )}
       >
         {value}
       </span>
-      <span className="mt-1 text-sm text-muted-foreground">{label}</span>
+      <span className="text-muted-foreground mt-1 text-sm">{label}</span>
     </div>
   );
 }

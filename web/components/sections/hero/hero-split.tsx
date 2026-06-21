@@ -23,7 +23,7 @@ export function HeroSplit({
   className,
 }: HeroSplitProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
+    <section className={cn("border-border border-b", className)}>
       <Container>
         <div className="grid gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-32">
           <div className="flex flex-col justify-center">
@@ -32,12 +32,14 @@ export function HeroSplit({
               {title}
             </h1>
             {description && (
-              <p className="mt-6 max-w-prose text-lg leading-relaxed text-foreground/80">
+              <p className="text-foreground/80 mt-6 max-w-prose text-lg leading-relaxed">
                 {description}
               </p>
             )}
           </div>
-          {form && <div className="flex items-center justify-center">{form}</div>}
+          {form && (
+            <div className="flex items-center justify-center">{form}</div>
+          )}
         </div>
       </Container>
     </section>

@@ -18,9 +18,7 @@ export const products: Product[] = [
       "Decentralized Node Architecture for near-frontier performance",
       "One-command workflow from idea to APK",
     ],
-    screenshots: [
-      "/products/craftly-robot/screenshot-1.png",
-    ],
+    screenshots: ["/products/craftly-robot/screenshot-1.png"],
   },
   {
     slug: "hello",
@@ -75,5 +73,5 @@ export function getProductBySlug(slug: string): Product | undefined {
  * Pulled from the homepage of the original craftlyrobot.com.
  */
 export const foundationProducts = products.filter((p) =>
-  ["hello", "workspace", "agent-console"].includes(p.slug)
+  ["hello", "workspace", "agent-console"].includes(p.slug),
 );

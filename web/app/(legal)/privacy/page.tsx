@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Prose } from "@/components/ui";
-import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -19,15 +18,18 @@ export default function PrivacyPage() {
         <strong>Effective date:</strong> January 1, 2026
       </p>
       <p>
-        This Privacy Policy describes how Craftly (&quot;we&quot;, &quot;us&quot;,
-        or &quot;our&quot;) collects, uses, and shares your information when you
-        visit craftlyrobot.com or use our products.
+        This Privacy Policy describes how Craftly (&quot;we&quot;,
+        &quot;us&quot;, or &quot;our&quot;) collects, uses, and shares your
+        information when you visit craftlyrobot.com or use our products.
       </p>
 
       <h2>Information We Collect</h2>
 
       <h3>Information You Provide</h3>
-      <p>When you contact us, apply to contribute, or sign up for updates, we collect:</p>
+      <p>
+        When you contact us, apply to contribute, or sign up for updates, we
+        collect:
+      </p>
       <ul>
         <li>Your name</li>
         <li>Your email address</li>
@@ -62,10 +64,14 @@ export default function PrivacyPage() {
 
       <h2>How We Share Your Information</h2>
       <p>
-        We do not sell your personal information. We share your information only:
+        We do not sell your personal information. We share your information
+        only:
       </p>
       <ul>
-        <li>With service providers who help us operate (e.g., email delivery, hosting)</li>
+        <li>
+          With service providers who help us operate (e.g., email delivery,
+          hosting)
+        </li>
         <li>When required by law</li>
         <li>In connection with a merger, acquisition, or sale of assets</li>
         <li>With your consent</li>
@@ -102,9 +108,9 @@ export default function PrivacyPage() {
 
       <h2>Security</h2>
       <p>
-        We take reasonable measures to protect your information, including
-        HTTPS encryption, secure server infrastructure, and access controls.
-        However, no method of transmission over the internet is 100% secure.
+        We take reasonable measures to protect your information, including HTTPS
+        encryption, secure server infrastructure, and access controls. However,
+        no method of transmission over the internet is 100% secure.
       </p>
 
       <h2>Children&apos;s Privacy</h2>

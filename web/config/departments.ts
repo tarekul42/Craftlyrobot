@@ -10,7 +10,11 @@ export const departments: Department[] = [
     name: "Engineering",
     contributorCount: 12,
     focus: "Building Craftly's products and internal tools",
-    openings: ["Frontend Contributor", "Backend Contributor", "DevOps Engineer"],
+    openings: [
+      "Frontend Contributor",
+      "Backend Contributor",
+      "DevOps Engineer",
+    ],
     currentProjects: ["craftly-robot", "workspace"],
   },
   {

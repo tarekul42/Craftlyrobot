@@ -46,7 +46,7 @@ export function ContentPreview({
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+              className="text-foreground inline-flex items-center gap-1 text-sm font-medium hover:underline"
             >
               {viewAllLabel}
               <ArrowRight className="h-3.5 w-3.5" />
@@ -58,10 +58,16 @@ export function ContentPreview({
             <Link key={i} href={item.href} className="block h-full">
               <Card interactive className="h-full">
                 <CardContent className="flex h-full flex-col p-6">
-                  <Badge variant="secondary" className="self-start">{item.category}</Badge>
+                  <Badge variant="secondary" className="self-start">
+                    {item.category}
+                  </Badge>
                   <h3 className="mt-3 text-lg font-semibold">{item.title}</h3>
-                  <p className="mt-2 flex-1 text-sm text-muted-foreground">{item.excerpt}</p>
-                  <time className="mt-4 text-xs text-muted-foreground">{item.date}</time>
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm">
+                    {item.excerpt}
+                  </p>
+                  <time className="text-muted-foreground mt-4 text-xs">
+                    {item.date}
+                  </time>
                 </CardContent>
               </Card>
             </Link>

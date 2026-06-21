@@ -2,12 +2,12 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactHooks from "eslint-plugin-react-hooks";
 import jsxA11y from "eslint-plugin-jsx-a11y";
-import next from "eslint-config-next";
+import nextPlugin from "@next/eslint-plugin-next";
 
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  ...next.coreWebVitals,
+  nextPlugin.configs["core-web-vitals"],
   {
     plugins: {
       "react-hooks": reactHooks,
@@ -21,10 +21,10 @@ export default tseslint.config(
       "jsx-a11y/no-autofocus": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/consistent-type-imports": "error",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": ["warn", { allow: ["warn", "error", "log"] }],
     },
   },
   {
-    ignores: [".next/", "node_modules/", "coverage/", "*.config.*", ".lighthouserc.*"],
+    ignores: [".next/", "node_modules/", "coverage/", "e2e/", "next-env.d.ts", "*.config.*", ".lighthouserc.*"],
   }
 );

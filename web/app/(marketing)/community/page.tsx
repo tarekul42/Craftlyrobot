@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Users, Building2, Target, MessageCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Users,
+  Building2,
+  Target,
+  MessageCircle,
+} from "lucide-react";
 import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { StatStrip } from "@/components/sections/stat-strip";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  Card,
-  CardContent,
-  Button,
-  SectionHeading,
-  Badge,
-} from "@/components/ui";
+import { Card, CardContent, SectionHeading, Badge } from "@/components/ui";
 import { departments } from "@/config/departments";
 import { communityStats } from "@/config/community";
 import { siteConfig } from "@/config/site";
@@ -57,18 +57,18 @@ export default function CommunityPage() {
               <Card key={dept.slug} interactive className="h-full">
                 <CardContent className="flex h-full flex-col p-6">
                   <div className="mb-2 flex items-center justify-between">
-                    <Building2 className="h-6 w-6 text-muted-foreground" />
+                    <Building2 className="text-muted-foreground h-6 w-6" />
                     <Badge variant="secondary">
                       {dept.contributorCount} contributors
                     </Badge>
                   </div>
                   <h3 className="text-xl font-semibold">{dept.name}</h3>
-                  <p className="mt-2 flex-1 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm">
                     {dept.focus}
                   </p>
                   {dept.openings && dept.openings.length > 0 && (
-                    <p className="mt-4 text-xs text-muted-foreground">
-                      <span className="font-medium text-foreground">
+                    <p className="text-muted-foreground mt-4 text-xs">
+                      <span className="text-foreground font-medium">
                         {dept.openings.length} open role
                         {dept.openings.length === 1 ? "" : "s"}
                       </span>
@@ -76,7 +76,7 @@ export default function CommunityPage() {
                   )}
                   <Link
                     href={`/community/departments/${dept.slug}`}
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                    className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
                   >
                     Learn more
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -149,18 +149,18 @@ function ChannelCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col p-6">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
+        <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
           {icon}
         </div>
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="mt-2 flex-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-2 flex-1 text-sm">
           {description}
         </p>
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+          className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
         >
           {cta}
           <ArrowRight className="h-3.5 w-3.5" />

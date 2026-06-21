@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
@@ -43,11 +43,11 @@ export function SiteHeader() {
       className={cn(
         "sticky top-0 z-[1100] w-full transition-colors duration-300",
         scrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-border"
-          : "bg-transparent"
+          ? "bg-background/80 border-border border-b backdrop-blur-md"
+          : "bg-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-screen-default items-center justify-between px-section">
+      <div className="max-w-screen-default px-section mx-auto flex h-16 items-center justify-between">
         {/* Left: Logo + Nav */}
         <div className="flex items-center gap-8">
           <Logo />

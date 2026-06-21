@@ -5,7 +5,10 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
   { key: "X-DNS-Prefetch-Control", value: "on" },
   {
     key: "Strict-Transport-Security",
@@ -46,7 +49,12 @@ const nextConfig: NextConfig = {
       { source: "/(.*)", headers: securityHeaders },
       {
         source: "/_next/static/(.*)",
-        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
       },
     ];
   },
@@ -54,8 +62,16 @@ const nextConfig: NextConfig = {
     return [
       { source: "/hello", destination: "/community", permanent: true },
       { source: "/join", destination: "/contribute/apply", permanent: true },
-      { source: "/join-the-team", destination: "/contribute/apply", permanent: true },
-      { source: "/early-access", destination: "/contribute/apply", permanent: true },
+      {
+        source: "/join-the-team",
+        destination: "/contribute/apply",
+        permanent: true,
+      },
+      {
+        source: "/early-access",
+        destination: "/contribute/apply",
+        permanent: true,
+      },
       { source: "/foundation", destination: "/products", permanent: true },
     ];
   },

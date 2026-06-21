@@ -23,10 +23,17 @@ interface ImageProps {
  *   caption="The founding team at our Dhaka office."
  * />
  */
-export function Image({ src, alt, width, height, caption, className }: ImageProps) {
+export function Image({
+  src,
+  alt,
+  width,
+  height,
+  caption,
+  className,
+}: ImageProps) {
   return (
     <figure className={cn("my-6", className)}>
-      <div className="overflow-hidden rounded-lg border border-border">
+      <div className="border-border overflow-hidden rounded-lg border">
         <NextImage
           src={src}
           alt={alt}
@@ -37,7 +44,7 @@ export function Image({ src, alt, width, height, caption, className }: ImageProp
         />
       </div>
       {caption && (
-        <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+        <figcaption className="text-muted-foreground mt-2 text-center text-sm">
           {caption}
         </figcaption>
       )}

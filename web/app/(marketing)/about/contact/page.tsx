@@ -16,8 +16,7 @@ export const metadata: Metadata = {
 const contactReasons = [
   {
     title: "Partnerships",
-    description:
-      "Want to collaborate, integrate, or build something together.",
+    description: "Want to collaborate, integrate, or build something together.",
   },
   {
     title: "Press & media",
@@ -26,13 +25,11 @@ const contactReasons = [
   },
   {
     title: "Questions",
-    description:
-      "Anything you want to know that isn't covered on the site.",
+    description: "Anything you want to know that isn't covered on the site.",
   },
   {
     title: "Bug reports",
-    description:
-      "Found something broken on the site or in our products.",
+    description: "Found something broken on the site or in our products.",
   },
 ];
 
@@ -54,18 +51,21 @@ export default function ContactPage() {
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {contactReasons.map((reason, i) => (
-              <div key={i} className="rounded-lg border border-border bg-background p-6">
+              <div
+                key={i}
+                className="border-border bg-background rounded-lg border p-6"
+              >
                 <h3 className="font-semibold">{reason.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="text-muted-foreground mt-2 text-sm">
                   {reason.description}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 rounded-lg border border-border bg-background p-6">
+          <div className="border-border bg-background mt-12 rounded-lg border p-6">
             <h3 className="font-semibold">Prefer email?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Reach us directly at{" "}
               <a
                 href={`mailto:${siteConfig.contact.email}`}

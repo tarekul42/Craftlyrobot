@@ -30,15 +30,17 @@ export function HeroCentered({
   className,
 }: HeroCenteredProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
+    <section className={cn("border-border border-b", className)}>
       <Container>
         <div className="mx-auto max-w-3xl py-20 text-center lg:py-32">
-          {eyebrow && <Eyebrow className="mb-4 justify-center">{eyebrow}</Eyebrow>}
+          {eyebrow && (
+            <Eyebrow className="mb-4 justify-center">{eyebrow}</Eyebrow>
+          )}
           <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl lg:text-7xl">
             {title}
           </h1>
           {description && (
-            <p className="mx-auto mt-6 max-w-prose text-lg leading-relaxed text-foreground/80">
+            <p className="text-foreground/80 mx-auto mt-6 max-w-prose text-lg leading-relaxed">
               {description}
             </p>
           )}

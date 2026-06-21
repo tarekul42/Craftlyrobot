@@ -14,7 +14,12 @@ interface YouTubeProps {
  */
 export function YouTube({ id, title, className }: YouTubeProps) {
   return (
-    <div className={cn("my-6 overflow-hidden rounded-lg border border-border", className)}>
+    <div
+      className={cn(
+        "border-border my-6 overflow-hidden rounded-lg border",
+        className,
+      )}
+    >
       <div className="relative aspect-video">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${id}`}

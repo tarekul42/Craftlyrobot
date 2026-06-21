@@ -19,16 +19,13 @@ interface QuoteProps {
 export function Quote({ author, role, children, className }: QuoteProps) {
   return (
     <blockquote
-      className={cn(
-        "my-8 border-l-4 border-primary pl-6",
-        className
-      )}
+      className={cn("border-primary my-8 border-l-4 pl-6", className)}
     >
-      <p className="text-xl font-medium leading-relaxed text-foreground">
+      <p className="text-foreground text-xl font-medium leading-relaxed">
         {children}
       </p>
-      <footer className="mt-3 text-sm text-muted-foreground">
-        <span className="font-semibold text-foreground">{author}</span>
+      <footer className="text-muted-foreground mt-3 text-sm">
+        <span className="text-foreground font-semibold">{author}</span>
         {role && <span>, {role}</span>}
       </footer>
     </blockquote>

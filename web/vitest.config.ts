@@ -8,9 +8,15 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./test/setup.ts"],
+    include: [
+      "components/**/*.test.{ts,tsx}",
+      "lib/**/*.test.{ts,tsx}",
+      "hooks/**/*.test.{ts,tsx}",
+      "app/**/*.test.{ts,tsx}",
+    ],
     coverage: {
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", ".next/"],
+      exclude: ["node_modules/", ".next/", "**/e2e/**"],
     },
   },
   resolve: {

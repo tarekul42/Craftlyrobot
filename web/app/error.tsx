@@ -28,17 +28,17 @@ export default function Error({
 
   return (
     <Container className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-      <p className="font-logo text-9xl text-muted-foreground/20">500</p>
+      <p className="font-logo text-muted-foreground/20 text-9xl">500</p>
       <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
         Something went wrong
       </h1>
-      <p className="mt-3 max-w-md text-muted-foreground">
+      <p className="text-muted-foreground mt-3 max-w-md">
         An unexpected error occurred. Our team has been notified. Try again, or
         head back home.
       </p>
 
       {error.digest && (
-        <p className="mt-4 font-mono text-xs text-muted-foreground">
+        <p className="text-muted-foreground mt-4 font-mono text-xs">
           Error ID: {error.digest}
         </p>
       )}
@@ -47,7 +47,11 @@ export default function Error({
         <Button onClick={reset} leftIcon={<RefreshCw className="h-4 w-4" />}>
           Try again
         </Button>
-        <Button asChild variant="outline" leftIcon={<Home className="h-4 w-4" />}>
+        <Button
+          asChild
+          variant="outline"
+          leftIcon={<Home className="h-4 w-4" />}
+        >
           <Link href="/">Back to home</Link>
         </Button>
       </div>

@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import {
-  HeroDefault,
-  HeroCentered,
-} from "@/components/sections/hero";
+import { HeroDefault } from "@/components/sections/hero";
 import { CTABand } from "@/components/sections/cta-band";
 import {
   Badge,
@@ -16,7 +13,11 @@ import {
   SectionHeading,
   Eyebrow,
 } from "@/components/ui";
-import { products, getProductBySlug, foundationProducts } from "@/config/products";
+import {
+  products,
+  getProductBySlug,
+  foundationProducts,
+} from "@/config/products";
 
 /**
  * Pre-render all product pages at build time.
@@ -65,8 +66,8 @@ export default async function ProductDetailPage({
     product.status === "live"
       ? "Live"
       : product.status === "coming-soon"
-      ? "Coming soon"
-      : "Internal tool";
+        ? "Coming soon"
+        : "Internal tool";
 
   const isFoundation = foundationProducts.some((p) => p.slug === product.slug);
 
@@ -87,16 +88,16 @@ export default async function ProductDetailPage({
       />
 
       {/* Status banner */}
-      <div className="border-b border-border bg-muted/30 py-3">
+      <div className="border-border bg-muted/30 border-b py-3">
         <Container>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm">
             <Badge
               variant={
                 product.status === "live"
                   ? "success"
                   : product.status === "coming-soon"
-                  ? "warning"
-                  : "secondary"
+                    ? "warning"
+                    : "secondary"
               }
             >
               {statusLabel}
@@ -126,7 +127,7 @@ export default async function ProductDetailPage({
               {product.features.map((feature, i) => (
                 <Card key={i}>
                   <CardContent className="flex items-start gap-3 p-6">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+                    <CheckCircle2 className="text-success mt-0.5 h-5 w-5 shrink-0" />
                     <p className="text-sm">{feature}</p>
                   </CardContent>
                 </Card>
@@ -144,7 +145,7 @@ export default async function ProductDetailPage({
             <h2 className="text-3xl font-bold tracking-tight">
               How {product.name} fits into Craftly
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="text-muted-foreground mt-4 text-lg">
               {product.name} is one of three foundation products that taught
               Craftly what it knows. Together, Hello, Workspace, and Agent
               Console generate the proprietary knowledge that powers Craftly
@@ -162,7 +163,7 @@ export default async function ProductDetailPage({
                   }`}
                 >
                   <h3 className="font-semibold">{fp.name}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="text-muted-foreground mt-1 text-xs">
                     {fp.tagline}
                   </p>
                 </Link>
@@ -177,7 +178,10 @@ export default async function ProductDetailPage({
         title={`Want to help build ${product.name}?`}
         description="This product needs contributors. Join the team and help shape it."
         primaryCta={{ label: "See open roles", href: "/contribute/roles" }}
-        secondaryCta={{ label: "Learn about Craftly", href: "/what-is-craftly" }}
+        secondaryCta={{
+          label: "Learn about Craftly",
+          href: "/what-is-craftly",
+        }}
       />
     </>
   );

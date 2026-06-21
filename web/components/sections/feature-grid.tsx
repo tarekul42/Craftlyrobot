@@ -50,17 +50,17 @@ export function FeatureGrid({
           title={title}
           description={description}
         />
-        <div className={cn("mt-12 grid gap-6 grid-cols-1", gridCols)}>
+        <div className={cn("mt-12 grid grid-cols-1 gap-6", gridCols)}>
           {features.map((feature, i) => (
             <Card key={i} interactive={!!feature.href}>
               <CardContent className="p-6">
                 {feature.icon && (
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
+                  <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
                     {feature.icon}
                   </div>
                 )}
                 <h3 className="text-xl font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="text-muted-foreground mt-2 text-sm">
                   {feature.description}
                 </p>
               </CardContent>
