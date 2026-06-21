@@ -70,9 +70,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button";
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(
+            buttonVariants({ variant, size }),
+            fullWidth && "w-full",
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </Slot>
+      );
+    }
     return (
-      <Comp
+      <button
         className={cn(
           buttonVariants({ variant, size }),
           fullWidth && "w-full",
@@ -87,7 +100,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {!isLoading && leftIcon}
         {children}
         {!isLoading && rightIcon}
-      </Comp>
+      </button>
     );
   }
 );

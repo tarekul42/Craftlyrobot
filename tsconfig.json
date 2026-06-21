@@ -18,14 +18,14 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./apps/web/*"],
-      "@/components/*": ["./apps/web/components/*"],
-      "@/lib/*": ["./apps/web/lib/*"],
-      "@/config/*": ["./apps/web/config/*"],
-      "@/hooks/*": ["./apps/web/hooks/*"],
-      "@/types/*": ["./apps/web/types/*"],
-      "@/styles/*": ["./apps/web/styles/*"],
-      "@/content/*": ["./apps/web/content/*"]
+      "@/*": ["./web/*"],
+      "@/components/*": ["./web/components/*"],
+      "@/lib/*": ["./web/lib/*"],
+      "@/config/*": ["./web/config/*"],
+      "@/hooks/*": ["./web/hooks/*"],
+      "@/types/*": ["./web/types/*"],
+      "@/styles/*": ["./web/styles/*"],
+      "@/content/*": ["./web/content/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

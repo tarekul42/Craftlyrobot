@@ -1,7 +1,7 @@
 {
   "name": "craftly-website",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": ["web", "packages/*"],
   "scripts": {
     "dev": "bun run --filter web dev",
     "build": "bun run --filter web build",
