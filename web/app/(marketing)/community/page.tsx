@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Users,
-  Building2,
-  Target,
-  MessageCircle,
-} from "lucide-react";
+import { ArrowRight, Users, Target, MessageCircle } from "lucide-react";
 import { HeroCentered } from "@/components/sections/hero/hero-centered";
 import { CTABand } from "@/components/sections/cta-band";
 import { StatStrip } from "@/components/sections/stat-strip";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import { Card, CardContent, SectionHeading, Badge } from "@/components/ui";
+import {
+  Card,
+  CardContent,
+  Button,
+  SectionHeading,
+} from "@/components/ui";
+import { DepartmentCard } from "@/components/cards";
 import { departments } from "@/config/departments";
 import { communityStats } from "@/config/community";
 import { siteConfig } from "@/config/site";
@@ -34,7 +34,6 @@ export default function CommunityPage() {
         primaryCta={{ label: "Join the community", href: "/contribute/apply" }}
       />
 
-      {/* Stats */}
       <StatStrip
         stats={[
           { value: communityStats.contributorsJoined, label: "Contributors" },
@@ -44,7 +43,7 @@ export default function CommunityPage() {
         ]}
       />
 
-      {/* Departments */}
+      {/* Departments (using extracted DepartmentCard) */}
       <Section>
         <Container>
           <SectionHeading
@@ -54,36 +53,16 @@ export default function CommunityPage() {
           />
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {departments.map((dept) => (
-              <Card key={dept.slug} interactive className="h-full">
-                <CardContent className="flex h-full flex-col p-6">
-                  <div className="mb-2 flex items-center justify-between">
-                    <Building2 className="text-muted-foreground h-6 w-6" />
-                    <Badge variant="secondary">
-                      {dept.contributorCount} contributors
-                    </Badge>
-                  </div>
-                  <h3 className="text-xl font-semibold">{dept.name}</h3>
-                  <p className="text-muted-foreground mt-2 flex-1 text-sm">
-                    {dept.focus}
-                  </p>
-                  {dept.openings && dept.openings.length > 0 && (
-                    <p className="text-muted-foreground mt-4 text-xs">
-                      <span className="text-foreground font-medium">
-                        {dept.openings.length} open role
-                        {dept.openings.length === 1 ? "" : "s"}
-                      </span>
-                    </p>
-                  )}
-                  <Link
-                    href={`/community/departments/${dept.slug}`}
-                    className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                  >
-                    Learn more
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </CardContent>
-              </Card>
+              <DepartmentCard key={dept.slug} department={dept} />
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Button asChild variant="outline">
+              <Link href="/community/departments">
+                See all departments
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </Container>
       </Section>
@@ -149,18 +128,18 @@ function ChannelCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col p-6">
-        <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
           {icon}
         </div>
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-muted-foreground mt-2 flex-1 text-sm">
+        <p className="mt-2 flex-1 text-sm text-muted-foreground">
           {description}
         </p>
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
         >
           {cta}
           <ArrowRight className="h-3.5 w-3.5" />

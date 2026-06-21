@@ -8,19 +8,15 @@ import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
 import { Badge, Button, Eyebrow } from "@/components/ui";
 import { Prose } from "@/components/ui";
+import { ReadingProgress } from "@/components/ui/reading-progress/reading-progress";
+import { TableOfContents } from "@/components/ui/table-of-contents/table-of-contents";
 import { mdxComponents } from "@/components/mdx";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/mdx";
 
-/**
- * Pre-render all blog posts at build time.
- */
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
 }
 
-/**
- * Generate per-post metadata for SEO.
- */
 export async function generateMetadata({
   params,
 }: {
@@ -69,12 +65,15 @@ export default async function BlogPostPage({
 
   return (
     <>
+      {/* Reading progress bar (fixed at top of viewport) */}
+      <ReadingProgress />
+
       {/* Header */}
-      <Section spacing="sm" className="border-border border-b">
+      <Section spacing="sm" className="border-b border-border">
         <Container size="prose">
           <Link
             href="/blog"
-            className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
+            className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to blog
@@ -86,13 +85,10 @@ export default async function BlogPostPage({
           <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
             {post.title}
           </h1>
-          <p className="text-muted-foreground mt-4 text-lg">{post.excerpt}</p>
+          <p className="mt-4 text-lg text-muted-foreground">{post.excerpt}</p>
 
-          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-4 text-sm">
-            <span>
-              By {post.author}
-              {post.authorRole ? `, ${post.authorRole}` : ""}
-            </span>
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <span>By {post.author}{post.authorRole ? `, ${post.authorRole}` : ""}</span>
             <span className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5" />
               {formatDate(post.date)}
@@ -106,29 +102,41 @@ export default async function BlogPostPage({
           {post.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant="outline">
-                  #{tag}
-                </Badge>
+                <Badge key={tag} variant="outline">#{tag}</Badge>
               ))}
             </div>
           )}
         </Container>
       </Section>
 
-      {/* Body */}
+      {/* Body with TOC sidebar */}
       <Section>
-        <Container size="prose">
-          <Prose>
-            <MDXRemote
-              source={post.content}
-              components={mdxComponents}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                },
-              }}
-            />
-          </Prose>
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-[1fr_220px]">
+            {/* Article content */}
+            <div className="min-w-0">
+              <Prose>
+                <div id="post-content">
+                  <MDXRemote
+                    source={post.content}
+                    components={mdxComponents}
+                    options={{
+                      mdxOptions: {
+                        remarkPlugins: [remarkGfm],
+                      },
+                    }}
+                  />
+                </div>
+              </Prose>
+            </div>
+
+            {/* TOC sidebar */}
+            <aside className="hidden lg:block">
+              <div className="sticky top-24">
+                <TableOfContents containerId="post-content" />
+              </div>
+            </aside>
+          </div>
         </Container>
       </Section>
 
@@ -145,17 +153,15 @@ export default async function BlogPostPage({
                   href={`/blog/${related.slug}`}
                   className="block h-full"
                 >
-                  <div className="border-border bg-background hover:border-foreground/20 flex h-full flex-col rounded-lg border p-6 transition-all hover:shadow-md">
+                  <div className="flex h-full flex-col rounded-lg border border-border bg-background p-6 transition-all hover:border-foreground/20 hover:shadow-md">
                     <Badge variant="secondary" className="self-start">
                       {related.category}
                     </Badge>
-                    <h3 className="mt-3 text-lg font-semibold">
-                      {related.title}
-                    </h3>
-                    <p className="text-muted-foreground mt-2 flex-1 text-sm">
+                    <h3 className="mt-3 text-lg font-semibold">{related.title}</h3>
+                    <p className="mt-2 flex-1 text-sm text-muted-foreground">
                       {related.excerpt}
                     </p>
-                    <span className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium">
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground">
                       Read post
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
@@ -170,11 +176,11 @@ export default async function BlogPostPage({
       {/* CTA */}
       <Section>
         <Container size="prose">
-          <div className="border-border bg-muted/30 rounded-lg border p-8 text-center">
+          <div className="rounded-lg border border-border bg-muted/30 p-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight">
               Want to build with us?
             </h2>
-            <p className="text-muted-foreground mt-2">
+            <p className="mt-2 text-muted-foreground">
               We&apos;re always looking for contributors.
             </p>
             <Button asChild className="mt-6">

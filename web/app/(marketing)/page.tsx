@@ -9,11 +9,10 @@ import {
   Card,
   CardContent,
 } from "@/components/ui";
-import { HeroDefault } from "@/components/sections/hero/hero-default";
+import { HeroWithTerminal } from "@/components/sections/hero/hero-with-terminal";
 import { CTABand } from "@/components/sections/cta-band";
 import { FAQSection } from "@/components/sections/faq";
 import { EcosystemMap } from "@/components/sections/ecosystem-map";
-import { AnimatedTerminal } from "@/components/blocks/animated-terminal";
 import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
 import { PeopleBar } from "@/components/blocks/people-bar";
 import { siteConfig } from "@/config/site";
@@ -24,17 +23,13 @@ import { communityStats } from "@/config/community";
 export default function HomePage() {
   return (
     <>
-      {/* ===== HERO with AnimatedTerminal ===== */}
-      <HeroDefault
+      {/* ===== HERO with AnimatedTerminal (Craftly signature) ===== */}
+      <HeroWithTerminal
         eyebrow="Craftly Robot"
         title="From dream to reality, with one command"
         description="Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build."
-        primaryCta={{
-          label: "Get early free access",
-          href: "/contribute/apply",
-        }}
+        primaryCta={{ label: "Get early free access", href: "/contribute/apply" }}
         secondaryCta={{ label: "See the foundation", href: "/products" }}
-        visual={<AnimatedTerminal />}
       />
 
       {/* ===== ECOSYSTEM ENTRY POINTS ===== */}
@@ -73,7 +68,7 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== FOUNDATION PRODUCTS (preserved from craftlyrobot.com) ===== */}
+      {/* ===== FOUNDATION PRODUCTS (using extracted ProductCard pattern) ===== */}
       <Section>
         <Container>
           <SectionHeading
@@ -93,9 +88,16 @@ export default function HomePage() {
                 />
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
-                  <p className="text-muted-foreground mt-2 text-sm">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {product.description}
                   </p>
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+                  >
+                    Learn more
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </CardContent>
               </Card>
             ))}
@@ -103,20 +105,19 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== PEOPLE OF CRAFTLY (from hello.craftlyrobot.com) ===== */}
+      {/* ===== PEOPLE OF CRAFTLY ===== */}
       <Section background="muted">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
               <Eyebrow className="mb-4">People of Craftly</Eyebrow>
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Join Bangladesh&apos;s first real effort to build a global tech
-                company
+                Join Bangladesh&apos;s first real effort to build a global tech company
               </h2>
-              <p className="text-muted-foreground mt-6 text-lg">
-                We&apos;re not trying to build another startup. We&apos;re
-                building something that competes with Google, Microsoft, and
-                Apple — from Dhaka, with ambition.
+              <p className="mt-6 text-lg text-muted-foreground">
+                We&apos;re not trying to build another startup. We&apos;re building
+                something that competes with Google, Microsoft, and Apple — from
+                Dhaka, with ambition.
               </p>
               <div className="mt-8">
                 <Button asChild size="lg">
@@ -159,14 +160,8 @@ export default function HomePage() {
         variant="dark"
         title="Help us today, get support back tomorrow"
         description="Keep an eye on our social media channels for promotional offers."
-        primaryCta={{
-          label: "Start Crafting with Craftly",
-          href: "/contribute/apply",
-        }}
-        secondaryCta={{
-          label: "Watch on YouTube",
-          href: siteConfig.social.youtube,
-        }}
+        primaryCta={{ label: "Start Crafting with Craftly", href: "/contribute/apply" }}
+        secondaryCta={{ label: "Watch on YouTube", href: siteConfig.social.youtube }}
       />
 
       {/* ===== FAQ ===== */}
@@ -179,7 +174,7 @@ export default function HomePage() {
   );
 }
 
-// ===== Local helper components (kept in page file — only used here) =====
+// ===== Local helper components =====
 
 interface EntryPointCardProps {
   icon: React.ReactNode;
@@ -199,16 +194,14 @@ function EntryPointCard({
   return (
     <Card interactive className="h-full">
       <CardContent className="flex h-full flex-col p-6">
-        <div className="bg-muted text-foreground mb-4 flex h-12 w-12 items-center justify-center rounded-md">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted text-foreground">
           {icon}
         </div>
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="text-muted-foreground mt-2 flex-1 text-sm">
-          {description}
-        </p>
+        <p className="mt-2 flex-1 text-sm text-muted-foreground">{description}</p>
         <Link
           href={href}
-          className="text-foreground mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
         >
           {cta}
           <ArrowRight className="h-3.5 w-3.5" />
@@ -228,8 +221,8 @@ function StatCard({
   label: string;
 }) {
   return (
-    <div className="border-border bg-background rounded-lg border p-4">
-      <div className="text-muted-foreground flex items-center gap-2">
+    <div className="rounded-lg border border-border bg-background p-4">
+      <div className="flex items-center gap-2 text-muted-foreground">
         {icon}
         <span className="text-xs uppercase tracking-wider">{label}</span>
       </div>
