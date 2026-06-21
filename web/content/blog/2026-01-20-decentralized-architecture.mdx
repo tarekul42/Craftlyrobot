@@ -1,0 +1,95 @@
+---
+title: "Our Decentralized Node Architecture"
+date: 2026-01-20
+author: "Wasif"
+authorRole: "Founder"
+excerpt: "How Craftly moves beyond data center limits using a decentralized approach to compute — and why it matters for AI in emerging markets."
+category: "Engineering"
+tags: ["engineering", "architecture", "decentralized"]
+---
+
+# Our Decentralized Node Architecture
+
+When you're building AI-powered software from Bangladesh, you hit a wall fast: data center capacity. The major cloud providers have limited presence in South Asia, which means latency is high, bandwidth is expensive, and the frontier models you want to use are often hosted thousands of miles away.
+
+We could have waited for the cloud providers to catch up. We didn't.
+
+## The problem
+
+<Callout type="warning" title="The geographic constraint">
+  Frontier AI models are hosted in US and EU data centers. From Bangladesh, latency is 200-400ms — too slow for interactive agentic workflows.
+</Callout>
+
+For Craftly Robot to work — to take a natural language prompt and build an Android app in seconds — we need near-frontier intelligence performance on app-building agentic tasks. That performance is gated by:
+
+1. **Latency** to the inference provider
+2. **Bandwidth** for moving prompts and responses
+3. **Cost** per inference call
+4. **Reliability** of the connection
+
+A single data center can't solve all four. So we built something else.
+
+## The approach: Decentralized Node Architecture
+
+Instead of routing everything through one data center, we distribute the work across many nodes. Each node is a small compute unit — sometimes a server, sometimes a contributor's machine, sometimes a cloud instance in a different region.
+
+The key insight: not every task needs the frontier model. Many tasks can be handled by smaller, locally-hosted models. Only the hardest tasks need to call out to the frontier.
+
+<CodeBlock language="typescript" filename="simplified-architecture.ts">
+{`// Pseudocode for our routing layer
+async function routeTask(task: Task): Promise<Result> {
+  // Easy tasks: handle locally
+  if (task.difficulty < 0.3) {
+    return localNode.handle(task);
+  }
+
+  // Medium tasks: route to nearest capable node
+  if (task.difficulty < 0.7) {
+    const node = await findNearestNode(task.requirements);
+    return node.handle(task);
+  }
+
+  // Hard tasks: call frontier model
+  return frontierModel.complete(task);
+}`}
+</CodeBlock>
+
+This three-tier routing gives us the best of all worlds:
+
+- **Fast** for easy tasks (local handling, no network)
+- **Scalable** for medium tasks (distributed across nodes)
+- **Capable** for hard tasks (frontier model when needed)
+
+## What this means in practice
+
+For Craftly Robot users, this means:
+
+1. **Faster builds** — most of the build happens locally or on nearby nodes
+2. **Lower costs** — we only call the frontier model when we actually need to
+3. **Better reliability** — if one node goes down, others pick up the work
+4. **Privacy** — your code doesn't have to leave your machine for most tasks
+
+<Callout type="info" title="Where Workspace fits in">
+  Workspace, our internal tool, is already integrated with this networking layer. It's getting battle-tested every day with real users — which is how we know the architecture actually works.
+</Callout>
+
+## Why we're writing about this
+
+Most companies would treat this as a trade secret. We're writing about it for two reasons:
+
+1. **Contributors need to understand the architecture to contribute effectively.** If you're joining Craftly as an engineer, you need to know how the system works.
+2. **The approach generalizes.** Other companies building AI products from emerging markets face the same constraints. If our approach helps them, that's good for the ecosystem.
+
+## What's next
+
+We're still early. The current architecture works, but it's not done. We're actively working on:
+
+- **Better routing heuristics** — the difficulty scoring is hand-tuned; we want it learned
+- **Node discovery** — making it easier for new nodes to join the network
+- **Incentive design** — how do we reward nodes that contribute compute?
+
+If any of this sounds interesting to you, [we're hiring](/contribute/roles). Especially engineers who want to work on distributed systems, networking, and AI infrastructure.
+
+---
+
+*Questions about the architecture? [Reach out](/about/contact).*
