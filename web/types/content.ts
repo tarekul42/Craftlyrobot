@@ -65,6 +65,22 @@ export interface Testimonial {
 }
 
 /**
+ * Project — an active or planned project at Craftly.
+ */
+export interface Project {
+  slug: string;
+  name: string;
+  description: string;
+  status: "active" | "planning" | "completed" | "on-hold";
+  department: string;
+  lead?: string;
+  contributorCount: number;
+  startDate: string;
+  tags: string[];
+  goals?: string[];
+}
+
+/**
  * BlogPost — frontmatter + content for an MDX blog post.
  */
 export interface BlogPost {

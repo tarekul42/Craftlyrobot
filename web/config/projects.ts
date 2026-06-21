@@ -1,20 +1,9 @@
+import type { Project } from "@/types/content";
+
 /**
  * Active projects at Craftly.
  * Replace with real data as the ecosystem grows.
  */
-export interface Project {
-  slug: string;
-  name: string;
-  description: string;
-  status: "active" | "planning" | "completed" | "on-hold";
-  department: string;
-  lead?: string;
-  contributorCount: number;
-  startDate: string;
-  tags: string[];
-  goals?: string[];
-}
-
 export const projects: Project[] = [
   {
     slug: "craftly-robot",

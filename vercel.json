@@ -1,27 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": ["iad1"],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
-  ],
-  "redirects": [
-    { "source": "/hello", "destination": "/community", "permanent": true },
-    {
-      "source": "/join",
-      "destination": "/contribute/apply",
-      "permanent": true
-    },
-    {
-      "source": "/early-access",
-      "destination": "/contribute/apply",
-      "permanent": true
-    }
-  ]
+  "regions": ["iad1"]
 }
