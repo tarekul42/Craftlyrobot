@@ -44,15 +44,15 @@ export default function Error({
       )}
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Button onClick={reset} leftIcon={<RefreshCw className="h-4 w-4" />}>
+        <Button onClick={reset}>
+          <RefreshCw className="mr-1 h-4 w-4" />
           Try again
         </Button>
-        <Button
-          asChild
-          variant="outline"
-          leftIcon={<Home className="h-4 w-4" />}
-        >
-          <Link href="/">Back to home</Link>
+        <Button asChild variant="outline">
+          <Link href="/">
+            <Home className="mr-1 h-4 w-4" />
+            Back to home
+          </Link>
         </Button>
       </div>
     </Container>

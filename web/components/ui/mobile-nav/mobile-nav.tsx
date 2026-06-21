@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import {
   Sheet,
@@ -44,14 +45,14 @@ function MobileNav({ items, logo }: MobileNavProps) {
         {logo && <div className="mb-6">{logo}</div>}
         <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
           {items.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
               className="text-foreground hover:bg-muted rounded-md px-3 py-2 text-base font-medium transition-colors"
             >
               {item.title}
-            </a>
+            </Link>
           ))}
         </nav>
       </SheetContent>

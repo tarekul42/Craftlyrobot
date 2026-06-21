@@ -38,6 +38,8 @@ export function SignupForm({ className }: SignupFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const [screenshots, setScreenshots] = useState<File[]>([]);
+
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: { phoneNumber: "" },
@@ -48,7 +50,7 @@ export function SignupForm({ className }: SignupFormProps) {
     try {
       // Wire to /api/early-access when backend is ready
       await new Promise((r) => setTimeout(r, 800));
-      console.log("Signup:", values);
+      console.log("Signup:", { ...values, screenshots: screenshots.map((f) => f.name) });
       setSubmitted(true);
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : "Something went wrong");
@@ -98,6 +100,7 @@ export function SignupForm({ className }: SignupFormProps) {
             <UploadButton
               accept="image/png,image/jpeg,image/webp"
               label="Upload Screenshot"
+              onFilesSelected={setScreenshots}
             />
           </div>
 

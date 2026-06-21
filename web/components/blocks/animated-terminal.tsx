@@ -44,20 +44,18 @@ export function AnimatedTerminal({
   const [typed, setTyped] = useState("");
   const [phase, setPhase] = useState<"typing" | "output" | "pause">("typing");
 
-  const currentCommand = commands[commandIndex]!;
-
   useEffect(() => {
+    const cmd = commands[commandIndex]!;
     if (prefersReduced) {
-      setTyped(currentCommand.input);
+      setTyped(cmd.input);
       setPhase("output");
       return;
     }
 
     if (phase === "typing") {
-      const fullCommand = currentCommand.input;
-      if (typed.length < fullCommand.length) {
+      if (typed.length < cmd.input.length) {
         const t = setTimeout(() => {
-          setTyped(fullCommand.slice(0, typed.length + 1));
+          setTyped(cmd.input.slice(0, typed.length + 1));
         }, 60);
         return () => clearTimeout(t);
       } else {
@@ -74,7 +72,7 @@ export function AnimatedTerminal({
       setCommandIndex((i) => (i + 1) % commands.length);
       setPhase("typing");
     }
-  }, [phase, typed, commandIndex, currentCommand, commands, prefersReduced]);
+  }, [phase, typed, commandIndex, commands, prefersReduced]);
 
   return (
     <div
@@ -118,7 +116,7 @@ export function AnimatedTerminal({
             animate={{ opacity: 1 }}
             className="whitespace-pre-wrap break-words text-[#e8e8e8]"
           >
-            {currentCommand.output}
+            {commands[commandIndex]!.output}
           </motion.pre>
         )}
       </div>

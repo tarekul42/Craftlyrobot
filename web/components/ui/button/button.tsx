@@ -74,6 +74,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (asChild) {
       return (
         <Slot
+          ref={ref}
           className={cn(
             buttonVariants({ variant, size }),
             fullWidth && "w-full",

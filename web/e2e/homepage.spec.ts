@@ -75,9 +75,8 @@ test.describe("Homepage — dark mode", () => {
       name: /switch to dark mode|switch to light mode/i,
     });
     await toggle.click();
-    // After click, html should have .dark class (or not)
     const htmlClass = await page.locator("html").getAttribute("class");
-    expect(htmlClass).toBeTruthy();
+    expect(htmlClass).toContain("dark");
   });
 });
 

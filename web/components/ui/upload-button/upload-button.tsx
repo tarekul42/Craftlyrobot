@@ -33,7 +33,11 @@ function UploadButton({
   };
 
   const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setFiles((prev) => {
+      const remaining = prev.filter((_, i) => i !== index);
+      onFilesSelected?.(remaining);
+      return remaining;
+    });
   };
 
   return (

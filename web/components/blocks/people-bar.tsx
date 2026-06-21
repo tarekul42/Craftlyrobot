@@ -30,6 +30,7 @@ export function PeopleBar({
 
   useEffect(() => {
     if (hasAnimated) return;
+    let rafId: number | null = null;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -40,12 +41,12 @@ export function PeopleBar({
           const animate = (now: number) => {
             const elapsed = now - start;
             const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            const eased = 1 - Math.pow(1 - progress, 3);
             setDisplayCount(Math.floor(eased * count));
-            if (progress < 1) requestAnimationFrame(animate);
+            if (progress < 1) rafId = requestAnimationFrame(animate);
             else setDisplayCount(count);
           };
-          requestAnimationFrame(animate);
+          rafId = requestAnimationFrame(animate);
         }
       },
       { threshold: 0.3 },
@@ -53,7 +54,10 @@ export function PeopleBar({
 
     const el = document.getElementById("people-bar");
     if (el) observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [count, hasAnimated]);
 
   const percentage = Math.min((displayCount / target) * 100, 100);

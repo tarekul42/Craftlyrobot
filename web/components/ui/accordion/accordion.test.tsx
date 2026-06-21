@@ -43,5 +43,6 @@ describe("Accordion", () => {
     expect(screen.getByText("Answer 1")).toBeVisible();
     await user.click(screen.getByText("Question 2"));
     expect(screen.getByText("Answer 2")).toBeVisible();
+    expect(screen.getByText("Answer 1")).not.toBeVisible();
   });
 });

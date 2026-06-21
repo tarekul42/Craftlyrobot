@@ -31,6 +31,7 @@ export const departments: Department[] = [
     contributorCount: 8,
     focus: "Onboarding new contributors and running community channels",
     openings: ["Community Manager", "Onboarding Mentor"],
+    currentProjects: ["craftly-robot", "hello-world"],
   },
   {
     slug: "operations",
