@@ -70,7 +70,7 @@ export default function RolesPage() {
             description="From visitor to leadership — the path is visible from day one."
             align="center"
           />
-          <ol className="mx-auto mt-12 max-w-3xl space-y-6">
+          <ol className="mx-auto mt-12 max-w-3xl space-y-8">
             {progressionSteps.map((step, i) => (
               <li key={i} className="relative flex gap-6">
                 <div className="bg-primary text-primary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold">

@@ -51,7 +51,7 @@ export default function ProductsPage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {foundationProducts.map((product) => (
               <Card key={product.slug}>
-                <CardContent className="p-6 text-center">
+                <CardContent className="p-6">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
                   <p className="text-muted-foreground mt-2 text-sm">
                     {product.description}

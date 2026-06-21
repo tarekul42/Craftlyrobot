@@ -75,7 +75,7 @@ export default async function BlogCategoryPage({
         </Container>
       </Section>
 
-      <Section>
+      <Section background="muted">
         <Container>
           {posts.length === 0 ? (
             <Card>

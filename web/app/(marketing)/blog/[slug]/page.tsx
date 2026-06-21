@@ -69,7 +69,7 @@ export default async function BlogPostPage({
       <ReadingProgress />
 
       {/* Header */}
-      <Section spacing="sm" className="border-border border-b">
+      <Section spacing="lg" className="border-border border-b">
         <Container size="prose">
           <Link
             href="/blog"
