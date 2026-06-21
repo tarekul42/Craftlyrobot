@@ -50,10 +50,10 @@ function FormField({
         "aria-required": required || undefined,
         "aria-describedby": describedBy,
         className: cn(
-          (children as React.ReactElement).props.className,
+          ((children as React.ReactElement).props as Record<string, unknown>).className as string | undefined,
           error && "border-destructive focus-visible:ring-destructive"
         ),
-      })}
+      } as Record<string, unknown>)}
       {hint && !error && (
         <p id={hintId} className="text-xs text-muted-foreground">
           {hint}

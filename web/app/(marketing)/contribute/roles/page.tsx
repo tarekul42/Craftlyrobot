@@ -51,7 +51,7 @@ export default function RolesPage() {
   // Group roles by department
   const rolesByDepartment = roles.reduce((acc, role) => {
     if (!acc[role.department]) acc[role.department] = [];
-    acc[role.department].push(role);
+    acc[role.department]!.push(role);
     return acc;
   }, {} as Record<string, typeof roles>);
 

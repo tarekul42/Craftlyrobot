@@ -1,6 +1,60 @@
-plans/
+# dependencies
 node_modules
-.next
+.pnp
+.pnp.js
+
+# testing
+coverage
+.playwright
+playwright-report
+
+# next.js
+.next/
+out/
+build
+dist
+
+# misc
+.DS_Store
+*.pem
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# env files
 .env
 .env.local
-*.zip
+.env.development.local
+.env.test.local
+.env.production.local
+
+# turbo
+.turbo
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# sentry
+.sentryclirc
+
+# prisma
+web/prisma/migrations/
+
+# plans (private)
+plans/
+
+# pack artifacts (private)
+craftly-priority-*.zip
+craftly-priority-*.md
+
+# vercel
+.vercel

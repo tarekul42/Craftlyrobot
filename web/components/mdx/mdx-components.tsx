@@ -36,7 +36,7 @@ const mdxComponents = {
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p className="my-4 leading-relaxed" {...props} />
   ),
-  a: ({ href, children, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => {
+  a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const isExternal = href?.startsWith("http");
     if (isExternal) {
       return (
@@ -104,12 +104,11 @@ const mdxComponents = {
   hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-8 border-border" {...props} />
   ),
-  img: (props: React.HTMLAttributes<HTMLImageElement>) => (
-    // Delegate to our Image component for optimization
+  img: ({ src, alt, className }: React.ImgHTMLAttributes<HTMLImageElement>) => (
     <Image
-      src={props.src ?? ""}
-      alt={props.alt ?? ""}
-      {...props}
+      src={src as string ?? ""}
+      alt={alt ?? ""}
+      className={className}
     />
   ),
   table: (props: React.HTMLAttributes<HTMLTableElement>) => (

@@ -1,126 +1,161 @@
-# Craftly Boot Pack
+# Craftly Priority 6 Pack — Production Readiness
 
-12 files that make `bun run dev` show a real page at `localhost:3000`.
+The final pack. Wires up the backend (email, Slack, database), adds analytics and error monitoring, sets up CI/CD, dev tooling, and documentation. After this, the project is **production-ready** — you just need to fill in API keys and deploy.
 
-## Where to put these files
+## What's in this pack (35 files)
 
-### Step 1 — Unzip at your repo root
+### Backend integration (6 files)
+- `web/lib/email.ts` — Resend email sender + application/contact confirmation helpers
+- `web/lib/slack.ts` — Slack webhook notifier + application/contact notification helpers
+- `web/lib/db.ts` — Prisma client singleton + save application/contact methods
+- `web/prisma/schema.prisma` — Database schema (Application, ContactMessage, NewsletterSubscriber)
+- `web/app/api/apply/route.ts` — **OVERWRITES** Priority 4 — now saves to DB + sends email + notifies Slack
+- `web/app/api/contact/route.ts` — **OVERWRITES** Priority 4 — same full pipeline
 
-```bash
-cd /path/to/your/Craftlyrobot   # the folder containing web/ and .git
-unzip craftly-boot-pack.zip -d .
-```
+### Analytics & monitoring (5 files)
+- `web/components/providers/analytics.tsx` — Plausible script loader
+- `web/lib/analytics.ts` — Event tracking helper (trackEvent, pre-defined events)
+- `web/sentry.client.config.ts` — Sentry browser config
+- `web/sentry.server.config.ts` — Sentry server config
+- `web/sentry.edge.config.ts` — Sentry edge config
+- `web/next.config.ts` — **OVERWRITES** — adds CSP, Sentry wrapper, redirects
 
-The zip structure mirrors your repo. Files merge into the right places automatically.
+### CI/CD (3 workflows + 1 config)
+- `.github/workflows/ci.yml` — lint, typecheck, test, build, security audit
+- `.github/workflows/lighthouse.yml` — performance + SEO audit on PRs
+- `.lighthouserc.json` — Lighthouse CI thresholds (a11y ≥ 95, SEO ≥ 95)
 
-### Step 2 — Two files OVERWRITE existing ones (bug fixes)
+### Dev tooling (10 files)
+- `.editorconfig` — consistent editor settings
+- `.prettierrc` — Prettier config with Tailwind plugin
+- `.prettierignore` — ignore patterns
+- `.nvmrc` — Node/Bun version pin
+- `.husky/pre-commit` — runs lint-staged on commit
+- `.husky/commit-msg` — runs commitlint on commit message
+- `commitlint.config.mjs` — Conventional Commits enforcement
+- `web/eslint.config.mjs` — flat ESLint config with TypeScript, React hooks, a11y
+- `.vscode/settings.json` — VSCode workspace settings
+- `.vscode/extensions.json` — recommended VSCode extensions
 
-These two files at the repo root fix bugs in your current setup:
+### Updated configs (3 overwrites)
+- `package.json` (root) — **OVERWRITES** — adds husky, lint-staged, commitlint, db scripts
+- `web/package.json` — **OVERWRITES** — adds Prisma, Sentry, eslint plugins
+- `web/.env.example` — **OVERWRITES** — adds all production env vars
+- `.gitignore` — **OVERWRITES** — comprehensive ignore patterns
 
-| File | What it fixes |
+### GitHub templates (3 files)
+- `.github/pull_request_template.md` — PR checklist
+- `.github/ISSUE_TEMPLATE/bug_report.md` — bug report template
+- `.github/ISSUE_TEMPLATE/feature_request.md` — feature request template
+
+### Documentation (8 files)
+- `README.md` (root) — **OVERWRITES** — comprehensive project README
+- `CONTRIBUTING.md` — contribution guide (branch strategy, commits, PR checklist)
+- `docs/ARCHITECTURE.md` — full architecture overview
+- `docs/adr/001-use-nextjs-app-router.md`
+- `docs/adr/002-use-tailwind-v4.md`
+- `docs/adr/003-use-shadcn-ui.md`
+- `docs/adr/004-use-prisma-postgresql.md`
+- `docs/adr/005-use-bun.md`
+
+### Deployment & misc (3 files)
+- `vercel.json` — Vercel deployment config (regions, headers, redirects)
+- `web/scripts/generate-pwa-icons.sh` — PWA icon generation script
+- `web/public/.well-known/security.txt` — responsible disclosure contact
+
+## New dependencies
+
+| Package | Purpose |
 |---|---|
-| `tsconfig.json` | Path aliases pointed to `./apps/web/*` but your structure is `./web/`. Fixed to `./web/*`. |
-| `package.json` | Workspaces field was `["apps/*", "packages/*"]` but your app is at `web/` not `apps/web/`. Fixed to `["web", "packages/*"]`. |
+| `@prisma/client` + `prisma` | Database ORM |
+| `@sentry/nextjs` | Error monitoring |
+| `eslint-plugin-jsx-a11y` | Accessibility linting |
+| `eslint-plugin-react-hooks` | React hooks rules |
+| `husky` | Git hooks |
+| `lint-staged` | Run linters on staged files |
+| `@commitlint/cli` + `config-conventional` | Commit message enforcement |
 
-When you unzip, these will overwrite the existing files. That's intended.
+Run `bun install` after copying — Bun installs all new deps.
 
-### Step 3 — What gets added (14 new files)
+## What you need to do after installing
 
-```
-Craftlyrobot/                          ← your repo root
-├── tsconfig.json                      ← OVERWRITTEN (bug fix)
-├── package.json                       ← OVERWRITTEN (bug fix)
-└── web/
-    ├── app/                           ← NEW directory
-    │   ├── layout.tsx                 ← Root layout (fonts, theme, metadata)
-    │   └── (marketing)/
-    │       ├── layout.tsx             ← Marketing layout (PageShell wrapper)
-    │       └── page.tsx               ← Homepage at /
-    ├── components/
-    │   ├── layout/                    ← NEW directory
-    │   │   ├── container.tsx          ← Centered max-width wrapper
-    │   │   ├── section.tsx            ← Vertical section with padding
-    │   │   ├── main-nav.tsx           ← Logo + desktop nav
-    │   │   ├── site-header.tsx        ← Sticky header with scroll effect
-    │   │   ├── site-footer.tsx        ← Footer with 4 link columns
-    │   │   ├── page-shell.tsx         ← SkipLink + Header + Main + Footer
-    │   │   └── theme-toggle.tsx       ← Light/dark mode button
-    │   └── providers/                 ← NEW directory
-    │       └── theme-provider.tsx     ← next-themes wrapper
-    ├── config/                        ← NEW directory
-    │   ├── site.ts                    ← Site name, URL, description, socials
-    │   └── navigation.ts              ← Nav items (header + footer + legal)
-    ├── lib/
-    │   └── fonts.ts                   ← NEW — DM Sans + Pacifico + JetBrains Mono
-    └── types/                         ← NEW directory
-        └── navigation.ts              ← NavItem TypeScript types
-```
-
-### Step 4 — Install and run
-
+### 1. Set up environment variables
 ```bash
-cd /path/to/your/Craftlyrobot
+cp web/.env.example web/.env.local
+```
+Fill in at minimum:
+- `NEXT_PUBLIC_SITE_URL` — your site URL
+- `DATABASE_URL` — from Neon/Supabase (for forms to save)
+- `RESEND_API_KEY` — from Resend (for confirmation emails)
+- `SLACK_WEBHOOK_URL` — from Slack (for team notifications)
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` — from Cloudflare (for bot protection)
+- `SENTRY_DSN` — from Sentry (optional, for error monitoring)
 
-# Install dependencies (nothing new to install — all deps already in web/package.json)
-bun install
+**In development**, all of these are optional. The code gracefully degrades:
+- No `DATABASE_URL` → logs to console instead of saving
+- No `RESEND_API_KEY` → logs email instead of sending
+- No `SLACK_WEBHOOK_URL` → logs notification instead of posting
+- No Turnstile keys → shows a note, skips verification
+- No `SENTRY_DSN` → Sentry doesn't initialize
 
-# Start the dev server
-bun run dev
+### 2. Set up the database (when ready)
+```bash
+# Generate Prisma client
+bun run db:generate
+
+# Push schema to database (creates tables)
+bun run db:push
+
+# Or create a migration
+bun run db:migrate --name init
+
+# Open Prisma Studio to view data
+bun run db:studio
 ```
 
-Visit `http://localhost:3000`. You should see:
-- Craftly logo (Pacifico font) in the header
-- 5 nav items (What is Craftly, Products, Community, Contribute, About)
-- Theme toggle (sun/moon icon)
-- "Get Access" button
-- Hero section with "From dream to reality, with one command"
-- 3-card section showing the ecosystem entry points
-- CTA band with dark background
-- Footer with 4 link columns + social icons
-- Mobile hamburger menu (resize to mobile width)
+### 3. Generate PWA icons
+```bash
+# Place your logo at web/public/logo.png (512x512 or larger)
+# Then run:
+chmod +x web/scripts/generate-pwa-icons.sh
+bun run scripts/generate-pwa-icons.sh
+```
 
-## What this proves
+### 4. Set up Git hooks
+```bash
+# Husky is installed via bun install, but you need to initialize it
+bun run prepare
+```
 
-If the page loads correctly, every layer of the stack works:
-- ✅ Fonts load (Pacifico for logo, DM Sans for body)
-- ✅ Design tokens apply (warm-neutral palette from craftlyrobot.com)
-- ✅ Primitives render (Button, Card, Eyebrow, SectionHeading, etc.)
-- ✅ Layout chrome works (sticky header, footer, mobile nav)
-- ✅ Theme toggle works (light/dark mode)
-- ✅ Next.js App Router works (root layout → marketing layout → page)
-- ✅ Path aliases resolve (`@/components/ui`, `@/lib/utils`, etc.)
+### 5. Deploy to Vercel
+1. Push to GitHub
+2. Import the repo in Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy
 
-## What's still missing (Priority 3 — next steps)
+The `vercel.json` file configures regions and redirects. Vercel auto-detects Next.js.
 
-Nav links will 404 because the pages don't exist yet. That's expected. The next build priorities are:
+### 6. Set up Cloudflare (optional but recommended)
+1. Add your domain to Cloudflare
+2. Change nameservers at your registrar
+3. Add CNAME record pointing to Vercel
+4. Enable "Full (strict)" SSL mode
+5. Enable WAF and bot protection
 
-1. **Section components** — `components/sections/hero/`, `cta-band/`, `faq/`, etc.
-2. **Block components** — `components/blocks/animated-terminal.tsx`, `screenshot-showcase.tsx`
-3. **Config data** — `config/products.ts`, `config/departments.ts`, `config/roles.ts`
-4. **More pages** — `/products`, `/community`, `/contribute/apply`, `/about`, etc.
-5. **MDX content** — `content/blog/` for blog posts
+## Site state after install — production-ready
 
-Follow the implementation plan (Part 42 — File-by-File Build Order) for the sequence.
+The site is now:
+- ✅ Feature-complete (26 routes)
+- ✅ Backend-wired (forms save to DB + send email + notify Slack)
+- ✅ Analytics-ready (Plausible)
+- ✅ Error-monitored (Sentry)
+- ✅ CI/CD-ready (GitHub Actions)
+- ✅ Dev-tooled (ESLint, Prettier, Husky, commitlint)
+- ✅ Documented (README, CONTRIBUTING, ARCHITECTURE, 5 ADRs)
+- ✅ Deploy-ready (vercel.json, security.txt, PWA icons script)
 
-## Troubleshooting
+**Remaining work:** fill in API keys, deploy, add real content.
 
-### "Module not found: Can't resolve '@/lib/fonts'"
-Make sure `web/lib/fonts.ts` exists. It's in this pack. The `@/lib/*` alias points to `web/lib/*` per the fixed `tsconfig.json`.
+## How to install
 
-### "Hydration mismatch" on theme toggle
-This is normal on first load. The `ThemeToggle` component uses a `mounted` check to prevent this. If you still see it, make sure `suppressHydrationWarning` is on `<html>` in `app/layout.tsx` (it is, in this pack).
-
-### "Tailwind classes not applying"
-Make sure `web/postcss.config.mjs` uses `@tailwindcss/postcss` (not `tailwindcss` plugin). It should already be correct from the primitives pack.
-
-### Nav links 404
-Expected. The pages (`/products`, `/community`, etc.) don't exist yet. They'll be built in Priority 3.
-
-### Dark mode doesn't work
-1. Check that `next-themes` is installed: `bun add next-themes` in `web/`
-2. Check that `ThemeProvider` wraps the app in `app/layout.tsx`
-3. Check that `<html>` has `suppressHydrationWarning` (it does)
-4. Check that `.dark` class appears on `<html>` when you click the toggle
-
-### Fonts look wrong
-Make sure the font CSS variables are applied. In `app/layout.tsx`, the `<html>` element should have `className={cn(dmSans.variable, pacifico.variable, jetBrainsMono.variable)}`. These variables are referenced in `styles/tokens.css` under `--font-sans`, `--font-logo`, `--font-mono`.
+See `craftly-priority-6-instructions.md` (separate file) for agent-ready step-by-step instructions.
