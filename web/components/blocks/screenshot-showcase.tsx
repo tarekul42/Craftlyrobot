@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
@@ -8,17 +9,10 @@ import { cn } from "@/lib/utils";
 interface ScreenshotShowcaseProps {
   images: string[];
   alt: string;
-  /** ms between auto-advances (default 3500) */
   interval?: number;
   className?: string;
 }
 
-/**
- * ScreenshotShowcase — crossfade carousel of product screenshots.
- * Auto-advances every 3.5s. Respects prefers-reduced-motion.
- *
- * Used in the homepage "Foundation" section.
- */
 export function ScreenshotShowcase({
   images,
   alt,
@@ -36,7 +30,8 @@ export function ScreenshotShowcase({
     return () => clearInterval(t);
   }, [images.length, interval, prefersReduced]);
 
-  if (images.length === 0) return null;
+  const currentSrc = images[activeIndex];
+  if (!currentSrc) return null;
 
   return (
     <div
@@ -46,16 +41,22 @@ export function ScreenshotShowcase({
       )}
     >
       <AnimatePresence mode="wait">
-        <motion.img
+        <motion.div
           key={activeIndex}
-          src={images[activeIndex]}
-          alt={`${alt} — screenshot ${activeIndex + 1}`}
-          className="absolute inset-0 h-full w-full object-contain p-4"
+          className="absolute inset-0 h-full w-full"
           initial={prefersReduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={prefersReduced ? undefined : { opacity: 0 }}
           transition={{ duration: 0.42 }}
-        />
+        >
+          <Image
+            src={currentSrc}
+            alt={`${alt} — screenshot ${activeIndex + 1}`}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-contain p-4"
+          />
+        </motion.div>
       </AnimatePresence>
 
       {images.length > 1 && (

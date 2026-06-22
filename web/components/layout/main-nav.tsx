@@ -5,34 +5,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { mainNav } from "@/config/navigation";
 
-/**
- * Logo — the Craftly wordmark in Pacifico font.
- * Links to the homepage.
- */
-export function Logo({ className }: { className?: string }) {
-  return (
-    <Link
-      href="/"
-      className={cn(
-        "font-logo text-foreground text-2xl leading-none",
-        className,
-      )}
-      aria-label="Craftly — home"
-    >
-      Craftly
-    </Link>
-  );
-}
-
-/**
- * MainNav — desktop primary navigation (5 top-level items).
- * Hidden on mobile (mobile nav takes over).
- */
 export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+    <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
       {mainNav.map((item) => {
         const isActive =
           pathname === item.href || pathname.startsWith(item.href + "/");

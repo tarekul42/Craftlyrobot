@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { HeroSplit } from "@/components/sections/hero/hero-split";
+import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import { Eyebrow } from "@/components/ui";
-import { ApplyForm } from "@/components/blocks/apply-form";
+import { Eyebrow } from "@/components/ui/eyebrow/eyebrow";
 import { siteConfig } from "@/config/site";
+import { ApplyPageClient } from "./apply-page-client";
 
 export const metadata: Metadata = {
   title: "Apply to Craftly",
@@ -44,14 +44,8 @@ const beforeYouApply = [
 export default function ApplyPage() {
   return (
     <>
-      <HeroSplit
-        eyebrow="Apply"
-        title="Apply to Craftly"
-        description="Tell us about yourself. We review every application weekly and respond within 7 days."
-        form={<ApplyForm />}
-      />
+      <ApplyPageClient />
 
-      {/* === Before you apply === */}
       <Section background="muted">
         <Container>
           <Eyebrow className="mb-4">Before you apply</Eyebrow>
@@ -83,12 +77,12 @@ export default function ApplyPage() {
                 {siteConfig.contact.email}
               </a>{" "}
               or read the{" "}
-              <a
+              <Link
                 href="/contribute"
                 className="text-foreground underline underline-offset-4"
               >
                 contribute page
-              </a>
+              </Link>
               .
             </p>
           </div>

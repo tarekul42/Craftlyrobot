@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
-import { Logo } from "@/components/layout/main-nav";
+import { Logo } from "@/components/layout/logo";
 import { legalNav } from "@/config/navigation";
 
 /**

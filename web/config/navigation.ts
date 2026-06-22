@@ -1,15 +1,6 @@
 import type { NavItem, NavItemWithChildren } from "@/types/navigation";
 
-/**
- * Main navigation — the 5 top-level items shown in the header.
- * Based on the IA from the strategic audit.
- */
 export const mainNav: NavItemWithChildren[] = [
-  {
-    title: "What is Craftly",
-    href: "/what-is-craftly",
-    description: "Understand the ecosystem",
-  },
   {
     title: "Products",
     href: "/products",
@@ -55,32 +46,25 @@ export const mainNav: NavItemWithChildren[] = [
     ],
   },
   {
-    title: "Contribute",
-    href: "/contribute",
-    description: "Join the team",
-    children: [
-      {
-        title: "Open Roles",
-        href: "/contribute/roles",
-        description: "Find your fit",
-      },
-      {
-        title: "Apply",
-        href: "/contribute/apply",
-        description: "Start your application",
-      },
-      {
-        title: "Onboarding",
-        href: "/contribute/onboarding",
-        description: "What happens after you join",
-      },
-    ],
+    title: "Updates",
+    href: "/updates",
+    description: "What's happening at Craftly",
+  },
+  {
+    title: "Blog",
+    href: "/blog",
+    description: "Thoughts and deep dives",
   },
   {
     title: "About",
     href: "/about",
     description: "The organization",
     children: [
+      {
+        title: "What is Craftly",
+        href: "/what-is-craftly",
+        description: "Understand the ecosystem",
+      },
       {
         title: "Leadership",
         href: "/about/leadership",
@@ -100,9 +84,6 @@ export const mainNav: NavItemWithChildren[] = [
   },
 ];
 
-/**
- * Footer navigation — 4 columns of links shown in the footer.
- */
 export const footerNav: Record<string, NavItem[]> = {
   Products: [
     { title: "Craftly Robot", href: "/products/craftly-robot" },
@@ -131,16 +112,15 @@ export const footerNav: Record<string, NavItem[]> = {
     { title: "Onboarding", href: "/contribute/onboarding" },
   ],
   About: [
+    { title: "What is Craftly", href: "/what-is-craftly" },
     { title: "Leadership", href: "/about/leadership" },
     { title: "Governance", href: "/about/governance" },
     { title: "Blog", href: "/blog" },
+    { title: "Updates", href: "/updates" },
     { title: "Contact", href: "/about/contact" },
   ],
 };
 
-/**
- * Legal navigation — shown in the footer bottom bar.
- */
 export const legalNav: NavItem[] = [
   { title: "Privacy", href: "/privacy" },
   { title: "Terms", href: "/terms" },

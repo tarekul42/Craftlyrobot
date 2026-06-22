@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { dmSans, pacifico, jetBrainsMono } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Toaster } from "@/components/ui";
+import { Toaster } from "@/components/ui/toast/toast";
 import { BackToTop } from "@/components/ui/back-to-top/back-to-top";
 import { CookieConsent } from "@/components/ui/cookie-consent/cookie-consent";
 import { WebVitals } from "@/components/ui/web-vitals/web-vitals";

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/layout/container";
-import { Eyebrow, Button } from "@/components/ui";
+import { Eyebrow } from "@/components/ui/eyebrow/eyebrow";
+import { Button } from "@/components/ui/button/button";
 import Link from "next/link";
 import { AnimatedTerminal } from "@/components/blocks/animated-terminal";
 
@@ -16,24 +17,10 @@ interface HeroWithTerminalProps {
   description?: string;
   primaryCta?: CTA;
   secondaryCta?: CTA;
-  /** Override the default terminal commands */
   commands?: Array<{ input: string; output: string }>;
   className?: string;
 }
 
-/**
- * HeroWithTerminal — the Craftly signature hero.
- *
- * Text on the left, AnimatedTerminal on the right.
- * This is the canonical homepage hero pattern.
- *
- * @example
- * <HeroWithTerminal
- *   eyebrow="Craftly Robot"
- *   title="From dream to reality, with one command"
- *   primaryCta={{ label: "Get early free access", href: "/contribute/apply" }}
- * />
- */
 export function HeroWithTerminal({
   eyebrow,
   title,
@@ -47,13 +34,14 @@ export function HeroWithTerminal({
   return (
     <section
       className={cn(
-        "border-border relative overflow-hidden border-b",
+        "relative flex min-h-hero items-center overflow-hidden",
         className,
       )}
     >
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.03]" />
       <Container>
-        <div className="grid gap-12 py-20 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:py-32">
-          <div className="flex flex-col justify-center">
+        <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
+          <div className="flex flex-col justify-center py-20 lg:py-32">
             {eyebrow && <Eyebrow className="mb-4">{eyebrow}</Eyebrow>}
             <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl lg:text-7xl">
               {title}
@@ -83,7 +71,7 @@ export function HeroWithTerminal({
               </div>
             )}
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center py-20 lg:py-32">
             <AnimatedTerminal commands={commands} />
           </div>
         </div>

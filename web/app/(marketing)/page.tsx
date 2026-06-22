@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Wrench, Users, Heart, Cpu, Sparkles } from "lucide-react";
 import { Container } from "@/components/layout/container";
@@ -13,6 +14,7 @@ import { HeroWithTerminal } from "@/components/sections/hero/hero-with-terminal"
 import { CTABand } from "@/components/sections/cta-band";
 import { FAQSection } from "@/components/sections/faq";
 import { EcosystemMap } from "@/components/sections/ecosystem-map";
+import { UpdatesFeedSection } from "@/components/sections/updates-feed";
 import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
 import { PeopleBar } from "@/components/blocks/people-bar";
 import { siteConfig } from "@/config/site";
@@ -20,13 +22,24 @@ import { foundationProducts } from "@/config/products";
 import { homepageFaqs } from "@/config/faqs";
 import { communityStats } from "@/config/community";
 
+export const metadata: Metadata = {
+  title: "Craftly — Type it. Build it. Ship it.",
+  description:
+    "Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+  },
+};
+
 export default function HomePage() {
   return (
     <>
-      {/* ===== HERO with AnimatedTerminal (Craftly signature) ===== */}
       <HeroWithTerminal
-        eyebrow="Craftly Robot"
-        title="From dream to reality, with one command"
+        title="Type it. Build it. Ship it."
         description="Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build."
         primaryCta={{
           label: "Get early free access",
@@ -35,7 +48,6 @@ export default function HomePage() {
         secondaryCta={{ label: "See the foundation", href: "/products" }}
       />
 
-      {/* ===== ECOSYSTEM ENTRY POINTS ===== */}
       <Section background="muted">
         <Container>
           <SectionHeading
@@ -71,7 +83,6 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== FOUNDATION PRODUCTS (using extracted ProductCard pattern) ===== */}
       <Section>
         <Container>
           <SectionHeading
@@ -84,11 +95,13 @@ export default function HomePage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {foundationProducts.map((product) => (
               <Card key={product.slug} className="overflow-hidden">
-                <ScreenshotShowcase
-                  images={product.screenshots ?? ["/placeholder.png"]}
-                  alt={product.name}
-                  className="rounded-none border-0 border-b"
-                />
+                {product.screenshots && product.screenshots.length > 0 && (
+                  <ScreenshotShowcase
+                    images={product.screenshots}
+                    alt={product.name}
+                    className="rounded-none border-0 border-b"
+                  />
+                )}
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold">{product.name}</h3>
                   <p className="text-muted-foreground mt-2 text-sm">
@@ -108,7 +121,6 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== PEOPLE OF CRAFTLY ===== */}
       <Section background="muted">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -156,10 +168,10 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* ===== ECOSYSTEM MAP ===== */}
       <EcosystemMap />
 
-      {/* ===== CTA BAND ===== */}
+      <UpdatesFeedSection />
+
       <CTABand
         variant="dark"
         title="Help us today, get support back tomorrow"
@@ -174,7 +186,6 @@ export default function HomePage() {
         }}
       />
 
-      {/* ===== FAQ ===== */}
       <FAQSection
         eyebrow="Common questions"
         title="Frequently asked"
@@ -183,8 +194,6 @@ export default function HomePage() {
     </>
   );
 }
-
-// ===== Local helper components =====
 
 interface EntryPointCardProps {
   icon: React.ReactNode;

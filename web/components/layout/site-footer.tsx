@@ -2,18 +2,10 @@ import Link from "next/link";
 import { Facebook, Youtube, Github } from "lucide-react";
 import { Container } from "./container";
 import { ThemeToggle } from "./theme-toggle";
-import { Logo } from "./main-nav";
+import { Logo } from "./logo";
 import { footerNav, legalNav } from "@/config/navigation";
 import { siteConfig } from "@/config/site";
 
-/**
- * SiteFooter — global footer with 4 link columns + social + legal.
- *
- * Structure:
- *   [Logo + description]
- *   [Products] [Community] [Contribute] [About]
- *   [Social icons] [Theme toggle]    [© Craftly] [Privacy] [Terms] [Security]
- */
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
@@ -21,7 +13,6 @@ export function SiteFooter() {
     <footer className="border-border bg-muted/30 border-t">
       <Container className="py-16">
         <div className="grid gap-12 lg:grid-cols-[1fr_3fr]">
-          {/* Brand */}
           <div>
             <Logo />
             <p className="text-muted-foreground mt-4 max-w-xs text-sm">
@@ -29,7 +20,6 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* Link columns */}
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {Object.entries(footerNav).map(([category, items]) => (
               <div key={category}>
@@ -56,15 +46,12 @@ export function SiteFooter() {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="border-border mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
-          {/* Social + theme */}
           <div className="flex items-center gap-3">
             <SocialIcons />
             <ThemeToggle />
           </div>
 
-          {/* Copyright + legal */}
           <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-xs">
             <span>
               © {year} {siteConfig.name}
@@ -87,9 +74,6 @@ export function SiteFooter() {
   );
 }
 
-/**
- * SocialIcons — links to Craftly's social profiles.
- */
 function SocialIcons() {
   return (
     <div className="flex items-center gap-1">

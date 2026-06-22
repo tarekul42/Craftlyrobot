@@ -58,15 +58,14 @@ export async function POST(req: Request) {
 
   const data = result.data;
 
-  const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
-  if (!turnstileOk) {
-    return NextResponse.json(
-      { message: "Bot verification failed." },
-      { status: 400 },
-    );
-  }
-
   try {
+    const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
+    if (!turnstileOk) {
+      return NextResponse.json(
+        { message: "Bot verification failed." },
+        { status: 400 },
+      );
+    }
     const saved = await saveApplication({
       fullName: data.fullName,
       email: data.email,
