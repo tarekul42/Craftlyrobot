@@ -20,7 +20,7 @@ import { saveApplication } from "@/lib/db";
 export async function POST(req: Request) {
   const ip = getClientIP(req);
 
-  const limit = rateLimit(`apply:${ip}`, {
+  const limit = await rateLimit(`apply:${ip}`, {
     limit: 1,
     windowMs: 24 * 60 * 60 * 1000,
   });

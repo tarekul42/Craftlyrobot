@@ -1,0 +1,36 @@
+---
+title: "Our Decentralized Node Architecture"
+date: "2026-06-20"
+author: "Wasif"
+authorRole: "Founder"
+excerpt: "A deep dive into how Craftly Robot distributes computation across a peer-to-peer node network for near-frontier performance."
+category: "Engineering"
+tags: ["architecture", "engineering", "craftly-robot", "decentralized"]
+featured: true
+---
+
+Craftly Robot isn't just another AI wrapper. It is built on a decentralized node architecture that distributes computation across a peer-to-peer network. Here's how it works.
+
+## The Problem
+
+Building Android apps from natural language requires significant compute. A single prompt may trigger intent classification, code generation across multiple files, resource compilation, and APK packaging. Doing all of this on a single server is slow and expensive.
+
+## How It Works
+
+When you send a prompt to Craftly Robot, the orchestrator breaks the task into sub-tasks, distributes them to specialized nodes, collects the results, and delivers the APK back to your device.
+
+```
+Prompt → Orchestrator → [Code Gen Node] [Resource Node] [Build Node]
+                              ↓                  ↓             ↓
+                         [Assembly] ← ← ← ← ← ← ← ← ← ← ← ← ←
+                              ↓
+                            APK
+```
+
+## Benefits
+
+- **Speed**: parallel execution across nodes
+- **Resilience**: no single point of failure
+- **Scale**: nodes can join and leave dynamically
+
+This is still early. We're iterating fast. More details soon.

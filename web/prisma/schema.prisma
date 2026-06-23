@@ -57,3 +57,12 @@ model NewsletterSubscriber {
 
   @@index([status])
 }
+
+model EarlyAccessSignup {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  ipAddress   String
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}

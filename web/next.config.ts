@@ -118,4 +118,7 @@ export default withSentryConfig(nextConfig, {
   silent: true,
   widenClientFileUpload: true,
   disableLogger: true,
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
 });

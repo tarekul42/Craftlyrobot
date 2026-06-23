@@ -20,7 +20,7 @@ import { saveContactMessage } from "@/lib/db";
 export async function POST(req: Request) {
   const ip = getClientIP(req);
 
-  const limit = rateLimit(`contact:${ip}`, {
+  const limit = await rateLimit(`contact:${ip}`, {
     limit: 5,
     windowMs: 60 * 60 * 1000,
   });

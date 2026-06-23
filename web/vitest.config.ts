@@ -13,6 +13,7 @@ export default defineConfig({
       "lib/**/*.test.{ts,tsx}",
       "hooks/**/*.test.{ts,tsx}",
       "app/**/*.test.{ts,tsx}",
+      "config/**/*.test.{ts,tsx}",
     ],
     coverage: {
       reporter: ["text", "json", "html"],

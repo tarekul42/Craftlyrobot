@@ -10,7 +10,7 @@ export async function GET(req: Request) {
     req.headers.get("x-real-ip") ??
     "anonymous";
 
-  const limit = rateLimit(`og:${ip}`, {
+  const limit = await rateLimit(`og:${ip}`, {
     limit: 60,
     windowMs: 60 * 1000,
   });

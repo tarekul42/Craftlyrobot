@@ -1,0 +1,28 @@
+---
+title: "Workspace Reaches 99.2% Uptime"
+date: "2026-06-01"
+author: "Wasif"
+authorRole: "Founder"
+excerpt: "After months of incremental reliability work, Workspace crossed the 99% uptime mark for the first time."
+category: "Engineering"
+tags: ["workspace", "infrastructure", "milestone"]
+---
+
+After months of incremental reliability work, Workspace crossed the 99% uptime mark for the first time.
+
+## The Journey
+
+**Three months ago**: 94% uptime. Nodes would go offline unpredictably. Sync conflicts were common.
+**One month ago**: 97% uptime. Better node health monitoring, automated reconnection.
+**Today**: 99.2% uptime. Still not 99.9% (our target), but we're close.
+
+## What Made the Difference
+
+1. **Node health checks** — every node pings a health endpoint every 30 seconds
+2. **Automatic reconnection** — if a node drops, it reconnects within 5 seconds
+3. **Conflict resolution** — CRDT-based merging handles concurrent edits
+4. **Monitoring** — real-time dashboards for the ops team
+
+## What's Next
+
+Our next target is 99.9% uptime with geographic distribution and better alerting. If you have experience with distributed systems reliability, we'd love your help on this.

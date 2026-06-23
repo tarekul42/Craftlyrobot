@@ -1,28 +1,40 @@
-/**
- * Simple in-memory rate limiter for development.
- *
- * ⚠️ WARNING: This does NOT work in production with multiple server instances
- * (each instance has its own memory). For production, use Upstash Ratelimit:
- *
- *   import { Ratelimit } from "@upstash/ratelimit";
- *   import { Redis } from "@upstash/redis";
- *   export const ratelimit = new Ratelimit({
- *     redis: Redis.fromEnv(),
- *     limiter: Ratelimit.slidingWindow(5, "1 h"),
- *   });
- *
- * For now, this in-memory version works for single-instance deployments
- * (Vercel preview, single VPS, local dev).
- */
+interface RateLimitOptions {
+  limit: number;
+  windowMs: number;
+}
 
-interface RateLimitEntry {
-  count: number;
+interface RateLimitResult {
+  success: boolean;
+  remaining: number;
   resetAt: number;
 }
 
-const store = new Map<string, RateLimitEntry>();
+let upstashRatelimit: {
+  limit: (key: string) => Promise<{ success: boolean; remaining: number; reset: number }>;
+} | null = null;
 
-// Clean up expired entries every 5 minutes
+async function getUpstashRatelimit() {
+  if (upstashRatelimit) return upstashRatelimit;
+  try {
+    const { Ratelimit } = await import("@upstash/ratelimit");
+    const { Redis } = await import("@upstash/redis");
+    if (process.env.UPSTASH_REDIS_REST_URL) {
+      upstashRatelimit = new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(10, "10 s"),
+        analytics: true,
+        prefix: "craftly",
+      });
+      return upstashRatelimit;
+    }
+  } catch {
+    // @upstash packages not installed — fall back to in-memory
+  }
+  return null;
+}
+
+const store = new Map<string, { count: number; resetAt: number }>();
+
 if (typeof setInterval !== "undefined") {
   setInterval(
     () => {
@@ -35,56 +47,33 @@ if (typeof setInterval !== "undefined") {
   ).unref?.();
 }
 
-interface RateLimitOptions {
-  /** Max requests allowed in the window */
-  limit: number;
-  /** Window duration in milliseconds */
-  windowMs: number;
-}
-
-interface RateLimitResult {
-  success: boolean;
-  remaining: number;
-  resetAt: number;
-}
-
-/**
- * Check if a key (usually IP) is within the rate limit.
- * Increments the counter on each call.
- */
-export function rateLimit(
+export async function rateLimit(
   key: string,
   options: RateLimitOptions,
-): RateLimitResult {
+): Promise<RateLimitResult> {
+  const upstash = await getUpstashRatelimit();
+  if (upstash) {
+    const result = await upstash.limit(key);
+    return {
+      success: result.success,
+      remaining: result.remaining,
+      resetAt: result.reset * 1000,
+    };
+  }
+
   const now = Date.now();
   const existing = store.get(key);
 
   if (!existing || existing.resetAt < now) {
-    // First request or window expired
-    const entry: RateLimitEntry = {
-      count: 1,
-      resetAt: now + options.windowMs,
-    };
+    const entry = { count: 1, resetAt: now + options.windowMs };
     store.set(key, entry);
-    return {
-      success: true,
-      remaining: options.limit - 1,
-      resetAt: entry.resetAt,
-    };
+    return { success: true, remaining: options.limit - 1, resetAt: entry.resetAt };
   }
 
   if (existing.count >= options.limit) {
-    return {
-      success: false,
-      remaining: 0,
-      resetAt: existing.resetAt,
-    };
+    return { success: false, remaining: 0, resetAt: existing.resetAt };
   }
 
   existing.count += 1;
-  return {
-    success: true,
-    remaining: options.limit - existing.count,
-    resetAt: existing.resetAt,
-  };
+  return { success: true, remaining: options.limit - existing.count, resetAt: existing.resetAt };
 }

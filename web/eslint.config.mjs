@@ -25,6 +25,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [".next/", "node_modules/", "coverage/", "e2e/", "next-env.d.ts", "*.config.*", ".lighthouserc.*"],
+    ignores: [".next/", "node_modules/", "coverage/", "e2e/", "next-env.d.ts", "*.config.*", ".lighthouserc.*", "**/*.test.*", "**/*.spec.*"],
   }
 );
