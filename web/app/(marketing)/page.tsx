@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Wrench, Users, Heart, Cpu, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Wrench,
+  Users,
+  Heart,
+  Cpu,
+  Sparkles,
+  Droplets,
+  Car,
+  ShoppingCart,
+  Smartphone,
+} from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import {
@@ -20,30 +31,59 @@ import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
 import { AgentNegotiation } from "@/components/blocks/agent-negotiation";
 import { PeopleBar } from "@/components/blocks/people-bar";
 import { siteConfig } from "@/config/site";
+import { faqJsonLd } from "@/lib/seo";
 import { foundationProducts } from "@/config/products";
 import { homepageFaqs } from "@/config/faqs";
 import { communityStats } from "@/config/community";
-
 export const metadata: Metadata = {
-  title: "Craftly — Ask for anything. Get it done.",
-  description:
-    "Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build.",
+  title: "Craftlyrobot — Ask for anything. Get it done.",
+  description: siteConfig.description,
   alternates: { canonical: "/" },
   openGraph: {
-    title: siteConfig.name,
+    title: `${siteConfig.name} — Ask for anything. Get it done.`,
     description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
   },
 };
 
+const agentUseCases = [
+  {
+    icon: <Droplets className="h-6 w-6" />,
+    title: "Find blood donors",
+    description: "Your agent scans the network for eligible donors and negotiates pickup.",
+  },
+  {
+    icon: <Car className="h-6 w-6" />,
+    title: "Book a ride",
+    description: "Agents compare drivers, negotiate the fare, and confirm your ride.",
+  },
+  {
+    icon: <ShoppingCart className="h-6 w-6" />,
+    title: "Buy groceries",
+    description: "Your agent checks stock across stores and finds the best price.",
+  },
+  {
+    icon: <Smartphone className="h-6 w-6" />,
+    title: "Build an app",
+    description: "Agents distribute tasks, compile code, and deploy — all autonomously.",
+  },
+];
+
 export default function HomePage() {
+  const faqLd = faqJsonLd(homepageFaqs);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+
       <HeroWithTerminal
         title="Ask for anything. Get it done."
         subtitle="Your agent negotiates with other agents across the network."
-        description="Finding blood donors, building apps, solving problems — no phone calls, no waiting. Just results."
+        description="Finding blood donors, booking rides, buying groceries, building apps — anything people do for themselves. No phone calls. No waiting. Just results."
         primaryCta={{
           label: "Get early free access",
           href: "/contribute/apply",
@@ -53,6 +93,38 @@ export default function HomePage() {
       />
 
       <Section background="muted">
+        <Container>
+          <SectionHeading
+            eyebrow="What agents do"
+            title="Your agent handles it."
+            description="From searching to negotiating to confirming — your agent does the work. You just ask."
+            align="center"
+          />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {agentUseCases.map((useCase) => (
+              <div
+                key={useCase.title}
+                className="border-border bg-background flex items-start gap-4 rounded-lg border p-5"
+              >
+                <div className="bg-muted text-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-md">
+                  {useCase.icon}
+                </div>
+                <div>
+                  <h3 className="font-semibold">{useCase.title}</h3>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {useCase.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-muted-foreground mt-6 text-center text-sm">
+            ...and anything else you can think of. The network is the limit.
+          </p>
+        </Container>
+      </Section>
+
+      <Section>
         <Container>
           <SectionHeading
             eyebrow="What is Craftly"

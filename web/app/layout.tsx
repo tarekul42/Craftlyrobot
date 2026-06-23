@@ -7,13 +7,19 @@ import { CookieConsent } from "@/components/ui/cookie-consent/cookie-consent";
 import { WebVitals } from "@/components/ui/web-vitals/web-vitals";
 import { Analytics } from "@/components/providers/analytics";
 import { siteConfig } from "@/config/site";
+import {
+  organizationJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
+
+const jsonLd = [organizationJsonLd(), websiteJsonLd()];
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.name,
+    default: `${siteConfig.name} — Ask for anything. Get it done.`,
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -24,26 +30,47 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
-    title: siteConfig.name,
+    title: `${siteConfig.name} — Ask for anything. Get it done.`,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
+    title: `${siteConfig.name} — Ask for anything. Get it done.`,
     description: siteConfig.description,
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon",
+  },
+  manifest: "/manifest.webmanifest",
+  alternates: {
+    canonical: "/",
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0c" },
+    { media: "(prefers-color-scheme: dark)", color: "#050608" },
   ],
+  colorScheme: "light dark",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -57,6 +84,14 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(dmSans.variable, pacifico.variable, jetBrainsMono.variable)}
     >
+      <head>
+        <link rel="preconnect" href="https://challenges.cloudflare.com" />
+        <link rel="dns-prefetch" href="https://plausible.io" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-background text-foreground min-h-dvh font-sans antialiased">
         <ThemeProvider>
           {children}

@@ -35,6 +35,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  compiler: {
+    removeConsole: {
+      exclude: ["error", "warn"],
+    },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -42,13 +47,43 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "motion"],
+    optimizePackageImports: [
+      "lucide-react",
+      "motion",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-select",
+      "@radix-ui/react-navigation-menu",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tooltip",
+    ],
+    cssChunking: true,
+    optimizeServerReact: true,
   },
   async headers() {
     return [
       { source: "/(.*)", headers: securityHeaders },
       {
         source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/(.*)\\.(png|jpg|jpeg|gif|webp|avif|svg|ico)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/(.*)\\.(woff|woff2|ttf|otf|eot)",
         headers: [
           {
             key: "Cache-Control",
@@ -77,7 +112,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Wrap with Sentry config (no-op if SENTRY_DSN not set)
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,

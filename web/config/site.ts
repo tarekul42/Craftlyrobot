@@ -1,20 +1,21 @@
-/**
- * Site configuration — the single source of truth for site-wide metadata.
- * Imported by app/layout.tsx for SEO metadata and by layout components.
- */
-
 export const siteConfig = {
-  name: "Craftly",
+  name: "Craftlyrobot",
+  shortName: "Craftly",
   url: "https://craftlyrobot.com",
   description:
-    "Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. From Bangladesh, with ambition.",
+    "Agent-to-agent negotiation network. Finding blood donors, booking rides, buying groceries, building apps — anything people do for themselves. No waiting.",
   keywords: [
-    "Craftly",
-    "Craftly Robot",
-    "Android app builder",
-    "contributor ecosystem",
-    "Bangladesh tech",
+    "Craftlyrobot",
+    "agent to agent negotiation",
+    "AI agent network",
+    "Banglish AI",
+    "Bangla AI",
     "decentralized intelligence",
+    "Android app builder",
+    "Bangladesh tech ecosystem",
+    "Craftly Robot",
+    "AI for Bangladesh",
+    "peer to peer agent marketplace",
   ],
   authors: [{ name: "Craftly" }],
   creator: "Craftly",
