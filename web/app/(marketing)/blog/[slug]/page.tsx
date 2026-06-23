@@ -65,12 +65,10 @@ export default async function BlogPostPage({
 
   return (
     <>
-      {/* Reading progress bar (fixed at top of viewport) */}
       <ReadingProgress />
 
-      {/* Header */}
-      <Section spacing="lg" className="border-border border-b">
-        <Container size="prose">
+      <Section spacing="sm" className="border-border border-b">
+        <Container>
           <Link
             href="/blog"
             className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
@@ -114,11 +112,9 @@ export default async function BlogPostPage({
         </Container>
       </Section>
 
-      {/* Body with TOC sidebar */}
       <Section>
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1fr_220px]">
-            {/* Article content */}
             <div className="min-w-0">
               <Prose>
                 <div id="post-content">
@@ -135,7 +131,6 @@ export default async function BlogPostPage({
               </Prose>
             </div>
 
-            {/* TOC sidebar */}
             <aside className="hidden lg:block">
               <div className="sticky top-24">
                 <TableOfContents containerId="post-content" />
@@ -145,7 +140,6 @@ export default async function BlogPostPage({
         </Container>
       </Section>
 
-      {/* Related posts */}
       {relatedPosts.length > 0 && (
         <Section background="muted">
           <Container>
@@ -180,7 +174,6 @@ export default async function BlogPostPage({
         </Section>
       )}
 
-      {/* CTA */}
       <Section>
         <Container size="prose">
           <div className="border-border bg-muted/30 rounded-lg border p-8 text-center">

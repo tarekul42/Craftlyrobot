@@ -1,77 +1,26 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 interface Message {
-  sender: "you" | "your-agent" | "network" | "donor" | "driver" | "store" | "builder";
+  sender: "you" | "your-agent" | "network" | "donor";
   text: string;
   badge?: string;
   badgeVariant?: "searching" | "skip" | "checking" | "match" | "agreed" | "done";
 }
 
-interface Scenario {
-  id: string;
-  icon: string;
-  messages: Message[];
-}
-
-const scenarios: Scenario[] = [
-  {
-    id: "blood",
-    icon: "🩸",
-    messages: [
-      { sender: "you", text: "Need 1 bag O+ blood — Dhaka" },
-      { sender: "your-agent", text: "Searching network for O+ donors...", badge: "SEARCHING", badgeVariant: "searching" },
-      { sender: "network", text: "Found 3 O+ donors nearby. Verifying eligibility..." },
-      { sender: "donor", text: "Last donated 1 month ago — Not eligible", badge: "SKIP", badgeVariant: "skip" },
-      { sender: "donor", text: "O+ · 8mo · Healthy · 1.1 km · Available", badge: "MATCH", badgeVariant: "match" },
-      { sender: "your-agent", text: "Negotiating pickup with donor..." },
-      { sender: "donor", text: "Agreed. 4pm today, Banani.", badge: "AGREED", badgeVariant: "agreed" },
-      { sender: "your-agent", text: "Done. Donor confirmed for 4pm.", badge: "DONE", badgeVariant: "done" },
-    ],
-  },
-  {
-    id: "ride",
-    icon: "🚗",
-    messages: [
-      { sender: "you", text: "Need a ride from Gulshan to Uttara" },
-      { sender: "your-agent", text: "Scanning for nearby drivers...", badge: "SEARCHING", badgeVariant: "searching" },
-      { sender: "network", text: "Found 4 drivers in the area. Checking ratings and rates..." },
-      { sender: "driver", text: "Fare: ৳450 · ETA 8 min · ⭐4.2", badge: "MATCH", badgeVariant: "match" },
-      { sender: "your-agent", text: "Negotiating fare..." },
-      { sender: "driver", text: "Best offer: ৳380 · ETA 6 min", badge: "AGREED", badgeVariant: "agreed" },
-      { sender: "your-agent", text: "Done. Driver arriving in 6 min.", badge: "DONE", badgeVariant: "done" },
-    ],
-  },
-  {
-    id: "groceries",
-    icon: "🛒",
-    messages: [
-      { sender: "you", text: "Need 2kg rice, 1L oil, 500g sugar" },
-      { sender: "your-agent", text: "Checking stock across 3 stores...", badge: "SEARCHING", badgeVariant: "searching" },
-      { sender: "network", text: "Store A: Rice ✓ Oil ✓ Sugar ✗ — ৳520" },
-      { sender: "store", text: "Store B: All in stock — ৳580", badge: "MATCH", badgeVariant: "match" },
-      { sender: "your-agent", text: "Negotiating bulk discount..." },
-      { sender: "store", text: "Agreed. ৳550, delivery by 5pm.", badge: "AGREED", badgeVariant: "agreed" },
-      { sender: "your-agent", text: "Done. Delivery confirmed.", badge: "DONE", badgeVariant: "done" },
-    ],
-  },
-  {
-    id: "app",
-    icon: "📱",
-    messages: [
-      { sender: "you", text: "Build a todo app with React + Firebase" },
-      { sender: "your-agent", text: "Distributing tasks to build agents...", badge: "SEARCHING", badgeVariant: "searching" },
-      { sender: "network", text: "Frontend: Agent A2 · Backend: Agent B4 · Auth: Agent C1" },
-      { sender: "builder", text: "UI scaffold complete. Building components...", badge: "CHECKING", badgeVariant: "checking" },
-      { sender: "builder", text: "Firebase connected. Auth working. API live.", badge: "MATCH", badgeVariant: "match" },
-      { sender: "your-agent", text: "Running tests... All 42 passing. Deploying." },
-      { sender: "builder", text: "Deployed: craftly.app/u/todo-42", badge: "DONE", badgeVariant: "done" },
-    ],
-  },
+const script: Message[] = [
+  { sender: "you", text: "Need 1 bag O+ blood — Dhaka" },
+  { sender: "your-agent", text: "Searching network for O+ donors...", badge: "SEARCHING", badgeVariant: "searching" },
+  { sender: "network", text: "Found 3 O+ donors nearby. Verifying eligibility..." },
+  { sender: "donor", text: "Last donated 1 month ago — Not eligible", badge: "SKIP", badgeVariant: "skip" },
+  { sender: "donor", text: "O+ · 8mo · Healthy · 1.1 km · Available", badge: "MATCH", badgeVariant: "match" },
+  { sender: "your-agent", text: "Negotiating pickup with donor..." },
+  { sender: "donor", text: "Agreed. 4pm today, Banani.", badge: "AGREED", badgeVariant: "agreed" },
+  { sender: "your-agent", text: "Done. Donor confirmed for 4pm.", badge: "DONE", badgeVariant: "done" },
 ];
 
 const senderConfig: Record<string, { label: string; icon: string }> = {
@@ -79,9 +28,6 @@ const senderConfig: Record<string, { label: string; icon: string }> = {
   "your-agent": { label: "Your Agent", icon: "🤖" },
   network: { label: "Network", icon: "🌐" },
   donor: { label: "Donor", icon: "🩸" },
-  driver: { label: "Driver", icon: "🚗" },
-  store: { label: "Store", icon: "🛒" },
-  builder: { label: "Builder", icon: "⚙️" },
 };
 
 const badgeStyles = {
@@ -95,35 +41,25 @@ const badgeStyles = {
 
 const TYPING_DURATION = 500;
 const PAUSE_AFTER_END = 3000;
+const MAX_VISIBLE = 5;
 
 export function AgentNegotiation({ className }: { className?: string }) {
   const prefersReduced = usePrefersReducedMotion();
-  const [scenarioIndex, setScenarioIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  const [paused, setPaused] = useState(false);
-
-  const scenario = scenarios[scenarioIndex]!;
-  const script = scenario.messages;
+  const [completed, setCompleted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (prefersReduced) {
       setVisibleCount(script.length);
       return;
     }
-
-    if (paused) return;
-
+    if (completed) return;
     if (visibleCount >= script.length) {
-      setPaused(true);
-      const t = setTimeout(() => {
-        setScenarioIndex((i) => (i + 1) % scenarios.length);
-        setVisibleCount(0);
-        setPaused(false);
-      }, PAUSE_AFTER_END);
+      const t = setTimeout(() => setCompleted(true), PAUSE_AFTER_END);
       return () => clearTimeout(t);
     }
-
     setIsTyping(true);
     const typingTimer = setTimeout(() => {
       setIsTyping(false);
@@ -132,30 +68,28 @@ export function AgentNegotiation({ className }: { className?: string }) {
       }, 200);
       return () => clearTimeout(msgTimer);
     }, TYPING_DURATION);
-
     return () => clearTimeout(typingTimer);
-  }, [visibleCount, paused, prefersReduced, script.length]);
+  }, [visibleCount, completed, prefersReduced]);
 
-  const handleScenarioChange = useCallback((i: number) => {
-    setScenarioIndex(i);
-    setVisibleCount(0);
-    setPaused(false);
-  }, []);
+  const visibleMessages = script.slice(
+    Math.max(0, visibleCount - MAX_VISIBLE),
+    visibleCount,
+  );
 
   if (prefersReduced) {
     return (
-      <div className={cn("border-border bg-background max-h-[500px] w-full max-w-md overflow-y-auto rounded-xl border p-4 font-mono text-[13px] leading-relaxed", className)}>
+      <div className={cn("border-border/80 bg-background/95 w-full max-w-md rounded-xl border p-4 font-mono text-[13px] leading-relaxed backdrop-blur-sm", className)}>
         <div className="mb-3 flex items-center gap-2">
           <span className="bg-destructive h-2 w-2 rounded-full" />
-          <span className="text-muted-foreground text-xs font-semibold uppercase">LIVE</span>
+          <span className="text-muted-foreground text-[11px] font-bold uppercase tracking-wider">Agent Network</span>
         </div>
         {script.map((msg, i) => {
           const config = senderConfig[msg.sender] ?? { label: msg.sender, icon: "❓" };
           return (
-            <div key={i} className="mb-3">
+            <div key={i} className="mb-2.5">
               <div className="flex items-center gap-1.5">
-                <span>{config.icon}</span>
-                <span className="font-semibold">{config.label}</span>
+                <span className="text-[11px]">{config.icon}</span>
+                <span className="text-[11px] font-semibold">{config.label}</span>
               </div>
               <p className="text-muted-foreground ml-5 mt-0.5">{msg.text}</p>
             </div>
@@ -170,89 +104,78 @@ export function AgentNegotiation({ className }: { className?: string }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="border-border bg-background overflow-hidden rounded-xl border shadow-xl shadow-black/5"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="border-border/80 bg-background/95 overflow-hidden rounded-xl border shadow-2xl shadow-black/5 backdrop-blur-sm"
       >
-        <div className="border-border flex items-center gap-2 border-b px-4 py-2.5">
-          <span className="bg-destructive relative h-2 w-2 rounded-full">
-            <span className="bg-destructive absolute inset-0 animate-ping rounded-full opacity-75" />
+        <div className="border-border/80 flex items-center gap-2 border-b px-4 py-2.5">
+          <span className="relative flex h-2 w-2 items-center justify-center">
+            <span className={cn("h-2 w-2 rounded-full", completed ? "bg-green-500" : "bg-destructive")} />
+            {!completed && <span className="bg-destructive absolute inset-0 animate-ping rounded-full opacity-75" />}
           </span>
           <span className="text-muted-foreground text-[11px] font-bold uppercase tracking-wider">
-            Live — {scenario.icon} {scenario.id}
+            {completed ? "Complete" : "Live"}
           </span>
+          {!completed && <span className="text-muted-foreground/40 mx-1">·</span>}
+          {!completed && <span className="text-muted-foreground text-[11px] font-medium">Agent Network</span>}
         </div>
 
-        <div className="max-h-[420px] overflow-y-auto p-4 font-mono text-[13px] leading-relaxed" role="region" aria-label="Agent negotiation simulation">
-          <AnimatePresence mode="popLayout">
-            {script.slice(0, visibleCount).map((msg, i) => {
-              const config = senderConfig[msg.sender] ?? { label: msg.sender, icon: "❓" };
-              return (
-                <motion.div
-                  key={`${scenarioIndex}-${i}`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="mb-3"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <span aria-hidden="true">{config.icon}</span>
-                    <span className="font-semibold">{config.label}</span>
-                    {msg.badge && msg.badgeVariant && (
-                      <span
-                        className={cn(
-                          "ml-auto rounded-full border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
-                          badgeStyles[msg.badgeVariant],
-                        )}
-                      >
-                        {msg.badge}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground ml-5 mt-0.5">{msg.text}</p>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+        <div className="relative h-[320px] overflow-hidden p-4" ref={containerRef}>
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-background to-transparent"
+            aria-hidden="true"
+          />
 
-          {isTyping && (
-            <div className="text-muted-foreground ml-5 mt-1 flex items-center gap-1.5">
-              <span className="flex gap-0.5">
-                <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "0ms" }} />
-                <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "150ms" }} />
-                <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "300ms" }} />
-              </span>
-            </div>
-          )}
+          <div className="font-mono text-[13px] leading-relaxed" role="region" aria-label="Agent negotiation simulation">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {visibleMessages.map((msg, i) => {
+                const config = senderConfig[msg.sender] ?? { label: msg.sender, icon: "❓" };
+                const isLatest = i === visibleMessages.length - 1;
+                return (
+                  <motion.div
+                    key={msg.text}
+                    layout
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={isLatest ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="mb-3 last:mb-0"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span aria-hidden="true" className="text-[11px]">{config.icon}</span>
+                      <span className="text-[11px] font-semibold">{config.label}</span>
+                      {msg.badge && msg.badgeVariant && (
+                        <span
+                          className={cn(
+                            "ml-auto rounded-full border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+                            badgeStyles[msg.badgeVariant],
+                          )}
+                        >
+                          {msg.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground ml-5 mt-0.5">{msg.text}</p>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
 
-          {visibleCount === script.length && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-muted-foreground mt-4 text-center text-[11px]"
-            >
-              Next scenario...
-            </motion.p>
-          )}
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-muted-foreground ml-5 mt-2 flex items-center gap-1.5"
+              >
+                <span className="flex gap-0.5">
+                  <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "0ms" }} />
+                  <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "150ms" }} />
+                  <span className="bg-muted-foreground/50 h-1.5 w-1.5 animate-bounce rounded-full" style={{ animationDelay: "300ms" }} />
+                </span>
+              </motion.div>
+            )}
+          </div>
         </div>
       </motion.div>
-
-      <div className="mt-3 flex items-center justify-center gap-2">
-        {scenarios.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => handleScenarioChange(i)}
-            aria-label={`Show ${s.id} scenario`}
-            aria-current={i === scenarioIndex}
-            className={cn(
-              "h-2 rounded-full transition-all",
-              i === scenarioIndex
-                ? "bg-foreground w-6"
-                : "bg-foreground/30 hover:bg-foreground/50 w-2",
-            )}
-          />
-        ))}
-      </div>
     </div>
   );
 }

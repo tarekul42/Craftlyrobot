@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
@@ -12,6 +12,8 @@ interface DemoStep {
   user: string;
   agent: string;
   label: string;
+  context: string;
+  flag: string;
 }
 
 const demos: DemoStep[] = [
@@ -19,21 +21,69 @@ const demos: DemoStep[] = [
     user: "আমার একটা অ্যাপ লাগবে",
     agent: "বুঝেছি। কি ধরনের অ্যাপ চান?",
     label: "Bangla",
+    context: "App building",
+    flag: "🇧🇩",
   },
   {
     user: "I need an app built",
     agent: "Got it. What kind of app?",
     label: "English",
+    context: "App building",
+    flag: "🇬🇧",
   },
   {
     user: "amar ekta app lagbe",
     agent: "Bujhesi. Ki dhoroner app chan?",
     label: "Banglish",
+    context: "App building",
+    flag: "🔤",
+  },
+  {
+    user: "আমার O+ রক্ত দরকার",
+    agent: "পাচ্ছি। আপনার এলাকায় ৩ জন ডোনার আছেন।",
+    label: "Bangla",
+    context: "Blood donor",
+    flag: "🇧🇩",
+  },
+  {
+    user: "I need O+ blood",
+    agent: "Found 3 donors in your area. Verifying eligibility...",
+    label: "English",
+    context: "Blood donor",
+    flag: "🇬🇧",
+  },
+  {
+    user: "amar O+ rakto dorkar",
+    agent: "Pacchi. Apnar elakay 3 jon donor achen.",
+    label: "Banglish",
+    context: "Blood donor",
+    flag: "🔤",
+  },
+  {
+    user: "বনানী থেকে গুলশান যাবো",
+    agent: "পাচ্ছি। ৩ টা ড্রাইভার পাওয়া গেছে।",
+    label: "Bangla",
+    context: "Ride share",
+    flag: "🇧🇩",
+  },
+  {
+    user: "banani theke gulshan jabo",
+    agent: "Pacchi. 3 ta driver paoa geche.",
+    label: "Banglish",
+    context: "Ride share",
+    flag: "🔤",
   },
 ];
 
-const STEP_DURATION = 4000;
-const TYPE_SPEED = 30;
+const features = [
+  "Understands mixed-language sentences",
+  "No grammar needed — just speak naturally",
+  "Context-aware responses in any script",
+  "Bangla · English · Banglish all supported",
+];
+
+const STEP_DURATION = 4500;
+const TYPE_SPEED = 25;
 
 function typeText(text: string, onChar: (full: string) => void, done: () => void, speed: number) {
   let i = 0;
@@ -130,12 +180,21 @@ export function NuanceShowcase({ className }: { className?: string }) {
               things done.
             </p>
 
+            <ul className="mt-6 space-y-2">
+              {features.map((f) => (
+                <li key={f} className="flex items-start gap-2 text-sm">
+                  <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+                  <span className="text-muted-foreground">{f}</span>
+                </li>
+              ))}
+            </ul>
+
             <div className="mt-6 flex items-center gap-2">
               {demos.map((d, i) => (
                 <button
                   key={i}
                   onClick={() => handleDotClick(i)}
-                  aria-label={`Show ${d.label} example`}
+                  aria-label={`Show ${d.label} ${d.context} example`}
                   aria-current={i === activeIndex}
                   className={cn(
                     "h-2 rounded-full transition-all",
@@ -150,46 +209,50 @@ export function NuanceShowcase({ className }: { className?: string }) {
 
           <div
             className={cn(
-              "border-border bg-background rounded-xl border p-5 font-mono text-sm leading-relaxed",
+              "border-border/80 bg-background rounded-xl border p-5 font-mono text-sm leading-relaxed",
               "shadow-lg shadow-black/5",
             )}
           >
-            <div className="border-border mb-4 flex items-center gap-2 border-b pb-3">
-              <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
-                {step.label}
+            <div className="border-border/80 mb-4 flex items-center gap-2 border-b pb-3">
+              <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                {step.flag} {step.label}
               </span>
+              <span className="text-muted-foreground/30 mx-1">·</span>
+              <span className="text-muted-foreground text-[10px] font-medium">{step.context}</span>
             </div>
 
-            {phase !== "pausing" || userText.length > 0 ? (
-              <div className="mb-4">
-                <div className="text-muted-foreground mb-1 text-[11px] font-semibold uppercase">
-                  You
+            <div className="h-[180px] overflow-hidden">
+              {phase !== "pausing" || userText.length > 0 ? (
+                <div className="mb-3">
+                  <div className="text-muted-foreground mb-1 text-[10px] font-semibold uppercase">
+                    You
+                  </div>
+                  <div className="bg-muted rounded-lg px-3 py-2 text-sm">
+                    {userText}
+                    {phase === "user-typing" && (
+                      <span className="animate-pulse">|</span>
+                    )}
+                  </div>
                 </div>
-                <div className="bg-muted rounded-lg px-3 py-2">
-                  {userText}
-                  {phase === "user-typing" && (
-                    <span className="animate-pulse">|</span>
-                  )}
-                </div>
-              </div>
-            ) : null}
+              ) : null}
 
-            {(phase === "agent-typing" || phase === "agent-done" || phase === "pausing") && (
-              <div>
-                <div className="text-muted-foreground mb-1 text-[11px] font-semibold uppercase">
-                  Agent
+              {(phase === "agent-typing" || phase === "agent-done" || phase === "pausing") && (
+                <div>
+                  <div className="text-muted-foreground mb-1 text-[10px] font-semibold uppercase">
+                    Agent
+                  </div>
+                  <div className="bg-primary/5 text-primary rounded-lg px-3 py-2 text-sm">
+                    {agentText}
+                    {phase === "agent-typing" && (
+                      <span className="animate-pulse">|</span>
+                    )}
+                  </div>
                 </div>
-                <div className="bg-primary/5 text-primary rounded-lg px-3 py-2">
-                  {agentText}
-                  {phase === "agent-typing" && (
-                    <span className="animate-pulse">|</span>
-                  )}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {phase === "agent-done" && (
-              <p className="text-muted-foreground mt-3 text-center text-xs">
+              <p className="text-muted-foreground mt-3 text-center text-[11px]">
                 Understanding intent, not just keywords.
               </p>
             )}

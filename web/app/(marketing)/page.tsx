@@ -27,6 +27,7 @@ import { FAQSection } from "@/components/sections/faq";
 import { EcosystemMap } from "@/components/sections/ecosystem-map";
 import { UpdatesFeedSection } from "@/components/sections/updates-feed";
 import { NuanceShowcase } from "@/components/sections/nuance-showcase";
+import { DocumentaryShowcase } from "@/components/sections/documentary-showcase";
 import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
 import { AgentNegotiation } from "@/components/blocks/agent-negotiation";
 import { PeopleBar } from "@/components/blocks/people-bar";
@@ -198,6 +199,8 @@ export default function HomePage() {
       </Section>
 
       <NuanceShowcase />
+
+      <DocumentaryShowcase />
 
       <Section background="muted">
         <Container>

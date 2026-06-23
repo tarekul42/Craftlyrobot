@@ -24,8 +24,8 @@ export function HeroSplit({
 }: HeroSplitProps) {
   return (
     <section className={cn("border-border border-b", className)}>
-      <Container>
-        <div className="grid gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-32">
+      <Container size="wide">
+        <div className="grid gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:py-32">
           <div className="flex flex-col justify-center">
             {eyebrow && <Eyebrow className="mb-4">{eyebrow}</Eyebrow>}
             <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
