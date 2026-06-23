@@ -3,7 +3,6 @@ import { Container } from "@/components/layout/container";
 import { Eyebrow } from "@/components/ui/eyebrow/eyebrow";
 import { Button } from "@/components/ui/button/button";
 import Link from "next/link";
-import { AnimatedTerminal } from "@/components/blocks/animated-terminal";
 
 interface CTA {
   label: string;
@@ -17,7 +16,7 @@ interface HeroWithTerminalProps {
   description?: string;
   primaryCta?: CTA;
   secondaryCta?: CTA;
-  commands?: Array<{ input: string; output: string }>;
+  visual?: React.ReactNode;
   className?: string;
 }
 
@@ -28,7 +27,7 @@ export function HeroWithTerminal({
   description,
   primaryCta,
   secondaryCta,
-  commands,
+  visual,
   className,
 }: HeroWithTerminalProps) {
   return (
@@ -72,7 +71,7 @@ export function HeroWithTerminal({
             )}
           </div>
           <div className="flex items-center justify-center py-20 lg:py-32">
-            <AnimatedTerminal commands={commands} />
+            {visual}
           </div>
         </div>
       </Container>

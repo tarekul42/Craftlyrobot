@@ -15,7 +15,9 @@ import { CTABand } from "@/components/sections/cta-band";
 import { FAQSection } from "@/components/sections/faq";
 import { EcosystemMap } from "@/components/sections/ecosystem-map";
 import { UpdatesFeedSection } from "@/components/sections/updates-feed";
+import { NuanceShowcase } from "@/components/sections/nuance-showcase";
 import { ScreenshotShowcase } from "@/components/blocks/screenshot-showcase";
+import { AgentNegotiation } from "@/components/blocks/agent-negotiation";
 import { PeopleBar } from "@/components/blocks/people-bar";
 import { siteConfig } from "@/config/site";
 import { foundationProducts } from "@/config/products";
@@ -23,7 +25,7 @@ import { homepageFaqs } from "@/config/faqs";
 import { communityStats } from "@/config/community";
 
 export const metadata: Metadata = {
-  title: "Craftly — Type it. Build it. Ship it.",
+  title: "Craftly — Ask for anything. Get it done.",
   description:
     "Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build.",
   alternates: { canonical: "/" },
@@ -39,13 +41,15 @@ export default function HomePage() {
   return (
     <>
       <HeroWithTerminal
-        title="Type it. Build it. Ship it."
-        description="Craftly is a contributor-driven ecosystem building tools that turn ideas into shipped products. Join us, or use what we build."
+        title="Ask for anything. Get it done."
+        subtitle="Your agent negotiates with other agents across the network."
+        description="Finding blood donors, building apps, solving problems — no phone calls, no waiting. Just results."
         primaryCta={{
           label: "Get early free access",
           href: "/contribute/apply",
         }}
         secondaryCta={{ label: "See the foundation", href: "/products" }}
+        visual={<AgentNegotiation />}
       />
 
       <Section background="muted">
@@ -87,7 +91,7 @@ export default function HomePage() {
         <Container>
           <SectionHeading
             eyebrow="Being built with care"
-            title="From the proprietary knowledge we are learning continuously"
+            title="Built on what we learned."
             description="Three products taught Craftly what it knows. They're being battle-tested every day."
             align="center"
           />
@@ -121,19 +125,19 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      <NuanceShowcase />
+
       <Section background="muted">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
               <Eyebrow className="mb-4">People of Craftly</Eyebrow>
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Join Bangladesh&apos;s first real effort to build a global tech
-                company
+                Join the team.
               </h2>
-              <p className="text-muted-foreground mt-6 text-lg">
-                We&apos;re not trying to build another startup. We&apos;re
-                building something that competes with Google, Microsoft, and
-                Apple — from Dhaka, with ambition.
+              <p className="text-muted-foreground mt-4 text-lg">
+                We&apos;re building something that competes with Google,
+                Microsoft, and Apple — from Dhaka, with ambition.
               </p>
               <div className="mt-8">
                 <Button asChild size="lg">
