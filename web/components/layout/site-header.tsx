@@ -36,16 +36,16 @@ export function SiteHeader() {
           : "bg-transparent",
       )}
     >
-      <div className="max-w-screen-default px-section mx-auto flex h-16 items-center justify-between">
-        <div className="flex items-center gap-8">
+      <div className="max-w-screen-default mx-auto flex h-14 items-center justify-between px-4 sm:h-16 sm:px-section">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Logo />
         </div>
 
         <MainNav />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href="/contribute/apply">Get Access</Link>
           </Button>
           <MobileNav items={mobileItems} logo={<Logo />} />

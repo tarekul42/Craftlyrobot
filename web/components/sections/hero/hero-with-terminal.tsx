@@ -33,7 +33,7 @@ export function HeroWithTerminal({
   return (
     <section
       className={cn(
-        "relative flex min-h-hero items-center overflow-hidden",
+        "relative flex min-h-0 items-center overflow-hidden lg:min-h-hero",
         className,
       )}
     >
@@ -42,28 +42,28 @@ export function HeroWithTerminal({
         <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
           <div className="flex flex-col justify-center py-20 lg:py-32">
             {eyebrow && <Eyebrow className="mb-4">{eyebrow}</Eyebrow>}
-            <h1 className="text-5xl font-bold leading-none tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-bold leading-none tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
               {title}
             </h1>
             {subtitle && (
-              <p className="text-muted-foreground mt-4 text-xl font-medium">
+              <p className="text-muted-foreground mt-4 text-lg font-medium sm:text-xl">
                 {subtitle}
               </p>
             )}
             {description && (
-              <p className="text-foreground/80 mt-6 max-w-prose text-lg leading-relaxed">
+              <p className="text-foreground/80 mt-6 max-w-prose text-base leading-relaxed sm:text-lg">
                 {description}
               </p>
             )}
             {(primaryCta || secondaryCta) && (
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {primaryCta && (
-                  <Button asChild size="lg">
+                  <Button asChild size="lg" className="w-full sm:w-auto">
                     <Link href={primaryCta.href}>{primaryCta.label}</Link>
                   </Button>
                 )}
                 {secondaryCta && (
-                  <Button asChild size="lg" variant="outline">
+                  <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                     <Link href={secondaryCta.href}>{secondaryCta.label}</Link>
                   </Button>
                 )}
@@ -71,7 +71,9 @@ export function HeroWithTerminal({
             )}
           </div>
           <div className="flex items-center justify-center py-20 lg:py-32">
-            {visual}
+            <div className="w-full max-w-md lg:max-w-lg">
+              {visual}
+            </div>
           </div>
         </div>
       </Container>

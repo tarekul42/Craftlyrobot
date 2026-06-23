@@ -1,9 +1,5 @@
 import type { Department } from "@/types/content";
 
-/**
- * Department catalog — how Craftly organizes its work.
- * Numbers are placeholder — replace with real counts as the ecosystem grows.
- */
 export const departments: Department[] = [
   {
     slug: "engineering",
@@ -15,7 +11,7 @@ export const departments: Department[] = [
       "Backend Contributor",
       "DevOps Engineer",
     ],
-    currentProjects: ["craftly-robot", "workspace"],
+    currentProjects: ["craftly-robot", "workspace", "agent-console"],
   },
   {
     slug: "design",
@@ -23,7 +19,15 @@ export const departments: Department[] = [
     contributorCount: 4,
     focus: "Designing the Craftly brand, products, and contributor experience",
     openings: ["Product Designer", "Brand Designer"],
-    currentProjects: ["craftly-robot"],
+    currentProjects: ["craftly-robot", "craftly-website"],
+  },
+  {
+    slug: "ai-ml",
+    name: "AI & ML",
+    contributorCount: 5,
+    focus: "Training language models, building the Nuance engine, and agent negotiation logic",
+    openings: ["NLP Specialist", "ML Engineer"],
+    currentProjects: ["nuance", "hello", "agent-network-protocol"],
   },
   {
     slug: "community",
@@ -31,7 +35,15 @@ export const departments: Department[] = [
     contributorCount: 8,
     focus: "Onboarding new contributors and running community channels",
     openings: ["Community Manager", "Onboarding Mentor"],
-    currentProjects: ["craftly-robot", "hello-world"],
+    currentProjects: ["craftly-robot", "hello", "community-onboarding"],
+  },
+  {
+    slug: "content",
+    name: "Content",
+    contributorCount: 3,
+    focus: "Documentation, technical writing, and social media content",
+    openings: ["Technical Writer", "Content Creator"],
+    currentProjects: ["craftly-website"],
   },
   {
     slug: "operations",
@@ -42,9 +54,6 @@ export const departments: Department[] = [
   },
 ];
 
-/**
- * Get a department by slug.
- */
 export function getDepartmentBySlug(slug: string): Department | undefined {
   return departments.find((d) => d.slug === slug);
 }

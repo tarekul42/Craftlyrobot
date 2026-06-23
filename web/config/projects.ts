@@ -1,9 +1,5 @@
 import type { Project } from "@/types/content";
 
-/**
- * Active projects at Craftly.
- * Replace with real data as the ecosystem grows.
- */
 export const projects: Project[] = [
   {
     slug: "craftly-robot",
@@ -99,6 +95,38 @@ export const projects: Project[] = [
       "Achieve 70% first-contribution rate within 30 days",
       "Recruit 10 mentors",
       "Reduce time-to-first-contribution to under 14 days",
+    ],
+  },
+  {
+    slug: "agent-network-protocol",
+    name: "Agent Network Protocol",
+    description:
+      "The core P2P protocol enabling agent-to-agent discovery, negotiation, and transaction. Powers blood donor, ride share, and every agent interaction.",
+    status: "active",
+    department: "AI & ML",
+    contributorCount: 3,
+    startDate: "2026-02-01",
+    tags: ["protocol", "p2p", "agentic"],
+    goals: [
+      "Support 100 simultaneous agent negotiations",
+      "Achieve sub-second agent discovery latency",
+      "Open specification for third-party agents",
+    ],
+  },
+  {
+    slug: "nuance",
+    name: "Nuance Language Engine",
+    description:
+      "Language understanding system that handles Bangla, English, and Banglish interchangeably. No translation needed.",
+    status: "active",
+    department: "AI & ML",
+    contributorCount: 3,
+    startDate: "2026-03-01",
+    tags: ["nlp", "ai", "bangla", "banglish"],
+    goals: [
+      "Support 5 additional Indian languages",
+      "Achieve 95% intent accuracy across all 3 languages",
+      "Ship on-device inference for offline use",
     ],
   },
 ];

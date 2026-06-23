@@ -103,7 +103,7 @@
   --space-32: 8rem;
 
   --section-padding-x: clamp(1rem, 4vw, 4.5rem);
-  --section-padding-y: clamp(5rem, 10vw, 8rem);
+  --section-padding-y: clamp(3.5rem, 8vw, 8rem);
 
   --container-prose: 760px;
   --container-narrow: 1024px;

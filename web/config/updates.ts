@@ -2,6 +2,37 @@ import type { Update } from "@/types/update";
 
 export const updates: Update[] = [
   {
+    id: "agent-negotiation-live",
+    type: "shipped",
+    title: "Agent negotiation animation goes live on homepage",
+    summary:
+      "The hero now shows a real-time simulation of agent-to-agent negotiation — blood donor scenario with live timer, chat bubbles, and monochrome design.",
+    date: "2026-06-24",
+    author: "Tarekul",
+    tags: ["website", "design", "agentic"],
+  },
+  {
+    id: "nuance-banglish-support",
+    type: "shipped",
+    title: "Nuance engine now supports Banglish across 8 scenarios",
+    summary:
+      "Our language engine handles Bangla, English, and Banglish for blood donor, ride share, and app building — all demoed on the homepage.",
+    date: "2026-06-23",
+    author: "Wasif",
+    tags: ["nuance", "nlp", "ai"],
+  },
+  {
+    id: "blood-donor-first-success",
+    type: "milestone",
+    title: "First successful blood donor match via agent network",
+    summary:
+      "An O+ blood request in Dhaka was fulfilled through the agent network — donor found, eligibility verified, pickup negotiated, all without human calls.",
+    date: "2026-06-22",
+    author: "Rafi",
+    link: { label: "Case study", href: "/blog/blood-donor-case-study" },
+    tags: ["agentic", "blood-donor", "milestone"],
+  },
+  {
     id: "workspace-uptime-milestone",
     type: "milestone",
     title: "Workspace hit 99.2% uptime",
@@ -24,6 +55,16 @@ export const updates: Update[] = [
     tags: ["craftly-robot", "launch"],
   },
   {
+    id: "design-system-v2",
+    type: "shipped",
+    title: "Design system v2 released — monochrome, mobile-first, accessible",
+    summary:
+      "Complete visual overhaul: monochrome color palette, mobile-first responsive tokens, WCAG AA compliant contrast, and refined typography scale.",
+    date: "2026-06-16",
+    author: "Tarekul",
+    tags: ["design", "design-system", "accessibility"],
+  },
+  {
     id: "agent-console-dogfood",
     type: "progress",
     title: "Agent Console now powers our internal CI/CD",
@@ -41,6 +82,16 @@ export const updates: Update[] = [
     date: "2026-06-12",
     author: "Rafi",
     tags: ["community", "onboarding"],
+  },
+  {
+    id: "agent-network-protocol-alpha",
+    type: "progress",
+    title: "Agent Network Protocol enters alpha — P2P agent communication",
+    summary:
+      "The core protocol that lets agents discover, negotiate, and transact with each other is now running in alpha. Blood donor scenario was the first test case.",
+    date: "2026-06-11",
+    author: "Wasif",
+    tags: ["protocol", "agentic", "p2p"],
   },
   {
     id: "architecture-blog-post",
@@ -64,6 +115,27 @@ export const updates: Update[] = [
     tags: ["hello", "ai"],
   },
   {
+    id: "five-hundred-applications",
+    type: "milestone",
+    title: "500 applications submitted through early access",
+    summary:
+      "The apply form hit 500 submissions. Over 60% of applicants are from Bangladesh, with growing interest from India, Pakistan, and the Middle East.",
+    date: "2026-06-03",
+    author: "Rafi",
+    tags: ["community", "growth", "milestone"],
+  },
+  {
+    id: "documentary-published",
+    type: "announcement",
+    title: "Craftly Documentary — Building from Bangladesh",
+    summary:
+      "A short documentary about our journey: building a tech company from Dhaka, with contributors across time zones.",
+    date: "2026-06-02",
+    author: "Tarekul",
+    link: { label: "Watch on YouTube", href: "https://youtube.com/playlist?list=CraftlyDocumentary" },
+    tags: ["media", "documentary"],
+  },
+  {
     id: "workspace-collab-feature",
     type: "progress",
     title: "Real-time collaborative editing prototype ready",
@@ -72,6 +144,26 @@ export const updates: Update[] = [
     date: "2026-06-01",
     author: "Wasif",
     tags: ["workspace", "engineering"],
+  },
+  {
+    id: "decentralized-node-alpha",
+    type: "announcement",
+    title: "Decentralized node network enters alpha testing",
+    summary:
+      "The first 5 nodes are live across Dhaka, Chattogram, and Singapore. Each node runs a full agent runtime and communicates over the agent protocol.",
+    date: "2026-05-28",
+    author: "Wasif",
+    tags: ["infrastructure", "decentralized", "alpha"],
+  },
+  {
+    id: "ui-ux-refinement-pack",
+    type: "shipped",
+    title: "Priority 12 ships: UI/UX refinement across 8 files",
+    summary:
+      "Agent negotiation chat bubbles, 8-scenario nuance showcase, wider apply form, documentary section, dynamic update filters, and mobile-responsive hero.",
+    date: "2026-05-25",
+    author: "Tarekul",
+    tags: ["website", "design", "ux"],
   },
 ];
 

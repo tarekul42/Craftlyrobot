@@ -11,16 +11,6 @@ interface SectionHeadingProps {
   className?: string;
 }
 
-/**
- * SectionHeading — standardized section heading pattern.
- * Combines optional eyebrow + title + optional description.
- *
- * @example
- * <SectionHeading
- *   eyebrow="Decentralized intelligence"
- *   title="Built to move beyond data center limits"
- * />
- */
 function SectionHeading({
   eyebrow,
   title,
@@ -32,17 +22,17 @@ function SectionHeading({
   return (
     <div
       className={cn(
-        "space-y-3",
+        "space-y-2.5 sm:space-y-3",
         align === "center" && "mx-auto max-w-2xl text-center",
         className,
       )}
     >
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <Heading className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+      <Heading className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
         {title}
       </Heading>
       {description && (
-        <p className="text-muted-foreground text-lg">{description}</p>
+        <p className="text-muted-foreground text-base sm:text-lg">{description}</p>
       )}
     </div>
   );

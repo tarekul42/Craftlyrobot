@@ -17,16 +17,6 @@ interface CTABandProps {
   className?: string;
 }
 
-/**
- * CTABand — full-width call-to-action band with high-contrast background.
- *
- * @example
- * <CTABand
- *   variant="dark"
- *   title="Help us today, get support back tomorrow"
- *   primaryCta={{ label: "Start Crafting", href: "/contribute/apply" }}
- * />
- */
 export function CTABand({
   title,
   description,
@@ -48,12 +38,12 @@ export function CTABand({
       <Container>
         <div
           className={cn(
-            "rounded-lg border p-8 text-center md:p-12",
+            "rounded-lg border p-6 text-center sm:p-8 md:p-12",
             variantClasses,
             !isDark && "border-border",
           )}
         >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             {title}
           </h2>
           {description && (
@@ -67,12 +57,13 @@ export function CTABand({
             </p>
           )}
           {(primaryCta || secondaryCta) && (
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
               {primaryCta && (
                 <Button
                   asChild
                   size="lg"
                   variant={isDark ? "secondary" : "primary"}
+                  className="w-full sm:w-auto"
                 >
                   <Link href={primaryCta.href}>{primaryCta.label}</Link>
                 </Button>
@@ -82,11 +73,12 @@ export function CTABand({
                   asChild
                   size="lg"
                   variant={isDark ? "ghost" : "outline"}
-                  className={
+                  className={cn(
+                    "w-full sm:w-auto",
                     isDark
                       ? "text-primary-foreground hover:bg-primary-foreground/10"
-                      : ""
-                  }
+                      : "",
+                  )}
                 >
                   <Link href={secondaryCta.href}>{secondaryCta.label}</Link>
                 </Button>

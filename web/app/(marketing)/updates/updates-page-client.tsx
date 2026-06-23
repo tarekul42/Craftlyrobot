@@ -62,7 +62,7 @@ export function UpdatesPageClient({ updates }: UpdatesPageClientProps) {
         <button
           onClick={() => handleFilterChange("all")}
           className={cn(
-            "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
+            "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
             activeFilter === "all"
               ? "bg-primary text-primary-foreground border-primary"
               : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
@@ -77,7 +77,7 @@ export function UpdatesPageClient({ updates }: UpdatesPageClientProps) {
               key={type}
               onClick={() => handleFilterChange(type)}
               className={cn(
-                "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
+                "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
                 activeFilter === type
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
