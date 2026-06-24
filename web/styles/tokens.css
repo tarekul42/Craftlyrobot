@@ -39,7 +39,7 @@
   --color-foreground: var(--neutral-900);
 
   --color-muted: var(--neutral-100);
-  --color-muted-foreground: var(--neutral-600);
+  --color-muted-foreground: var(--neutral-500);
 
   --color-card: var(--neutral-0);
   --color-card-foreground: var(--neutral-900);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getClientIP } from "@/lib/turnstile";
+import { verifyTurnstile, getClientIP } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/db";
 
@@ -9,9 +9,24 @@ const earlyAccessSchema = z.object({
     .string()
     .min(8, "Please enter your WhatsApp number")
     .max(20, "Number is too long"),
+  turnstileToken: z.string().min(1, "Please verify you're human"),
 });
 
+function checkOrigin(req: Request): boolean {
+  const origin = req.headers.get("origin");
+  const referer = req.headers.get("referer");
+  const allowedHost = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
+  if (!origin && !referer) return true;
+  if (origin && !origin.startsWith(allowedHost)) return false;
+  if (referer && !referer.startsWith(allowedHost)) return false;
+  return true;
+}
+
 export async function POST(req: Request) {
+  if (!checkOrigin(req)) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   const ip = getClientIP(req);
 
   const limit = await rateLimit(`early-access:${ip}`, {
@@ -21,7 +36,7 @@ export async function POST(req: Request) {
   if (!limit.success) {
     return NextResponse.json(
       { message: "Too many submissions. Please try again tomorrow." },
-      { status: 429 },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
     );
   }
 
@@ -46,20 +61,28 @@ export async function POST(req: Request) {
     );
   }
 
-  const { phoneNumber } = result.data;
-
-  if (!process.env.DATABASE_URL) {
-    console.log("[early-access] (dev mode — not saved)", phoneNumber);
-    return NextResponse.json(
-      { ok: true, message: "You're on the list." },
-      { status: 200 },
-    );
-  }
+  const data = result.data;
 
   try {
+    const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
+    if (!turnstileOk) {
+      return NextResponse.json(
+        { message: "Bot verification failed." },
+        { status: 400 },
+      );
+    }
+
+    if (!process.env.DATABASE_URL) {
+      console.log("[early-access] (dev mode — not saved)", data.phoneNumber);
+      return NextResponse.json(
+        { ok: true, message: "You're on the list." },
+        { status: 200 },
+      );
+    }
+
     await prisma.earlyAccessSignup.create({
       data: {
-        phoneNumber,
+        phoneNumber: data.phoneNumber,
         ipAddress: ip,
       },
     });

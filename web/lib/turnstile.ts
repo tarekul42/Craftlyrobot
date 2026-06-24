@@ -27,10 +27,14 @@ export async function verifyTurnstile(
 ): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("TURNSTILE_SECRET_KEY is not set — blocking request in production");
+      return false;
+    }
     console.warn(
       "TURNSTILE_SECRET_KEY not set — skipping verification. Do NOT use in production.",
     );
-    return true; // Allow in development when secret isn't set
+    return true;
   }
 
   try {

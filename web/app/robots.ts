@@ -12,7 +12,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/admin/"],
+      disallow: ["/api/apply", "/api/contact", "/api/early-access"],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
     host: siteConfig.url.replace(/^https?:\/\//, ""),

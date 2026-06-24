@@ -30,8 +30,12 @@ export function Newsletter({
     if (!email) return;
     setStatus("loading");
     try {
-      // Wire this to /api/newsletter when backend is ready
-      await new Promise((r) => setTimeout(r, 800));
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("Failed to subscribe");
       setStatus("success");
       setEmail("");
     } catch {

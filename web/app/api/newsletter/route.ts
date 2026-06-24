@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import { contactSchema } from "@/lib/validations/contact";
-import { verifyTurnstile, getClientIP } from "@/lib/turnstile";
+import { z } from "zod";
+import { getClientIP } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/rate-limit";
-import { sendContactConfirmation } from "@/lib/email";
-import { notifyContactReceived } from "@/lib/slack";
-import { saveContactMessage } from "@/lib/db";
+import { prisma } from "@/lib/db";
+import crypto from "crypto";
+
+const newsletterSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Please enter your email")
+    .email("Please enter a valid email address"),
+});
 
 const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
 
@@ -24,13 +30,13 @@ export async function POST(req: Request) {
 
   const ip = getClientIP(req);
 
-  const limit = await rateLimit(`contact:${ip}`, {
-    limit: 5,
-    windowMs: 60 * 60 * 1000,
+  const limit = await rateLimit(`newsletter:${ip}`, {
+    limit: 3,
+    windowMs: 24 * 60 * 60 * 1000,
   });
   if (!limit.success) {
     return NextResponse.json(
-      { message: "Too many messages. Please try again later." },
+      { message: "Too many signups. Please try again tomorrow." },
       { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
     );
   }
@@ -45,7 +51,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const result = contactSchema.safeParse(body);
+  const result = newsletterSchema.safeParse(body);
   if (!result.success) {
     return NextResponse.json(
       {
@@ -56,49 +62,44 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = result.data;
+  const { email } = result.data;
+
+  if (!process.env.DATABASE_URL) {
+    console.log("[newsletter] (dev mode — not saved)", email);
+    return NextResponse.json(
+      { ok: true, message: "Thanks! Check your inbox to confirm." },
+      { status: 200 },
+    );
+  }
 
   try {
-    const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
-    if (!turnstileOk) {
+    const existing = await prisma.newsletterSubscriber.findUnique({
+      where: { email },
+    });
+
+    if (existing) {
       return NextResponse.json(
-        { message: "Bot verification failed." },
-        { status: 400 },
+        { ok: true, message: "You're already subscribed!" },
+        { status: 200 },
       );
     }
 
-    const saved = await saveContactMessage({
-      name: data.name,
-      email: data.email,
-      subject: data.subject,
-      message: data.message,
-      ip,
+    await prisma.newsletterSubscriber.create({
+      data: {
+        email,
+        status: "pending",
+        token: crypto.randomBytes(32).toString("hex"),
+      },
     });
 
-    if (!saved) {
-      console.warn("[contact] DB save returned null — skipping email/Slack notifications");
-    } else {
-      await sendContactConfirmation(data.email, data.name);
-      await notifyContactReceived({
-        name: data.name,
-        email: data.email,
-        subject: data.subject,
-      });
-    }
-
-    console.log("[contact] Processed:", { id: saved?.id, name: data.name, ip });
-
     return NextResponse.json(
-      { ok: true, message: "Message received." },
+      { ok: true, message: "Thanks! Check your inbox to confirm." },
       { status: 200 },
     );
   } catch (error) {
-    console.error("[contact] Failed:", error);
+    console.error("[newsletter] Failed:", error);
     return NextResponse.json(
-      {
-        message:
-          "Something went wrong. Please try again or email hello@craftlyrobot.com.",
-      },
+      { message: "Something went wrong. Please try again." },
       { status: 500 },
     );
   }

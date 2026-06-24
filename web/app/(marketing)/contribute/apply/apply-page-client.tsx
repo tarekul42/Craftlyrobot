@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FileText, MessageCircle, ArrowRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Card, CardContent } from "@/components/ui/card/card";
@@ -13,9 +13,20 @@ type ApplyMode = "choose" | "form" | "chat";
 
 export function ApplyPageClient() {
   const [mode, setMode] = useState<ApplyMode>("choose");
+  const modeRef = useRef<HTMLDivElement>(null);
 
-  const heroForm =
-    mode === "form" ? (
+  useEffect(() => {
+    if (modeRef.current) {
+      const first = modeRef.current.querySelector<HTMLElement>(
+        "input, select, textarea, button, [tabindex]:not([tabindex='-1']), a",
+      );
+      first?.focus();
+    }
+  }, [mode]);
+
+  const heroForm = (
+    <div ref={modeRef}>
+    {mode === "form" ? (
       <div>
         <Button
           variant="ghost"
@@ -85,6 +96,8 @@ export function ApplyPageClient() {
           </CardContent>
         </Card>
       </div>
+    )}
+    </div>
     );
 
   return (

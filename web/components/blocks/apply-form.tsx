@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
@@ -45,6 +45,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const stepRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<ApplyFormValues>({
     resolver: zodResolver(applySchema),
@@ -62,6 +63,15 @@ export function ApplyForm({ className }: ApplyFormProps) {
     },
     mode: "onTouched",
   });
+
+  useEffect(() => {
+    if (stepRef.current) {
+      const firstInput = stepRef.current.querySelector<HTMLElement>(
+        "input, select, textarea, button, [tabindex]:not([tabindex='-1'])",
+      );
+      firstInput?.focus();
+    }
+  }, [step]);
 
   const validateStep = async () => {
     const fields = steps[step]?.fields;
@@ -141,6 +151,9 @@ export function ApplyForm({ className }: ApplyFormProps) {
             />
           </div>
           <h3 className="mt-3 text-lg font-semibold">{steps[step]?.title ?? ""}</h3>
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            {steps[step]?.title ?? ""} — step {step + 1} of {steps.length}
+          </div>
         </div>
 
         <form
@@ -148,6 +161,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
           noValidate
           aria-busy={form.formState.isSubmitting}
         >
+          <div ref={stepRef}>
           {step === 0 && (
             <div className="space-y-4">
               <FormField
@@ -385,6 +399,8 @@ export function ApplyForm({ className }: ApplyFormProps) {
               </div>
             </div>
           )}
+
+          </div>
 
           {submitError && (
             <div

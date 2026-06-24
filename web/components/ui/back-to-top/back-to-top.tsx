@@ -46,7 +46,7 @@ export function BackToTop({ threshold = 600, className }: BackToTopProps) {
         onClick={handleClick}
         aria-label="Back to top"
         className={cn(
-          "border-border bg-background hover:bg-muted fixed bottom-6 right-6 z-[1200] flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-colors",
+            "border-border bg-background hover:bg-muted fixed bottom-6 right-6 z-[1300] flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-colors",
           className,
         )}
       >
@@ -67,7 +67,7 @@ export function BackToTop({ threshold = 600, className }: BackToTopProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={cn(
-            "border-border bg-background hover:bg-muted fixed bottom-6 right-6 z-[1200] flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-colors",
+            "border-border bg-background hover:bg-muted fixed bottom-6 right-6 z-[1300] flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-colors",
             className,
           )}
         >

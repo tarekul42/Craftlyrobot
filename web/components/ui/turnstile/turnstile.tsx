@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -22,12 +22,15 @@ interface TurnstileOptions {
   size?: "normal" | "compact";
 }
 
-let scriptLoaded = false;
-const scriptPromise = new Promise<void>((resolve) => {
-  if (scriptLoaded || typeof window === "undefined") return;
+type ScriptStatus = "loading" | "ready" | "error";
+
+let scriptStatus: ScriptStatus = "loading";
+const listeners = new Set<() => void>();
+
+function loadScript() {
+  if (typeof window === "undefined") return;
   if (window.turnstile) {
-    scriptLoaded = true;
-    resolve();
+    scriptStatus = "ready";
     return;
   }
   const script = document.createElement("script");
@@ -35,11 +38,35 @@ const scriptPromise = new Promise<void>((resolve) => {
   script.async = true;
   script.defer = true;
   script.onload = () => {
-    scriptLoaded = true;
-    resolve();
+    scriptStatus = "ready";
+    listeners.forEach((fn) => fn());
+    listeners.clear();
+  };
+  script.onerror = () => {
+    scriptStatus = "error";
+    listeners.forEach((fn) => fn());
+    listeners.clear();
   };
   document.head.appendChild(script);
-});
+
+  setTimeout(() => {
+    if (scriptStatus === "loading") {
+      scriptStatus = "error";
+      listeners.forEach((fn) => fn());
+      listeners.clear();
+    }
+  }, 10000);
+}
+
+loadScript();
+
+function onScriptReady(fn: () => void) {
+  if (scriptStatus === "ready") {
+    fn();
+  } else if (scriptStatus === "loading") {
+    listeners.add(fn);
+  }
+}
 
 interface TurnstileProps {
   onVerify: (token: string) => void;
@@ -48,45 +75,62 @@ interface TurnstileProps {
   className?: string;
 }
 
-/**
- * Turnstile — Cloudflare Turnstile widget for bot protection.
- *
- * Gracefully degrades when no site key is configured (development mode).
- * In that case, it renders a note explaining how to enable it.
- *
- * Requires NEXT_PUBLIC_TURNSTILE_SITE_KEY in environment.
- *
- * @example
- * <Turnstile onVerify={(token) => form.setValue("turnstileToken", token)} />
- */
 export function Turnstile({
   onVerify,
   onExpire,
   onError,
   className,
 }: TurnstileProps) {
-  const containerRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node) return;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | undefined>(undefined);
+  const onVerifyRef = useRef(onVerify);
+  const onExpireRef = useRef(onExpire);
+  const onErrorRef = useRef(onError);
+  const [scriptFailed, setScriptFailed] = useState(false);
 
-      const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-      if (!siteKey) return;
+  onVerifyRef.current = onVerify;
+  onExpireRef.current = onExpire;
+  onErrorRef.current = onError;
 
-      scriptPromise.then(() => {
-        if (!window.turnstile) return;
-        while (node.firstChild) node.removeChild(node.firstChild);
-        window.turnstile.render(node, {
-          sitekey: siteKey,
-          callback: onVerify,
-          "error-callback": onError,
-          "expired-callback": onExpire,
-          theme: "auto",
-          size: "normal",
-        });
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+
+    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    if (!siteKey) return;
+
+    const render = () => {
+      if (!window.turnstile || !node) return;
+      while (node.firstChild) node.removeChild(node.firstChild);
+      widgetIdRef.current = window.turnstile.render(node, {
+        sitekey: siteKey,
+        callback: (token: string) => onVerifyRef.current(token),
+        "error-callback": () => onErrorRef.current?.(),
+        "expired-callback": () => {
+          if (widgetIdRef.current) {
+            window.turnstile?.reset(widgetIdRef.current);
+          }
+          onExpireRef.current?.();
+        },
+        theme: "auto",
+        size: "normal",
       });
-    },
-    [onVerify, onExpire, onError],
-  );
+    };
+
+    if (scriptStatus === "error") {
+      setScriptFailed(true);
+      return;
+    }
+
+    onScriptReady(render);
+
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = undefined;
+      }
+    };
+  }, []);
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -103,6 +147,30 @@ export function Turnstile({
           NEXT_PUBLIC_TURNSTILE_SITE_KEY
         </code>{" "}
         to enable Cloudflare Turnstile.
+      </div>
+    );
+  }
+
+  if (scriptFailed) {
+    return (
+      <div
+        className={cn(
+          "border-destructive/30 bg-destructive/5 text-destructive rounded-md border border-dashed p-4 text-sm",
+          className,
+          "flex items-start gap-2",
+        )}
+        role="alert"
+      >
+        <span>
+          Bot verification failed to load. Please refresh the page or email{" "}
+          <a
+            href="mailto:hello@craftlyrobot.com"
+            className="underline underline-offset-2"
+          >
+            hello@craftlyrobot.com
+          </a>
+          .
+        </span>
       </div>
     );
   }

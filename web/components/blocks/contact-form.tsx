@@ -33,6 +33,7 @@ export function ContactForm({ className }: ContactFormProps) {
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
+    mode: "onTouched",
     defaultValues: {
       name: "",
       email: "",

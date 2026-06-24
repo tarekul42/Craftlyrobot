@@ -5,41 +5,40 @@ import { Cookie, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-interface CookieConsentProps {
-  /** Cookie name to store consent (default: "craftly-consent") */
-  cookieName?: string;
+interface ConsentBannerProps {
+  /** Storage key for consent preference (default: "craftly-consent") */
+  storageKey?: string;
   /** Days until consent expires (default: 365) */
   expiryDays?: number;
   className?: string;
 }
 
 /**
- * CookieConsent — GDPR consent banner.
+ * ConsentBanner — GDPR consent banner.
  *
  * Shows a banner at the bottom of the screen asking for consent.
- * Stores the user's choice in localStorage (no actual cookie set).
+ * Stores the user's choice in localStorage (no cookies set).
  *
  * Note: Craftly uses Plausible (cookieless analytics), so this banner
  * is mostly for show and for any future third-party scripts that need it.
  *
  * @example
- * <CookieConsent />  // add once in root layout
+ * <ConsentBanner />  // add once in root layout
  */
 export function CookieConsent({
-  cookieName = "craftly-consent",
+  storageKey = "craftly-consent",
   expiryDays = 365,
   className,
-}: CookieConsentProps) {
+}: ConsentBannerProps) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(cookieName);
+    const stored = localStorage.getItem(storageKey);
     if (!stored) {
-      // Small delay to avoid hydration mismatch and flash on page load
       const timer = setTimeout(() => setShow(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [cookieName]);
+  }, [storageKey]);
 
   const handleAccept = () => {
     const data = {
@@ -47,7 +46,7 @@ export function CookieConsent({
       timestamp: Date.now(),
       expires: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
     };
-    localStorage.setItem(cookieName, JSON.stringify(data));
+    localStorage.setItem(storageKey, JSON.stringify(data));
     setShow(false);
   };
 
@@ -57,7 +56,11 @@ export function CookieConsent({
       timestamp: Date.now(),
       expires: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
     };
-    localStorage.setItem(cookieName, JSON.stringify(data));
+    localStorage.setItem(storageKey, JSON.stringify(data));
+    setShow(false);
+  };
+
+  const handleDismiss = () => {
     setShow(false);
   };
 
@@ -66,8 +69,7 @@ export function CookieConsent({
   return (
     <div
       role="dialog"
-      aria-label="Cookie consent"
-      aria-live="polite"
+      aria-label="Privacy consent"
       className={cn(
         "border-border bg-card fixed bottom-4 left-4 right-4 z-[1200] mx-auto max-w-2xl rounded-lg border p-4 shadow-2xl sm:p-6",
         className,
@@ -100,9 +102,9 @@ export function CookieConsent({
           </div>
         </div>
         <button
-          onClick={handleDecline}
+          onClick={handleDismiss}
           className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1"
-          aria-label="Close consent banner"
+          aria-label="Dismiss banner"
         >
           <X className="h-4 w-4" />
         </button>

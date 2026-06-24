@@ -14,8 +14,10 @@
 
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+const PRISMA_GLOBAL = Symbol.for("prisma-global");
+
+const globalForPrisma = globalThis as {
+  [PRISMA_GLOBAL]?: PrismaClient;
 };
 
 /**
@@ -23,7 +25,7 @@ const globalForPrisma = globalThis as unknown as {
  * Prevents multiple instances in development (Next.js hot reload).
  */
 export const prisma =
-  globalForPrisma.prisma ??
+  globalForPrisma[PRISMA_GLOBAL] ??
   new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
@@ -32,7 +34,7 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma[PRISMA_GLOBAL] = prisma;
 }
 
 /**

@@ -17,7 +17,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
+    <html lang="en">
       <body>
         <main className="flex min-h-screen flex-col items-center justify-center p-8 text-center">
           <p className="font-logo text-muted-foreground/20 text-9xl">500</p>

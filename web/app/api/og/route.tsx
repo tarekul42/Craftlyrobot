@@ -15,7 +15,10 @@ export async function GET(req: Request) {
     windowMs: 60 * 1000,
   });
   if (!limit.success) {
-    return new Response("Too many requests", { status: 429 });
+    return new Response("Too many requests", {
+      status: 429,
+      headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) },
+    });
   }
 
   const { searchParams } = new URL(req.url);
@@ -36,7 +39,7 @@ export async function GET(req: Request) {
           justifyContent: "center",
           alignItems: "flex-start",
           padding: 80,
-          fontFamily: "sans-serif",
+          fontFamily: "ui-sans-serif, system-ui, sans-serif",
         }}
       >
         {eyebrow && (
@@ -82,7 +85,7 @@ export async function GET(req: Request) {
             left: 80,
             fontSize: 36,
             color: "#686868",
-            fontFamily: "cursive",
+            fontFamily: "ui-serif, Georgia, serif",
           }}
         >
           Craftly

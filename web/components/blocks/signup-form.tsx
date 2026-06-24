@@ -35,6 +35,7 @@ export function SignupForm({ className }: SignupFormProps) {
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
+    mode: "onTouched",
     defaultValues: { phoneNumber: "", turnstileToken: "" },
   });
 
@@ -84,6 +85,7 @@ export function SignupForm({ className }: SignupFormProps) {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-5"
           noValidate
+          aria-busy={form.formState.isSubmitting}
         >
           <FormField
             label="WhatsApp Number"

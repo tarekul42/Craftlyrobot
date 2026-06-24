@@ -111,7 +111,7 @@ export function ApplyChat({ className }: ApplyChatProps) {
       </div>
 
       <CardContent className="flex flex-1 flex-col p-0">
-        <div className="flex-1 space-y-3 overflow-y-auto p-4">
+        <div className="flex-1 space-y-3 overflow-y-auto p-4" role="log" aria-live="polite" aria-label="Chat messages">
           {messages.map((msg, i) => (
             <div
               key={i}

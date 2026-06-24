@@ -6,18 +6,22 @@ import { sendApplicationConfirmation } from "@/lib/email";
 import { notifyApplicationReceived } from "@/lib/slack";
 import { saveApplication } from "@/lib/db";
 
-/**
- * POST /api/apply
- *
- * Full pipeline:
- *   1. Rate limit (1/day per IP)
- *   2. Validate with Zod
- *   3. Verify Turnstile
- *   4. Save to database (if DATABASE_URL set)
- *   5. Send confirmation email
- *   6. Notify team via Slack
- */
+const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
+
+function checkOrigin(req: Request): boolean {
+  const origin = req.headers.get("origin");
+  const referer = req.headers.get("referer");
+  if (!origin && !referer) return true;
+  if (origin && !origin.startsWith(allowedOrigin)) return false;
+  if (referer && !referer.startsWith(allowedOrigin)) return false;
+  return true;
+}
+
 export async function POST(req: Request) {
+  if (!checkOrigin(req)) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   const ip = getClientIP(req);
 
   const limit = await rateLimit(`apply:${ip}`, {
@@ -31,7 +35,7 @@ export async function POST(req: Request) {
           "You've already submitted an application. Please wait 24 hours.",
         retryAt: new Date(limit.resetAt).toISOString(),
       },
-      { status: 429 },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
     );
   }
 
@@ -66,6 +70,7 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+
     const saved = await saveApplication({
       fullName: data.fullName,
       email: data.email,
@@ -79,15 +84,19 @@ export async function POST(req: Request) {
       ip,
     });
 
-    await sendApplicationConfirmation(data.email, data.fullName);
-    await notifyApplicationReceived({
-      fullName: data.fullName,
-      email: data.email,
-      role: data.role,
-      department: data.department,
-      commitment: data.commitment,
-      skillsCount: data.skills.length,
-    });
+    if (!saved) {
+      console.warn("[apply] DB save returned null — skipping email/Slack notifications");
+    } else {
+      await sendApplicationConfirmation(data.email, data.fullName);
+      await notifyApplicationReceived({
+        fullName: data.fullName,
+        email: data.email,
+        role: data.role,
+        department: data.department,
+        commitment: data.commitment,
+        skillsCount: data.skills.length,
+      });
+    }
 
     console.log("[apply] Processed:", {
       id: saved?.id,

@@ -13,7 +13,7 @@ let upstashRatelimit: {
   limit: (key: string) => Promise<{ success: boolean; remaining: number; reset: number }>;
 } | null = null;
 
-async function getUpstashRatelimit() {
+async function getUpstashRatelimit(options: RateLimitOptions) {
   if (upstashRatelimit) return upstashRatelimit;
   try {
     const { Ratelimit } = await import("@upstash/ratelimit");
@@ -21,9 +21,9 @@ async function getUpstashRatelimit() {
     if (process.env.UPSTASH_REDIS_REST_URL) {
       upstashRatelimit = new Ratelimit({
         redis: Redis.fromEnv(),
-        limiter: Ratelimit.slidingWindow(10, "10 s"),
+        limiter: Ratelimit.slidingWindow(options.limit, `${options.windowMs}ms`),
         analytics: true,
-        prefix: "craftly",
+        prefix: process.env.KV_PREFIX ?? "craftly",
       });
       return upstashRatelimit;
     }
@@ -33,25 +33,39 @@ async function getUpstashRatelimit() {
   return null;
 }
 
+const STORE_MAX = 10000;
 const store = new Map<string, { count: number; resetAt: number }>();
 
-if (typeof setInterval !== "undefined") {
-  setInterval(
+let cleanupInterval: ReturnType<typeof setInterval> | null = null;
+
+function startCleanup() {
+  if (cleanupInterval || typeof setInterval === "undefined") return;
+  cleanupInterval = setInterval(
     () => {
       const now = Date.now();
       for (const [key, entry] of store.entries()) {
         if (entry.resetAt < now) store.delete(key);
       }
+      if (store.size > STORE_MAX) {
+        const entries = [...store.entries()].sort(
+          (a, b) => a[1].resetAt - b[1].resetAt,
+        );
+        const toDelete = entries.slice(0, store.size - STORE_MAX);
+        for (const [key] of toDelete) store.delete(key);
+      }
     },
     5 * 60 * 1000,
-  ).unref?.();
+  );
+  if (typeof cleanupInterval?.unref === "function") cleanupInterval.unref();
 }
+
+startCleanup();
 
 export async function rateLimit(
   key: string,
   options: RateLimitOptions,
 ): Promise<RateLimitResult> {
-  const upstash = await getUpstashRatelimit();
+  const upstash = await getUpstashRatelimit(options);
   if (upstash) {
     const result = await upstash.limit(key);
     return {

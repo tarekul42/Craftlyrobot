@@ -21,7 +21,10 @@
   header,
   footer,
   nav,
-  .no-print {
+  .no-print,
+  [class*="fixed"],
+  [style*="position: fixed"],
+  [style*="position:fixed"] {
     display: none !important;
   }
 
