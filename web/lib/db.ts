@@ -24,6 +24,10 @@ const globalForPrisma = globalThis as {
  * Prisma client singleton.
  * Prevents multiple instances in development (Next.js hot reload).
  */
+const poolUrl = process.env.DATABASE_URL
+  ? `${process.env.DATABASE_URL}?connection_limit=5&pool_timeout=10&pgbouncer=true`
+  : undefined;
+
 export const prisma =
   globalForPrisma[PRISMA_GLOBAL] ??
   new PrismaClient({
@@ -31,6 +35,7 @@ export const prisma =
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
+    datasources: poolUrl ? { db: { url: poolUrl } } : undefined,
   });
 
 if (process.env.NODE_ENV !== "production") {

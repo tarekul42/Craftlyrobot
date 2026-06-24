@@ -48,14 +48,16 @@ model ContactMessage {
 }
 
 model NewsletterSubscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  status    String   @default("pending") // pending | confirmed | unsubscribed
-  token     String   @unique // for double opt-in confirmation
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(cuid())
+  email           String    @unique
+  status          String    @default("pending") // pending | confirmed | unsubscribed
+  token           String    @unique // for double opt-in confirmation
+  tokenExpiresAt  DateTime? // token expiry (48h after creation)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([status])
+  @@index([tokenExpiresAt])
 }
 
 model EarlyAccessSignup {

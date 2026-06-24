@@ -7,26 +7,17 @@ import { notifyContactReceived } from "@/lib/slack";
 import { saveContactMessage } from "@/lib/db";
 import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "@/lib/api-response";
 import { logApiError } from "@/lib/api-error";
+import { checkOrigin, corsHeaders } from "@/lib/api-origin";
+import { checkIdempotency, getIdempotencyKey } from "@/lib/idempotency";
 
-const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
-
-function checkOrigin(req: Request): boolean {
-  const origin = req.headers.get("origin");
-  const referer = req.headers.get("referer");
-  if (!origin && !referer) return true;
-  if (origin && !origin.startsWith(allowedOrigin)) return false;
-  if (referer && !referer.startsWith(allowedOrigin)) return false;
-  return true;
-}
+const MAX_BODY_SIZE = 100_000;
 
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
     headers: {
       Allow: "POST, OPTIONS",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Origin": allowedOrigin,
-      "Access-Control-Allow-Headers": "Content-Type",
+      ...corsHeaders(),
     },
   });
 }
@@ -47,6 +38,16 @@ export async function POST(req: Request) {
       "Too many messages. Please try again later.",
       Math.ceil((limit.resetAt - Date.now()) / 1000),
     );
+  }
+
+  const idempotencyKey = getIdempotencyKey(req);
+  if (idempotencyKey && !checkIdempotency(`contact:${idempotencyKey}`)) {
+    return jsonTooManyRequests("This request was already submitted. Please wait a few minutes.", 60);
+  }
+
+  const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+  if (contentLength > MAX_BODY_SIZE) {
+    return jsonBadRequest("Request too large.");
   }
 
   let body: unknown;
