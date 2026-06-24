@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { dmSans, pacifico, jetBrainsMono } from "@/lib/fonts";
+import { validateEnv } from "@/lib/env";
+
+validateEnv();
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/toast/toast";
 import { BackToTop } from "@/components/ui/back-to-top/back-to-top";

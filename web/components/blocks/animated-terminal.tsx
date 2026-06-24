@@ -45,7 +45,8 @@ export function AnimatedTerminal({
   const [phase, setPhase] = useState<"typing" | "output" | "pause">("typing");
 
   useEffect(() => {
-    const cmd = commands[commandIndex]!;
+    const cmd = commands[commandIndex];
+    if (!cmd) return;
     if (prefersReduced) {
       setTyped(cmd.input);
       setPhase("output");
@@ -116,7 +117,7 @@ export function AnimatedTerminal({
             animate={{ opacity: 1 }}
             className="whitespace-pre-wrap break-words text-[#e8e8e8]"
           >
-            {commands[commandIndex]!.output}
+            {commands[commandIndex]?.output}
           </motion.pre>
         )}
       </div>

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { getClientIP } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/db";
+import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "@/lib/api-response";
+import { logApiError } from "@/lib/api-error";
 import crypto from "crypto";
 
 const newsletterSchema = z.object({
@@ -23,9 +25,21 @@ function checkOrigin(req: Request): boolean {
   return true;
 }
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      Allow: "POST, OPTIONS",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   if (!checkOrigin(req)) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    return jsonForbidden();
   }
 
   const ip = getClientIP(req);
@@ -35,9 +49,9 @@ export async function POST(req: Request) {
     windowMs: 24 * 60 * 60 * 1000,
   });
   if (!limit.success) {
-    return NextResponse.json(
-      { message: "Too many signups. Please try again tomorrow." },
-      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
+    return jsonTooManyRequests(
+      "Too many signups. Please try again tomorrow.",
+      Math.ceil((limit.resetAt - Date.now()) / 1000),
     );
   }
 
@@ -45,31 +59,19 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { message: "Invalid request body." },
-      { status: 400 },
-    );
+    return jsonBadRequest("Invalid request body.");
   }
 
   const result = newsletterSchema.safeParse(body);
   if (!result.success) {
-    return NextResponse.json(
-      {
-        message: "Validation failed.",
-        errors: result.error.flatten().fieldErrors,
-      },
-      { status: 400 },
-    );
+    return jsonBadRequest("Validation failed.", result.error.flatten().fieldErrors);
   }
 
   const { email } = result.data;
 
   if (!process.env.DATABASE_URL) {
     console.log("[newsletter] (dev mode — not saved)", email);
-    return NextResponse.json(
-      { ok: true, message: "Thanks! Check your inbox to confirm." },
-      { status: 200 },
-    );
+    return jsonOk({ saved: false }, { route: "newsletter", mode: "dev" });
   }
 
   try {
@@ -78,10 +80,7 @@ export async function POST(req: Request) {
     });
 
     if (existing) {
-      return NextResponse.json(
-        { ok: true, message: "You're already subscribed!" },
-        { status: 200 },
-      );
+      return jsonOk({ subscribed: true, isNew: false }, { route: "newsletter" });
     }
 
     await prisma.newsletterSubscriber.create({
@@ -92,22 +91,13 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(
-      { ok: true, message: "Thanks! Check your inbox to confirm." },
-      { status: 200 },
-    );
+    return jsonOk({ subscribed: true, isNew: true }, { route: "newsletter" });
   } catch (error) {
-    console.error("[newsletter] Failed:", error);
-    return NextResponse.json(
-      { message: "Something went wrong. Please try again." },
-      { status: 500 },
-    );
+    logApiError("newsletter", error, req);
+    return jsonInternalError();
   }
 }
 
 export function GET() {
-  return NextResponse.json(
-    { message: "Method not allowed. Use POST." },
-    { status: 405, headers: { Allow: "POST" } },
-  );
+  return jsonMethodNotAllowed(["POST"]);
 }

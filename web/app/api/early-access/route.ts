@@ -3,6 +3,8 @@ import { z } from "zod";
 import { verifyTurnstile, getClientIP } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/db";
+import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "@/lib/api-response";
+import { logApiError } from "@/lib/api-error";
 
 const earlyAccessSchema = z.object({
   phoneNumber: z
@@ -12,19 +14,32 @@ const earlyAccessSchema = z.object({
   turnstileToken: z.string().min(1, "Please verify you're human"),
 });
 
+const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
+
 function checkOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
-  const allowedHost = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
   if (!origin && !referer) return true;
-  if (origin && !origin.startsWith(allowedHost)) return false;
-  if (referer && !referer.startsWith(allowedHost)) return false;
+  if (origin && !origin.startsWith(allowedOrigin)) return false;
+  if (referer && !referer.startsWith(allowedOrigin)) return false;
   return true;
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      Allow: "POST, OPTIONS",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }
 
 export async function POST(req: Request) {
   if (!checkOrigin(req)) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    return jsonForbidden();
   }
 
   const ip = getClientIP(req);
@@ -34,9 +49,9 @@ export async function POST(req: Request) {
     windowMs: 24 * 60 * 60 * 1000,
   });
   if (!limit.success) {
-    return NextResponse.json(
-      { message: "Too many submissions. Please try again tomorrow." },
-      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
+    return jsonTooManyRequests(
+      "Too many submissions. Please try again tomorrow.",
+      Math.ceil((limit.resetAt - Date.now()) / 1000),
     );
   }
 
@@ -44,21 +59,12 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { message: "Invalid request body." },
-      { status: 400 },
-    );
+    return jsonBadRequest("Invalid request body.");
   }
 
   const result = earlyAccessSchema.safeParse(body);
   if (!result.success) {
-    return NextResponse.json(
-      {
-        message: "Validation failed.",
-        errors: result.error.flatten().fieldErrors,
-      },
-      { status: 400 },
-    );
+    return jsonBadRequest("Validation failed.", result.error.flatten().fieldErrors);
   }
 
   const data = result.data;
@@ -66,18 +72,12 @@ export async function POST(req: Request) {
   try {
     const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
     if (!turnstileOk) {
-      return NextResponse.json(
-        { message: "Bot verification failed." },
-        { status: 400 },
-      );
+      return jsonBadRequest("Bot verification failed.");
     }
 
     if (!process.env.DATABASE_URL) {
       console.log("[early-access] (dev mode — not saved)", data.phoneNumber);
-      return NextResponse.json(
-        { ok: true, message: "You're on the list." },
-        { status: 200 },
-      );
+      return jsonOk({ saved: false }, { route: "early-access", mode: "dev" });
     }
 
     await prisma.earlyAccessSignup.create({
@@ -87,25 +87,13 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(
-      { ok: true, message: "You're on the list." },
-      { status: 200 },
-    );
+    return jsonOk({ saved: true }, { route: "early-access" });
   } catch (error) {
-    console.error("[early-access] Failed:", error);
-    return NextResponse.json(
-      {
-        message:
-          "Something went wrong. Please try again or email hello@craftlyrobot.com.",
-      },
-      { status: 500 },
-    );
+    logApiError("early-access", error, req);
+    return jsonInternalError();
   }
 }
 
 export function GET() {
-  return NextResponse.json(
-    { message: "Method not allowed. Use POST." },
-    { status: 405, headers: { Allow: "POST" } },
-  );
+  return jsonMethodNotAllowed(["POST"]);
 }

@@ -5,6 +5,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { sendContactConfirmation } from "@/lib/email";
 import { notifyContactReceived } from "@/lib/slack";
 import { saveContactMessage } from "@/lib/db";
+import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "@/lib/api-response";
+import { logApiError } from "@/lib/api-error";
 
 const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://craftlyrobot.com";
 
@@ -17,9 +19,21 @@ function checkOrigin(req: Request): boolean {
   return true;
 }
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      Allow: "POST, OPTIONS",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   if (!checkOrigin(req)) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    return jsonForbidden();
   }
 
   const ip = getClientIP(req);
@@ -29,9 +43,9 @@ export async function POST(req: Request) {
     windowMs: 60 * 60 * 1000,
   });
   if (!limit.success) {
-    return NextResponse.json(
-      { message: "Too many messages. Please try again later." },
-      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } },
+    return jsonTooManyRequests(
+      "Too many messages. Please try again later.",
+      Math.ceil((limit.resetAt - Date.now()) / 1000),
     );
   }
 
@@ -39,21 +53,12 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { message: "Invalid request body." },
-      { status: 400 },
-    );
+    return jsonBadRequest("Invalid request body.");
   }
 
   const result = contactSchema.safeParse(body);
   if (!result.success) {
-    return NextResponse.json(
-      {
-        message: "Validation failed.",
-        errors: result.error.flatten().fieldErrors,
-      },
-      { status: 400 },
-    );
+    return jsonBadRequest("Validation failed.", result.error.flatten().fieldErrors);
   }
 
   const data = result.data;
@@ -61,10 +66,7 @@ export async function POST(req: Request) {
   try {
     const turnstileOk = await verifyTurnstile(data.turnstileToken, ip);
     if (!turnstileOk) {
-      return NextResponse.json(
-        { message: "Bot verification failed." },
-        { status: 400 },
-      );
+      return jsonBadRequest("Bot verification failed.");
     }
 
     const saved = await saveContactMessage({
@@ -86,27 +88,13 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("[contact] Processed:", { id: saved?.id, name: data.name, ip });
-
-    return NextResponse.json(
-      { ok: true, message: "Message received." },
-      { status: 200 },
-    );
+    return jsonOk({ id: saved?.id }, { route: "contact" });
   } catch (error) {
-    console.error("[contact] Failed:", error);
-    return NextResponse.json(
-      {
-        message:
-          "Something went wrong. Please try again or email hello@craftlyrobot.com.",
-      },
-      { status: 500 },
-    );
+    logApiError("contact", error, req);
+    return jsonInternalError();
   }
 }
 
 export function GET() {
-  return NextResponse.json(
-    { message: "Method not allowed. Use POST." },
-    { status: 405, headers: { Allow: "POST" } },
-  );
+  return jsonMethodNotAllowed(["POST"]);
 }

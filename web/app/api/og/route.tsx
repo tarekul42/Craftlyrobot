@@ -1,8 +1,10 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
 import { rateLimit } from "@/lib/rate-limit";
+import { jsonTooManyRequests, jsonMethodNotAllowed } from "@/lib/api-response";
+import { logApiError } from "@/lib/api-error";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function GET(req: Request) {
   const ip =
@@ -15,10 +17,7 @@ export async function GET(req: Request) {
     windowMs: 60 * 1000,
   });
   if (!limit.success) {
-    return new Response("Too many requests", {
-      status: 429,
-      headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) },
-    });
+    return jsonTooManyRequests("Too many requests", Math.ceil((limit.resetAt - Date.now()) / 1000));
   }
 
   const { searchParams } = new URL(req.url);
@@ -93,7 +92,12 @@ export async function GET(req: Request) {
       </div>,
       { width: 1200, height: 630 },
     );
-  } catch {
+  } catch (error) {
+    logApiError("og", error, req);
     return new Response("Failed to generate image", { status: 500 });
   }
+}
+
+export function POST() {
+  return jsonMethodNotAllowed(["GET"]);
 }

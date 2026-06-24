@@ -1,2 +1,1 @@
-export PATH="$HOME/.bun/bin:$PATH"
-bun exec commitlint --edit "$1"
+npx --no-install commitlint --edit "$1"
