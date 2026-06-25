@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Youtube, Github } from "lucide-react";
+import { Globe, Video, Code } from "lucide-react";
 import { Container } from "./container";
 import { ThemeToggle } from "./theme-toggle";
 import { Logo } from "./logo";
@@ -81,13 +81,13 @@ function SocialIcons() {
         href={siteConfig.social.facebook}
         label="Join our Facebook Group"
       >
-        <Facebook className="h-5 w-5" />
+        <Globe className="h-5 w-5" />
       </SocialLink>
       <SocialLink href={siteConfig.social.youtube} label="Watch us on YouTube">
-        <Youtube className="h-5 w-5" />
+        <Video className="h-5 w-5" />
       </SocialLink>
       <SocialLink href={siteConfig.social.github} label="View on GitHub">
-        <Github className="h-5 w-5" />
+        <Code className="h-5 w-5" />
       </SocialLink>
     </div>
   );

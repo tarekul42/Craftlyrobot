@@ -1,18 +1,5 @@
-/**
- * Database utility — Prisma client singleton.
- *
- * Setup:
- *   1. Install Prisma: cd web && bun add @prisma/client && bun add -D prisma
- *   2. Set DATABASE_URL in .env.local
- *   3. Run: bunx prisma db push (or bunx prisma migrate dev)
- *
- * The schema is in web/prisma/schema.prisma.
- *
- * In development (no DATABASE_URL), all methods throw with a helpful message.
- * This lets the site run without a database for content-only work.
- */
-
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const PRISMA_GLOBAL = Symbol.for("prisma-global");
 
@@ -20,31 +7,33 @@ const globalForPrisma = globalThis as {
   [PRISMA_GLOBAL]?: PrismaClient;
 };
 
-/**
- * Prisma client singleton.
- * Prevents multiple instances in development (Next.js hot reload).
- */
-const poolUrl = process.env.DATABASE_URL
-  ? `${process.env.DATABASE_URL}?connection_limit=5&pool_timeout=10&pgbouncer=true`
-  : undefined;
+function createPrismaClient() {
+  if (!process.env.DATABASE_URL) {
+    return new PrismaClient({ log: ["error"] });
+  }
 
-export const prisma =
-  globalForPrisma[PRISMA_GLOBAL] ??
-  new PrismaClient({
+  const url = new URL(process.env.DATABASE_URL);
+  url.searchParams.set("connection_limit", "5");
+  url.searchParams.set("pool_timeout", "10");
+
+  const adapter = new PrismaPg({ connectionString: url.toString() });
+
+  return new PrismaClient({
+    adapter,
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
-    datasources: poolUrl ? { db: { url: poolUrl } } : undefined,
   });
+}
+
+export const prisma =
+  globalForPrisma[PRISMA_GLOBAL] ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma[PRISMA_GLOBAL] = prisma;
 }
 
-/**
- * Save an application to the database.
- */
 export async function saveApplication(data: {
   fullName: string;
   email: string;
@@ -85,9 +74,6 @@ export async function saveApplication(data: {
   }
 }
 
-/**
- * Save a contact message to the database.
- */
 export async function saveContactMessage(data: {
   name: string;
   email: string;

@@ -26,20 +26,16 @@ export const applySchema = z.object({
 
   role: z.enum(
     ["frontend", "backend", "devops", "design", "community", "ops", "other"],
-    {
-      errorMap: () => ({ message: "Please select a role" }),
-    },
+    { message: "Please select a role" },
   ),
 
   department: z.enum(
     ["engineering", "design", "community", "operations", "undecided"],
-    {
-      errorMap: () => ({ message: "Please select a department" }),
-    },
+    { message: "Please select a department" },
   ),
 
   commitment: z.enum(["5h", "10h", "20h", "fulltime"], {
-    errorMap: () => ({ message: "Please select your availability" }),
+    message: "Please select your availability",
   }),
 
   skills: z
