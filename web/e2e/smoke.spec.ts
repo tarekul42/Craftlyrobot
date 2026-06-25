@@ -57,7 +57,7 @@ test.describe("Smoke tests — API", () => {
   });
 
   test("OPTIONS on apply returns CORS headers", async ({ request }) => {
-    const res = await request.options("/api/apply");
+    const res = await request.fetch("/api/apply", { method: "OPTIONS" });
     expect(res.headers()["access-control-allow-methods"]).toContain("POST");
   });
 });
