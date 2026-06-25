@@ -8,20 +8,21 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 const USER_MESSAGE = "Need urgent O+ blood in Dhaka";
 const USER_TYPING_SPEED = 65;
 const AGENT_THINKING_DURATION = 5000;
-const COMPLETE_PAUSE = 6000;
-const SCROLLBAR_WIDTH = 5;
 
-const agentResponse = `Done! Found your donor in 47 seconds. Here's who stepped up:
 
-Rafi — O+ donor, 8 months since last donation. Healthy, 1.1 km away in Banani. Confirmed for 4pm today.
-
-Two other donors were checked:
-• One donated recently (too soon, champ)
-• One was 5 km away (too far for a rush)
-
-Rafi picked up on the first ring. Real one.
-
-Sharing his contact and location now. He'll be expecting you.`;
+const agentResponse = [
+  "Done! Found your donor in 47 seconds. Here's who stepped up:",
+  "",
+  "Rafi \u2014 O+ donor, 8 months since last donation. Healthy, 1.1 km away in Banani. Confirmed for 4pm today.",
+  "",
+  "Two other donors were checked:",
+  "\u2022 One donated recently (too soon, champ)",
+  "\u2022 One was 5 km away (too far for a rush)",
+  "",
+  "Rafi picked up on the first ring. Real one.",
+  "",
+  "Sharing his contact and location now. He'll be expecting you.",
+];
 
 const thinkingSubStatuses = [
   { at: 0, text: "Searching network..." },
@@ -29,283 +30,253 @@ const thinkingSubStatuses = [
   { at: 3500, text: "Negotiating with donor #3..." },
 ];
 
-function ArrowIcon() {
+function PersonIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 19V5" />
-      <path d="M5 12l7-7 7 7" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z" />
+      <path d="M18 14l1 2.5L21.5 18l-2.5 1-1 2.5-1-2.5L14.5 18l2.5-1z" />
     </svg>
   );
 }
 
 export function AgentNegotiation({ className }: { className?: string }) {
   const prefersReduced = usePrefersReducedMotion();
-  const chatRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
 
-  const [phase, setPhase] = useState<"idle" | "user-typing" | "user-sent" | "agent-thinking" | "agent-done" | "pausing">("idle");
-  const [inputText, setInputText] = useState("");
+  const [phase, setPhase] = useState<"idle" | "user-typing" | "user-sent" | "agent-thinking" | "agent-done" | "pausing">("user-typing");
+  const [inputText, setInputText] = useState(USER_MESSAGE.charAt(0));
   const [thinkingElapsed, setThinkingElapsed] = useState(0);
 
   const thinkingSubStatus = [...thinkingSubStatuses].reverse().find((s) => thinkingElapsed * 1000 >= s.at)?.text ?? "Searching network...";
 
-  const scrollToBottom = () => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
-  };
-
   useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+
     if (prefersReduced) {
       setPhase("agent-done");
       setInputText(USER_MESSAGE);
       return;
     }
-    if (phase !== "idle") return;
 
-    setPhase("user-typing");
-    let i = 0;
-    const typingInterval = setInterval(() => {
-      i++;
-      setInputText(USER_MESSAGE.slice(0, i));
-      if (i >= USER_MESSAGE.length) {
-        clearInterval(typingInterval);
-        const send = setTimeout(() => {
-          setPhase("user-sent");
-          const think = setTimeout(() => {
-            setPhase("agent-thinking");
-            setThinkingElapsed(0);
-          }, 600);
-          return () => clearTimeout(think);
-        }, 400);
-        return () => clearTimeout(send);
+    const run = async () => {
+      for (let i = 1; i <= USER_MESSAGE.length; i++) {
+        await new Promise((r) => setTimeout(r, USER_TYPING_SPEED));
+        setInputText(USER_MESSAGE.slice(0, i));
       }
-    }, USER_TYPING_SPEED);
-    return () => clearInterval(typingInterval);
-  }, [phase, prefersReduced]);
+      await new Promise((r) => setTimeout(r, 400));
+      setPhase("user-sent");
+      await new Promise((r) => setTimeout(r, 600));
+      setPhase("agent-thinking");
+      setThinkingElapsed(0);
 
-  useEffect(() => {
-    if (phase !== "agent-thinking") return;
-    if (prefersReduced) {
+      const start = Date.now();
+      while (true) {
+        const elapsed = (Date.now() - start) / 1000;
+        if (elapsed >= AGENT_THINKING_DURATION / 1000) break;
+        setThinkingElapsed(elapsed);
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      setThinkingElapsed(AGENT_THINKING_DURATION / 1000);
       setPhase("agent-done");
-      return;
-    }
-    const interval = setInterval(() => {
-      setThinkingElapsed((s) => {
-        const next = s + 0.1;
-        if (next >= AGENT_THINKING_DURATION / 1000) {
-          clearInterval(interval);
-          setPhase("agent-done");
-        }
-        return next;
-      });
-    }, 100);
-    return () => clearInterval(interval);
-  }, [phase, prefersReduced]);
 
-  useEffect(() => {
-    if (phase === "agent-done" && !prefersReduced) {
-      const t = setTimeout(() => {
-        setPhase("pausing");
-        const restart = setTimeout(() => {
-          setPhase("idle");
-          setInputText("");
-          setThinkingElapsed(0);
-        }, COMPLETE_PAUSE);
-        return () => clearTimeout(restart);
-      }, 1200);
-      return () => clearTimeout(t);
-    }
-  }, [phase, prefersReduced]);
+      await new Promise((r) => setTimeout(r, 1200));
+      setPhase("pausing");
+    };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [phase, inputText, thinkingElapsed]);
+    run();
+  }, [prefersReduced]);
 
-  const showUserBubble = phase !== "idle";
+  const isIdle = phase === "idle" || phase === "pausing";
 
   return (
-    <div className={cn("relative w-full max-w-md", className)}>
+    <div className={cn("relative mx-auto w-full max-w-md", className)}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="border-foreground/[0.08] bg-background/95 flex flex-col overflow-hidden rounded-2xl border shadow-xl shadow-foreground/[0.04] backdrop-blur-sm"
+        className="relative"
       >
-        <div className="border-foreground/[0.08] flex items-center gap-2 border-b px-4 py-2.5">
-          <span className="relative flex h-1.5 w-1.5 items-center justify-center">
-            <span
-              className={cn(
-                "h-1.5 w-1.5 rounded-full",
-                phase === "agent-done" ? "bg-foreground/50" : "bg-foreground",
-              )}
-            />
-            {phase !== "agent-done" && phase !== "pausing" && (
-              <span className="bg-foreground absolute inset-0 animate-ping rounded-full opacity-30" />
-            )}
-          </span>
-          <span className="text-foreground/50 text-[10px] font-bold uppercase tracking-widest">
-            {phase === "agent-done" ? "Complete" : "Live"}
-          </span>
-          {phase !== "agent-done" && (
-            <>
-              <span className="text-foreground/[0.08] mx-0.5">·</span>
-              <span className="text-foreground/40 text-[10px] font-medium">Agent Network</span>
-            </>
-          )}
-        </div>
+        <div className="flex items-start gap-3">
+          <div className="flex flex-col items-center gap-2 pt-2">
+            <div className={cn(
+              "flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors duration-700",
+              isIdle
+                ? "border-muted-foreground/20 text-muted-foreground/40"
+                : "border-foreground text-foreground",
+            )}>
+              <PersonIcon />
+            </div>
+            <span className={cn(
+              "text-[10px] font-medium tracking-wider transition-colors duration-700",
+              isIdle ? "text-muted-foreground/30" : "text-muted-foreground/60",
+            )}>
+              You
+            </span>
+          </div>
 
-        <div className="flex flex-col">
-          <div
-            ref={chatRef}
-            className="h-[320px] overflow-y-auto px-4 py-3"
-            role="region"
-            aria-label="Agent negotiation simulation"
-          >
-            <style>{`
-              .chat-scrollbar::-webkit-scrollbar {
-                width: ${SCROLLBAR_WIDTH}px;
-              }
-              .chat-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
-              }
-              .chat-scrollbar::-webkit-scrollbar-thumb {
-                background: var(--scrollbar-thumb, rgba(0,0,0,0.15));
-                border-radius: 999px;
-              }
-              .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: var(--scrollbar-thumb-hover, rgba(0,0,0,0.25));
-              }
-              .dark .chat-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(255,255,255,0.15);
-              }
-              .dark .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: rgba(255,255,255,0.25);
-              }
-            `}</style>
-
-            <div className="chat-scrollbar flex min-h-full flex-col justify-end">
-              <AnimatePresence mode="popLayout">
-                {showUserBubble && (
+          <div className="flex flex-1 flex-col">
+            <div className="flex min-h-[120px] flex-col justify-end">
+              <AnimatePresence mode="wait">
+                {(phase === "user-typing" || phase === "user-sent") && (
                   <motion.div
-                    key="user"
-                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    key="user-typing"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-3 flex justify-end"
+                    className="rounded-xl border border-border bg-card px-4 py-3 shadow-xs"
                   >
-                    <div className="flex max-w-[85%] flex-row-reverse items-start gap-2.5">
-                      <div className="bg-foreground flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-background">
+                    <div className="flex items-center gap-2 text-sm text-card-foreground">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
                         U
-                      </div>
-                      <div>
-                        <div className="flex flex-row-reverse items-center gap-1.5">
-                          <span className="text-foreground/50 text-[10px] font-semibold">You</span>
-                        </div>
-                        <div className="bg-foreground text-background mt-0.5 rounded-2xl px-3.5 py-2 text-sm">
-                          {inputText}
-                        </div>
-                      </div>
+                      </span>
+                      <span>{inputText}</span>
                     </div>
                   </motion.div>
                 )}
 
-                {(phase === "agent-thinking" || phase === "agent-done") && (
+                {phase === "agent-done" && (
                   <motion.div
-                    key="agent"
-                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    key="user-sent"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-1 flex justify-start"
+                    className="rounded-xl border border-border bg-card px-4 py-3 shadow-xs"
                   >
-                    <div className="flex max-w-full items-start gap-2.5">
-                      <div className="bg-foreground/[0.08] flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-foreground/60">
-                        A
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-foreground/50 text-[10px] font-semibold">Your Agent</span>
-                        </div>
-
-                        {phase === "agent-thinking" ? (
-                          <div className="border-foreground/[0.08] bg-foreground/[0.04] mt-0.5 rounded-2xl border px-4 py-3 text-sm">
-                            <div className="flex items-center gap-2">
-                              <span className="bg-foreground/50 h-2 w-2 animate-pulse rounded-full" />
-                              <span className="text-foreground/60 font-medium">{thinkingSubStatus}</span>
-                            </div>
-                            <div className="mt-2 flex items-center gap-1 text-[11px] text-foreground/35">
-                              <span className="bg-foreground/35 h-1 w-1 rounded-full" />
-                              {Math.floor(thinkingElapsed)}s elapsed
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="bg-foreground/[0.06] border-foreground/[0.08] mt-0.5 rounded-2xl border px-4 py-3 text-sm leading-relaxed">
-                            {agentResponse.split("\n").map((line, i) => {
-                              if (line.startsWith("Rafi —")) {
-                                return (
-                                  <p key={i} className="font-semibold">
-                                    {line}
-                                  </p>
-                                );
-                              }
-                              if (line.startsWith("•") || line.startsWith("─")) {
-                                return (
-                                  <p key={i} className="text-foreground/60 text-[13px]">
-                                    {line}
-                                  </p>
-                                );
-                              }
-                              if (line === "") {
-                                return <div key={i} className="h-2" />;
-                              }
-                              return (
-                                <p key={i} className="text-foreground/80">
-                                  {line}
-                                </p>
-                              );
-                            })}
-                            <div className="mt-3 flex items-center gap-1.5">
-                              <span className="bg-foreground/10 text-foreground/50 rounded-full px-2 py-0.5 text-[10px] font-semibold">
-                                Done in {Math.floor(thinkingElapsed)}s
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                    <div className="flex items-center gap-2 text-sm text-card-foreground">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
+                        U
+                      </span>
+                      <span className="opacity-80">{inputText}</span>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </div>
-
-          <div className="border-foreground/[0.08] flex items-center gap-2 border-t px-3 py-2">
-            <div className="border-foreground/[0.08] bg-foreground/[0.02] flex flex-1 items-center rounded-xl border px-3 py-2 text-sm">
-              <input
-                type="text"
-                readOnly
-                value={phase === "user-typing" ? inputText : ""}
-                placeholder={phase === "idle" ? "Message your agent..." : ""}
-                className="bg-transparent flex-1 text-sm text-foreground outline-none placeholder:text-foreground/25"
-                aria-label="Message your agent"
-              />
-              {(phase === "user-typing" || phase === "idle") && (
-                <span
-                  className={cn(
-                    "h-4 w-[1px] animate-pulse",
-                    phase === "idle" ? "bg-foreground/15" : "bg-foreground/50",
-                  )}
-                />
-              )}
-            </div>
-            <button
-              disabled
-              aria-label="Send"
-              className="bg-foreground text-background flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-opacity"
-            >
-              <ArrowIcon />
-            </button>
-          </div>
         </div>
+
+        <AnimatePresence>
+          {(phase === "agent-thinking" || phase === "agent-done") && (
+            <motion.div
+              key="agent-column"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="ml-[52px] mt-3 flex items-start gap-3 overflow-hidden"
+            >
+              <div className="flex flex-1 flex-col">
+                <div className="flex min-h-[60px] flex-col justify-end">
+                  {phase === "agent-thinking" && (
+                    <motion.div
+                      key="thinking"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className="rounded-xl border border-border bg-card px-4 py-3 shadow-xs"
+                    >
+                      <div className="flex items-center gap-2 text-sm text-card-foreground">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
+                          A
+                        </span>
+                        <span className="flex items-center gap-2 text-muted-foreground">
+                          <span className="flex items-center gap-0.5">
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" style={{ animationDelay: "0ms" }} />
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" style={{ animationDelay: "150ms" }} />
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" style={{ animationDelay: "300ms" }} />
+                          </span>
+                          <span className="text-[13px]">{thinkingSubStatus}</span>
+                        </span>
+                      </div>
+                      <div className="mt-1.5 pl-7">
+                        <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
+                          <div
+                            className="h-full rounded-full bg-foreground/20"
+                            style={{ width: `${(thinkingElapsed / (AGENT_THINKING_DURATION / 1000)) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {phase === "agent-done" && (
+                    <motion.div
+                      key="done"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className="rounded-xl border border-border bg-card px-4 py-3 shadow-xs"
+                    >
+                      <div className="flex items-start gap-2 text-sm text-card-foreground">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
+                          A
+                        </span>
+                        <div>
+                          {agentResponse.map((line, i) => {
+                            if (line === "") return <div key={i} className="h-1.5" />;
+                            if (line.startsWith("\u2022")) {
+                              return <p key={i} className="text-[13px] text-muted-foreground/80">{line}</p>;
+                            }
+                            return <p key={i} className="leading-relaxed">{line}</p>;
+                          })}
+                          <span className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/50">
+                            <span className="rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground">
+                              {Math.floor(thinkingElapsed)}s
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2 pt-2">
+                <div className={cn(
+                  "flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-700",
+                  phase === "agent-done"
+                    ? "border-muted-foreground/20 text-muted-foreground/40"
+                    : "border-foreground text-foreground",
+                )}>
+                  <SparkleIcon />
+                </div>
+                <span className={cn(
+                  "text-[10px] font-medium tracking-wider transition-colors duration-700",
+                  phase === "agent-done" ? "text-muted-foreground/30" : "text-muted-foreground/60",
+                )}>
+                  Agent
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {phase === "pausing" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="ml-[52px] mt-3 flex items-center gap-2 px-1"
+          >
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success/10">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-success">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            </span>
+            <span className="text-[12px] text-muted-foreground/50">Completed</span>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );
