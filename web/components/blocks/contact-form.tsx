@@ -152,7 +152,11 @@ export function ContactForm({ className }: ContactFormProps) {
               onVerify={(token) =>
                 form.setValue("turnstileToken", token, { shouldValidate: true })
               }
-              onError={() => setSubmitError("Bot verification failed.")}
+              onError={() =>
+                form.setError("turnstileToken", {
+                  message: "Bot verification failed.",
+                })
+              }
               onExpire={() => form.setValue("turnstileToken", "")}
             />
             {form.formState.errors.turnstileToken && (
