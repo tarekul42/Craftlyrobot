@@ -3,7 +3,7 @@ import { contactSchema } from "@/lib/validations/contact";
 import { sendContactConfirmation } from "@/lib/email";
 import { notifyContactReceived } from "@/lib/slack";
 import { saveContactMessage } from "@/lib/db";
-import { jsonOk } from "@/lib/api-response";
+import { jsonOk, jsonInternalError } from "@/lib/api-response";
 
 export const { POST, GET, OPTIONS } = createApiHandler({
   schema: contactSchema,
@@ -22,16 +22,16 @@ export const { POST, GET, OPTIONS } = createApiHandler({
     });
 
     if (!saved) {
-      console.warn("[contact] DB save returned null — skipping email/Slack notifications");
-    } else {
-      await sendContactConfirmation(data.email, data.name);
-      await notifyContactReceived({
-        name: data.name,
-        email: data.email,
-        subject: data.subject,
-      });
+      return jsonInternalError("Failed to save message. Please try again.");
     }
 
-    return jsonOk({ id: saved?.id }, { route: "contact" });
+    await sendContactConfirmation(data.email, data.name);
+    await notifyContactReceived({
+      name: data.name,
+      email: data.email,
+      subject: data.subject,
+    });
+
+    return jsonOk({ id: saved.id }, { route: "contact" });
   },
 });

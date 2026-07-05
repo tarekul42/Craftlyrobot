@@ -3,7 +3,7 @@ import { applySchema } from "@/lib/validations/apply";
 import { sendApplicationConfirmation } from "@/lib/email";
 import { notifyApplicationReceived } from "@/lib/slack";
 import { saveApplication } from "@/lib/db";
-import { jsonOk } from "@/lib/api-response";
+import { jsonOk, jsonInternalError } from "@/lib/api-response";
 
 export const { POST, GET, OPTIONS } = createApiHandler({
   schema: applySchema,
@@ -27,19 +27,19 @@ export const { POST, GET, OPTIONS } = createApiHandler({
     });
 
     if (!saved) {
-      console.warn("[apply] DB save returned null — skipping email/Slack notifications");
-    } else {
-      await sendApplicationConfirmation(data.email, data.fullName);
-      await notifyApplicationReceived({
-        fullName: data.fullName,
-        email: data.email,
-        role: data.role,
-        department: data.department,
-        commitment: data.commitment,
-        skillsCount: data.skills.length,
-      });
+      return jsonInternalError("Failed to save application. Please try again.");
     }
 
-    return jsonOk({ id: saved?.id }, { route: "apply" });
+    await sendApplicationConfirmation(data.email, data.fullName);
+    await notifyApplicationReceived({
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+      department: data.department,
+      commitment: data.commitment,
+      skillsCount: data.skills.length,
+    });
+
+    return jsonOk({ id: saved.id }, { route: "apply" });
   },
 });
