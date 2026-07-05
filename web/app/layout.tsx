@@ -4,10 +4,12 @@ import { validateEnv } from "@/lib/env";
 
 validateEnv();
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Toaster } from "@/components/ui/toast/toast";
-import { BackToTop } from "@/components/ui/back-to-top/back-to-top";
-import { CookieConsent } from "@/components/ui/cookie-consent/cookie-consent";
-import { WebVitals } from "@/components/ui/web-vitals/web-vitals";
+import {
+  Toaster,
+  BackToTop,
+  CookieConsent,
+  WebVitals,
+} from "@/components/ui";
 import { Analytics } from "@/components/providers/analytics";
 import { siteConfig } from "@/config/site";
 import {

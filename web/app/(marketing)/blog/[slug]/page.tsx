@@ -6,9 +6,13 @@ import remarkGfm from "remark-gfm";
 import { Calendar, Clock, ArrowLeft, ArrowRight } from "lucide-react";
 import { Section } from "@/components/layout/section";
 import { Container } from "@/components/layout/container";
-import { Badge, Button, Eyebrow } from "@/components/ui";
-import { Prose } from "@/components/ui";
-import { ReadingProgress } from "@/components/ui/reading-progress/reading-progress";
+import {
+  Badge,
+  Button,
+  Eyebrow,
+  Prose,
+  ReadingProgress,
+} from "@/components/ui";
 import { TableOfContents } from "@/components/ui/table-of-contents/table-of-contents";
 import { mdxComponents } from "@/components/mdx";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/mdx";

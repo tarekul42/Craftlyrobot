@@ -146,3 +146,9 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 } from "./select";
+
+// Utility/client-only primitives
+export { BackToTop } from "./back-to-top";
+export { ReadingProgress } from "./reading-progress";
+export { CookieConsent } from "./cookie-consent";
+export { WebVitals } from "./web-vitals";
