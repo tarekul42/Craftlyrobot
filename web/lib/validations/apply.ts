@@ -61,7 +61,7 @@ export type ApplyFormValues = z.infer<typeof applySchema>;
 
 /**
  * Role options for the form dropdown.
- * Keys must match the enum in applySchema.
+ * Values are checked against the schema at compile time via satisfies.
  */
 export const roleOptions = [
   { value: "frontend", label: "Frontend Contributor" },
@@ -71,7 +71,7 @@ export const roleOptions = [
   { value: "community", label: "Community Manager" },
   { value: "ops", label: "Operations" },
   { value: "other", label: "Other" },
-] as const;
+] as const satisfies { value: ApplyFormValues["role"]; label: string }[];
 
 export const departmentOptions = [
   { value: "engineering", label: "Engineering" },
@@ -79,14 +79,14 @@ export const departmentOptions = [
   { value: "community", label: "Community" },
   { value: "operations", label: "Operations" },
   { value: "undecided", label: "Not sure yet" },
-] as const;
+] as const satisfies { value: ApplyFormValues["department"]; label: string }[];
 
 export const commitmentOptions = [
   { value: "5h", label: "5 hours/week (side)" },
   { value: "10h", label: "10 hours/week (serious)" },
   { value: "20h", label: "20 hours/week (major)" },
   { value: "fulltime", label: "Full-time" },
-] as const;
+] as const satisfies { value: ApplyFormValues["commitment"]; label: string }[];
 
 export const skillOptions = [
   "React",
