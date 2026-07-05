@@ -58,3 +58,6 @@ craftly-priority-*.md
 
 # vercel
 .vercel
+.aider*
+
+AGENT.md

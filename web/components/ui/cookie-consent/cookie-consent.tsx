@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Cookie, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,12 @@ export function CookieConsent({
   className,
 }: ConsentBannerProps) {
   const [show, setShow] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const storageKeyRef = useRef(storageKey);
+  const expiryDaysRef = useRef(expiryDays);
+
+  storageKeyRef.current = storageKey;
+  expiryDaysRef.current = expiryDays;
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
@@ -40,44 +46,40 @@ export function CookieConsent({
     }
   }, [storageKey]);
 
-  const handleAccept = () => {
-    const data = {
-      consent: "granted",
-      timestamp: Date.now(),
-      expires: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
-    };
-    localStorage.setItem(storageKey, JSON.stringify(data));
-    setShow(false);
-  };
+  const setConsent = useCallback(
+    (consent: "granted" | "denied" | "dismissed") => {
+      const data = {
+        consent,
+        timestamp: Date.now(),
+        expires: Date.now() + expiryDaysRef.current * 24 * 60 * 60 * 1000,
+      };
+      localStorage.setItem(storageKeyRef.current, JSON.stringify(data));
+      setShow(false);
+    },
+    [],
+  );
 
-  const handleDecline = () => {
-    const data = {
-      consent: "denied",
-      timestamp: Date.now(),
-      expires: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
+  useEffect(() => {
+    if (!show) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setConsent("dismissed");
     };
-    localStorage.setItem(storageKey, JSON.stringify(data));
-    setShow(false);
-  };
-
-  const handleDismiss = () => {
-    const data = {
-      consent: "dismissed",
-      timestamp: Date.now(),
-      expires: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
-    };
-    localStorage.setItem(storageKey, JSON.stringify(data));
-    setShow(false);
-  };
+    document.addEventListener("keydown", handleKeyDown);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [show, setConsent]);
 
   if (!show) return null;
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
+      aria-modal="true"
       aria-label="Privacy consent"
+      tabIndex={-1}
       className={cn(
-        "border-border bg-card fixed bottom-4 left-4 right-4 z-[1200] mx-auto max-w-2xl rounded-lg border p-4 shadow-2xl sm:p-6",
+        "border-border bg-card fixed right-4 bottom-4 left-4 z-[1200] mx-auto max-w-2xl rounded-lg border p-4 shadow-2xl sm:p-6",
         className,
       )}
     >
@@ -99,16 +101,20 @@ export function CookieConsent({
             .
           </p>
           <div className="mt-4 flex gap-2">
-            <Button size="sm" onClick={handleAccept}>
+            <Button size="sm" onClick={() => setConsent("granted")}>
               Allow
             </Button>
-            <Button size="sm" variant="outline" onClick={handleDecline}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setConsent("denied")}
+            >
               Decline
             </Button>
           </div>
         </div>
         <button
-          onClick={handleDismiss}
+          onClick={() => setConsent("dismissed")}
           className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1"
           aria-label="Dismiss banner"
         >

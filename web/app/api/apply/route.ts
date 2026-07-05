@@ -26,8 +26,8 @@ export const { POST, GET, OPTIONS } = createApiHandler({
       ip,
     });
 
-    if (!saved) {
-      return jsonInternalError("Failed to save application. Please try again.");
+    if ("code" in saved) {
+      return jsonInternalError(saved.message);
     }
 
     await sendApplicationConfirmation(data.email, data.fullName);

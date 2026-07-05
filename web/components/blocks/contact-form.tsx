@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, AlertCircle } from "lucide-react";
@@ -18,6 +17,7 @@ import {
   CardContent,
 } from "@/components/ui";
 import { Turnstile } from "@/components/ui/turnstile/turnstile";
+import { useFormSubmit } from "@/hooks/use-form-submit";
 
 interface ContactFormProps {
   className?: string;
@@ -28,8 +28,9 @@ interface ContactFormProps {
  * Simpler than the apply form: name, email, subject, message.
  */
 export function ContactForm({ className }: ContactFormProps) {
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { submit, submitted, submitError } = useFormSubmit({
+    url: "/api/contact",
+  });
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -44,29 +45,7 @@ export function ContactForm({ className }: ContactFormProps) {
   });
 
   const onSubmit = async (values: ContactFormValues) => {
-    setSubmitError(null);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({}));
-        throw new Error(
-          error.message ?? `Request failed with status ${res.status}`,
-        );
-      }
-
-      setSubmitted(true);
-    } catch (e) {
-      setSubmitError(
-        e instanceof Error
-          ? e.message
-          : "Something went wrong. Please try again.",
-      );
-    }
+    await submit(values);
   };
 
   if (submitted) {

@@ -6,7 +6,13 @@ vi.mock("@/lib/turnstile", () => ({
 }));
 
 vi.mock("@/lib/rate-limit", () => ({
-  rateLimit: vi.fn().mockResolvedValue({ success: true, remaining: 99, resetAt: Date.now() + 60000 }),
+  rateLimit: vi
+    .fn()
+    .mockResolvedValue({
+      success: true,
+      remaining: 99,
+      resetAt: Date.now() + 60000,
+    }),
 }));
 
 vi.mock("@/lib/db", () => ({
@@ -14,6 +20,7 @@ vi.mock("@/lib/db", () => ({
     newsletterSubscriber: {
       findUnique: vi.fn(),
       create: vi.fn(),
+      update: vi.fn(),
     },
     earlyAccessSignup: {
       create: vi.fn(),
@@ -37,27 +44,52 @@ vi.mock("@/lib/api-error", () => ({
   logApiError: vi.fn(),
 }));
 
-import { POST as applyPOST, GET as applyGET, OPTIONS as applyOPTIONS } from "@/app/api/apply/route";
-import { POST as contactPOST, GET as contactGET, OPTIONS as contactOPTIONS } from "@/app/api/contact/route";
-import { POST as newsletterPOST, GET as newsletterGET, OPTIONS as newsletterOPTIONS } from "@/app/api/newsletter/route";
-import { POST as earlyAccessPOST, GET as earlyAccessGET, OPTIONS as earlyAccessOPTIONS } from "@/app/api/early-access/route";
+import {
+  POST as applyPOST,
+  GET as applyGET,
+  OPTIONS as applyOPTIONS,
+} from "@/app/api/apply/route";
+import {
+  POST as contactPOST,
+  GET as contactGET,
+  OPTIONS as contactOPTIONS,
+} from "@/app/api/contact/route";
+import {
+  POST as newsletterPOST,
+  GET as newsletterGET,
+  OPTIONS as newsletterOPTIONS,
+} from "@/app/api/newsletter/route";
+import {
+  POST as earlyAccessPOST,
+  GET as earlyAccessGET,
+  OPTIONS as earlyAccessOPTIONS,
+} from "@/app/api/early-access/route";
 import { verifyTurnstile, getClientIP } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/rate-limit";
 import { saveApplication, saveContactMessage } from "@/lib/db";
 
-function mockRequest(method: string, path: string, options?: {
-  body?: unknown;
-  origin?: string;
-  headers?: Record<string, string>;
-}): Request {
+function mockRequest(
+  method: string,
+  path: string,
+  options?: {
+    body?: unknown;
+    origin?: string;
+    headers?: Record<string, string>;
+  },
+): Request {
   const headers = new Headers({
     "content-type": "application/json",
     ...(options?.origin ? { origin: options.origin } : {}),
     ...options?.headers,
   });
   if (options?.origin) headers.set("origin", options.origin);
-  const body = options?.body !== undefined ? JSON.stringify(options.body) : undefined;
-  if (body) headers.set("content-length", String(new TextEncoder().encode(body).length));
+  const body =
+    options?.body !== undefined ? JSON.stringify(options.body) : undefined;
+  if (body)
+    headers.set(
+      "content-length",
+      String(new TextEncoder().encode(body).length),
+    );
   return new Request(`http://localhost${path}`, {
     method,
     headers,
@@ -74,7 +106,8 @@ const validApplyBody = {
   commitment: "fulltime",
   skills: ["React", "TypeScript"],
   portfolio: "",
-  whyCraftly: "I love this project because it represents exactly what I want to build. The vision and the team are incredible.",
+  whyCraftly:
+    "I love this project because it represents exactly what I want to build. The vision and the team are incredible.",
   turnstileToken: "valid-token",
 };
 
@@ -82,7 +115,8 @@ const validContactBody = {
   name: "Jane Doe",
   email: "jane@example.com",
   subject: "Hello",
-  message: "This is a test message. I want to say hello and learn more about this amazing project.",
+  message:
+    "This is a test message. I want to say hello and learn more about this amazing project.",
   turnstileToken: "valid-token",
 };
 
@@ -102,7 +136,9 @@ describe("API routes", () => {
     ])("%s returns 204 with CORS headers", async (_, handler) => {
       const res = await handler();
       expect(res.status).toBe(204);
-      expect(res.headers.get("Access-Control-Allow-Origin")).toBe("http://localhost");
+      expect(res.headers.get("Access-Control-Allow-Origin")).toBe(
+        "http://localhost",
+      );
       expect(res.headers.get("Access-Control-Allow-Methods")).toContain("POST");
     });
   });
@@ -150,7 +186,11 @@ describe("API routes", () => {
     });
 
     it("rejects when rate limited", async () => {
-      vi.mocked(rateLimit).mockResolvedValueOnce({ success: false, remaining: 0, resetAt: Date.now() + 60000 });
+      vi.mocked(rateLimit).mockResolvedValueOnce({
+        success: false,
+        remaining: 0,
+        resetAt: Date.now() + 60000,
+      });
       const req = mockRequest("POST", "/api/apply", { body: validApplyBody });
       const res = await applyPOST(req);
       expect(res.status).toBe(429);
@@ -197,14 +237,18 @@ describe("API routes", () => {
     });
 
     it("rejects missing body fields", async () => {
-      const req = mockRequest("POST", "/api/contact", { body: { email: "bad" } });
+      const req = mockRequest("POST", "/api/contact", {
+        body: { email: "bad" },
+      });
       const res = await contactPOST(req);
       expect(res.status).toBe(400);
     });
 
     it("accepts valid submission", async () => {
       vi.mocked(saveContactMessage).mockResolvedValueOnce({ id: "msg-1" });
-      const req = mockRequest("POST", "/api/contact", { body: validContactBody });
+      const req = mockRequest("POST", "/api/contact", {
+        body: validContactBody,
+      });
       const res = await contactPOST(req);
       expect(res.status).toBe(200);
       const body = await res.json();
@@ -224,14 +268,18 @@ describe("API routes", () => {
     });
 
     it("rejects invalid email", async () => {
-      const req = mockRequest("POST", "/api/newsletter", { body: { email: "bad" } });
+      const req = mockRequest("POST", "/api/newsletter", {
+        body: { email: "bad" },
+      });
       const res = await newsletterPOST(req);
       expect(res.status).toBe(400);
     });
 
     it("accepts new subscription", async () => {
       const prisma = (await import("@/lib/db")).prisma;
-      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce(null);
+      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce(
+        null,
+      );
       vi.mocked(prisma.newsletterSubscriber.create).mockResolvedValueOnce({
         id: "sub-1",
         email: "jane@example.com",
@@ -241,7 +289,9 @@ describe("API routes", () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      const req = mockRequest("POST", "/api/newsletter", { body: { email: "jane@example.com" } });
+      const req = mockRequest("POST", "/api/newsletter", {
+        body: { email: "jane@example.com" },
+      });
       const res = await newsletterPOST(req);
       expect(res.status).toBe(200);
       const body = await res.json();
@@ -260,7 +310,9 @@ describe("API routes", () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      const req = mockRequest("POST", "/api/newsletter", { body: { email: "jane@example.com" } });
+      const req = mockRequest("POST", "/api/newsletter", {
+        body: { email: "jane@example.com" },
+      });
       const res = await newsletterPOST(req);
       expect(res.status).toBe(200);
       const body = await res.json();
@@ -307,6 +359,103 @@ describe("API routes", () => {
       const body = await res.json();
       expect(body.ok).toBe(true);
       expect(body.data.saved).toBe(true);
+    });
+  });
+
+  describe("POST newsletter/confirm", () => {
+    it("rejects missing token", async () => {
+      const { POST } = await import("@/app/api/newsletter/confirm/route");
+      const req = mockRequest("POST", "/api/newsletter/confirm", {
+        body: {},
+      });
+      const res = await POST(req);
+      expect(res.status).toBe(400);
+      const body = await res.json();
+      expect(body.ok).toBe(false);
+    });
+
+    it("rejects invalid token", async () => {
+      const { POST } = await import("@/app/api/newsletter/confirm/route");
+      const prisma = (await import("@/lib/db")).prisma;
+      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce(
+        null,
+      );
+      const req = mockRequest("POST", "/api/newsletter/confirm", {
+        body: { token: "invalid-token" },
+      });
+      const res = await POST(req);
+      expect(res.status).toBe(400);
+    });
+
+    it("confirms pending subscription", async () => {
+      const { POST } = await import("@/app/api/newsletter/confirm/route");
+      const prisma = (await import("@/lib/db")).prisma;
+      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce({
+        id: "sub-1",
+        email: "jane@example.com",
+        status: "pending",
+        token: "valid-token",
+        tokenExpiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      vi.mocked(prisma.newsletterSubscriber.update).mockResolvedValueOnce({
+        id: "sub-1",
+        email: "jane@example.com",
+        status: "confirmed",
+        token: "valid-token",
+        tokenExpiresAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      const req = mockRequest("POST", "/api/newsletter/confirm", {
+        body: { token: "valid-token" },
+      });
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.ok).toBe(true);
+      expect(body.data.confirmed).toBe(true);
+    });
+
+    it("returns success if already confirmed", async () => {
+      const { POST } = await import("@/app/api/newsletter/confirm/route");
+      const prisma = (await import("@/lib/db")).prisma;
+      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce({
+        id: "sub-1",
+        email: "jane@example.com",
+        status: "confirmed",
+        token: "existing-token",
+        tokenExpiresAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      const req = mockRequest("POST", "/api/newsletter/confirm", {
+        body: { token: "existing-token" },
+      });
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.data.alreadyConfirmed).toBe(true);
+    });
+
+    it("rejects expired token", async () => {
+      const { POST } = await import("@/app/api/newsletter/confirm/route");
+      const prisma = (await import("@/lib/db")).prisma;
+      vi.mocked(prisma.newsletterSubscriber.findUnique).mockResolvedValueOnce({
+        id: "sub-2",
+        email: "jane@example.com",
+        status: "pending",
+        token: "expired-token",
+        tokenExpiresAt: new Date(Date.now() - 1000),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      const req = mockRequest("POST", "/api/newsletter/confirm", {
+        body: { token: "expired-token" },
+      });
+      const res = await POST(req);
+      expect(res.status).toBe(400);
     });
   });
 });

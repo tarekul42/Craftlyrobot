@@ -23,7 +23,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
+      "bun --cwd web eslint --fix",
       "prettier --write"
     ],
     "*.{json,md,css}": [

@@ -39,6 +39,51 @@ function getRetryAfterSeconds(resetAt: number): number {
   return Math.ceil((resetAt - Date.now()) / 1000);
 }
 
+function checkBodySize(req: Request, maxBodySize: number): Response | null {
+  const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+  return contentLength > maxBodySize
+    ? jsonBadRequest("Request too large.")
+    : null;
+}
+
+async function parseBody(
+  req: Request,
+): Promise<{ body: unknown } | { error: Response }> {
+  try {
+    const body = await req.json();
+    return { body };
+  } catch {
+    return { error: jsonBadRequest("Invalid request body.") };
+  }
+}
+
+function validateBody<T extends z.ZodType>(
+  schema: T,
+  body: unknown,
+): { data: z.infer<T> } | { error: Response } {
+  const result = schema.safeParse(body);
+  if (!result.success) {
+    const flattened = result.error.flatten();
+    const fieldErrors = flattened.fieldErrors as
+      | Record<string, string[]>
+      | undefined;
+    return { error: jsonBadRequest("Validation failed.", fieldErrors) };
+  }
+  return { data: result.data };
+}
+
+async function checkTurnstile(
+  body: Record<string, unknown>,
+  ip: string,
+): Promise<Response | null> {
+  const token = body.turnstileToken;
+  if (typeof token !== "string" || token.length === 0) {
+    return jsonBadRequest("Please verify you're human.");
+  }
+  const turnstileOk = await verifyTurnstile(token, ip);
+  return turnstileOk ? null : jsonBadRequest("Bot verification failed.");
+}
+
 export function createApiHandler<T extends z.ZodType>(
   options: ApiHandlerOptions<T>,
 ) {
@@ -80,8 +125,7 @@ export function createApiHandler<T extends z.ZodType>(
       });
       if (!limit.success) {
         return jsonTooManyRequests(
-          rateLimitCfg.message ??
-            "Too many requests. Please try again later.",
+          rateLimitCfg.message ?? "Too many requests. Please try again later.",
           getRetryAfterSeconds(limit.resetAt),
         );
       }
@@ -99,40 +143,24 @@ export function createApiHandler<T extends z.ZodType>(
         }
       }
 
-      const contentLength = parseInt(
-        req.headers.get("content-length") ?? "0",
-        10,
-      );
-      if (contentLength > maxBodySize) {
-        return jsonBadRequest("Request too large.");
-      }
+      const sizeError = checkBodySize(req, maxBodySize);
+      if (sizeError) return sizeError;
 
-      let body: unknown;
-      try {
-        body = await req.json();
-      } catch {
-        return jsonBadRequest("Invalid request body.");
-      }
+      const parsed = await parseBody(req);
+      if ("error" in parsed) return parsed.error;
 
-      const result = schema.safeParse(body);
-      if (!result.success) {
-        const flattened = result.error.flatten();
-        const fieldErrors = flattened.fieldErrors as Record<string, string[]> | undefined;
-        return jsonBadRequest("Validation failed.", fieldErrors);
-      }
+      const validated = validateBody(schema, parsed.body);
+      if ("error" in validated) return validated.error;
 
-      const data = result.data;
+      const data = validated.data;
 
       try {
         if (turnstile) {
-          const token = (data as Record<string, unknown>).turnstileToken;
-          if (typeof token !== "string" || token.length === 0) {
-            return jsonBadRequest("Please verify you're human.");
-          }
-          const turnstileOk = await verifyTurnstile(token, ip);
-          if (!turnstileOk) {
-            return jsonBadRequest("Bot verification failed.");
-          }
+          const turnstileError = await checkTurnstile(
+            data as unknown as Record<string, unknown>,
+            ip,
+          );
+          if (turnstileError) return turnstileError;
         }
 
         return await handler({ data, ip, req });

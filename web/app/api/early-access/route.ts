@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createApiHandler } from "@/lib/api-handler";
 import { prisma } from "@/lib/db";
 import { jsonOk } from "@/lib/api-response";
+import { devModeGuard } from "@/lib/dev-mode";
 
 const earlyAccessSchema = z.object({
   phoneNumber: z
@@ -18,7 +19,7 @@ export const { POST, GET, OPTIONS } = createApiHandler({
   turnstile: true,
   maxBodySize: 10_000,
   handler: async ({ data, ip }) => {
-    if (!process.env.DATABASE_URL) {
+    if (devModeGuard("early-access")) {
       console.log("[early-access] (dev mode — not saved)", data.phoneNumber);
       return jsonOk({ saved: false }, { route: "early-access", mode: "dev" });
     }

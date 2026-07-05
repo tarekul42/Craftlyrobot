@@ -21,8 +21,8 @@ export const { POST, GET, OPTIONS } = createApiHandler({
       ip,
     });
 
-    if (!saved) {
-      return jsonInternalError("Failed to save message. Please try again.");
+    if ("code" in saved) {
+      return jsonInternalError(saved.message);
     }
 
     await sendContactConfirmation(data.email, data.name);

@@ -10,7 +10,9 @@ interface RateLimitResult {
 }
 
 let upstashRatelimit: {
-  limit: (key: string) => Promise<{ success: boolean; remaining: number; reset: number }>;
+  limit: (
+    key: string,
+  ) => Promise<{ success: boolean; remaining: number; reset: number }>;
 } | null = null;
 
 async function getUpstashRatelimit(options: RateLimitOptions) {
@@ -21,7 +23,10 @@ async function getUpstashRatelimit(options: RateLimitOptions) {
     if (process.env.UPSTASH_REDIS_REST_URL) {
       upstashRatelimit = new Ratelimit({
         redis: Redis.fromEnv(),
-        limiter: Ratelimit.slidingWindow(options.limit, `${options.windowMs}ms`),
+        limiter: Ratelimit.slidingWindow(
+          options.limit,
+          `${options.windowMs}ms`,
+        ),
         analytics: true,
         prefix: process.env.KV_PREFIX ?? "craftly",
       });
@@ -78,10 +83,25 @@ export async function rateLimit(
   const now = Date.now();
   const existing = store.get(key);
 
-  if (!existing || existing.resetAt < now) {
+  if (!existing) {
     const entry = { count: 1, resetAt: now + options.windowMs };
     store.set(key, entry);
-    return { success: true, remaining: options.limit - 1, resetAt: entry.resetAt };
+    return {
+      success: true,
+      remaining: options.limit - 1,
+      resetAt: entry.resetAt,
+    };
+  }
+
+  if (existing.resetAt < now) {
+    store.delete(key);
+    const entry = { count: 1, resetAt: now + options.windowMs };
+    store.set(key, entry);
+    return {
+      success: true,
+      remaining: options.limit - 1,
+      resetAt: entry.resetAt,
+    };
   }
 
   if (existing.count >= options.limit) {
@@ -89,5 +109,9 @@ export async function rateLimit(
   }
 
   existing.count += 1;
-  return { success: true, remaining: options.limit - existing.count, resetAt: existing.resetAt };
+  return {
+    success: true,
+    remaining: options.limit - existing.count,
+    resetAt: existing.resetAt,
+  };
 }

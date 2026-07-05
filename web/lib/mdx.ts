@@ -36,68 +36,35 @@ function calculateReadingTime(content: string): number {
 }
 
 /**
- * Get all blog posts, sorted by date (newest first).
- * Drafts are excluded in production but included in development.
+ * Parse frontmatter and content into a BlogPost.
+ * Skips invalid dates and treats missing required fields as empty strings.
  */
-export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-
-  const isDev = process.env.NODE_ENV === "development";
-  const filenames = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
-
-  const posts: BlogPost[] = filenames.map((filename) => {
-    const fullPath = path.join(BLOG_DIR, filename);
-    const raw = fs.readFileSync(fullPath, "utf8");
-    const { data, content } = matter(raw);
-
-    const slug = filename.replace(/\.mdx$/, "");
-    const readingTime =
-      typeof data.readingTime === "number"
-        ? data.readingTime
-        : calculateReadingTime(content);
-
-    return {
-      slug,
-      title: String(data.title ?? ""),
-      date: String(data.date ?? ""),
-      excerpt: String(data.excerpt ?? ""),
-      author: String(data.author ?? "Craftly"),
-      authorRole: data.authorRole ? String(data.authorRole) : undefined,
-      category: String(data.category ?? "Announcement"),
-      tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-      coverImage: data.coverImage ? String(data.coverImage) : undefined,
-      coverAlt: data.coverAlt ? String(data.coverAlt) : undefined,
-      readingTime,
-      draft: Boolean(data.draft ?? false),
-      featured: Boolean(data.featured ?? false),
-      content,
-    };
-  });
-
-  return posts
-    .filter((post) => isDev || !post.draft)
-    .sort((a, b) => (a.date > b.date ? -1 : 1));
-}
-
-/**
- * Get a single blog post by slug.
- * Returns null if the post doesn't exist.
- */
-export function getPostBySlug(slug: string): BlogPost | null {
-  const fullPath = path.join(BLOG_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(fullPath)) return null;
-
-  const raw = fs.readFileSync(fullPath, "utf8");
+export function parsePost(slug: string, raw: string): BlogPost {
   const { data, content } = matter(raw);
   const readingTime =
     typeof data.readingTime === "number"
       ? data.readingTime
       : calculateReadingTime(content);
 
+  const rawDate = data.date;
+  let dateStr: string;
+  if (typeof rawDate === "string") {
+    dateStr = rawDate;
+  } else if (rawDate instanceof Date) {
+    dateStr = rawDate.toISOString().slice(0, 10);
+  } else {
+    dateStr = "";
+  }
+  const parsedDate = dateStr ? new Date(dateStr) : null;
+  let validDate = "";
+  if (parsedDate != null && !isNaN(parsedDate.getTime())) {
+    validDate = dateStr;
+  }
+
   return {
     slug,
     title: String(data.title ?? ""),
-    date: String(data.date ?? ""),
+    date: validDate,
     excerpt: String(data.excerpt ?? ""),
     author: String(data.author ?? "Craftly"),
     authorRole: data.authorRole ? String(data.authorRole) : undefined,
@@ -110,6 +77,41 @@ export function getPostBySlug(slug: string): BlogPost | null {
     featured: Boolean(data.featured ?? false),
     content,
   };
+}
+
+/**
+ * Get all blog posts, sorted by date (newest first).
+ * Drafts are excluded in production but included in development.
+ */
+export function getAllPosts(): BlogPost[] {
+  if (!fs.existsSync(BLOG_DIR)) return [];
+
+  const isDev = process.env.NODE_ENV === "development";
+  const filenames = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
+
+  const posts: BlogPost[] = filenames.map((filename) => {
+    const fullPath = path.join(BLOG_DIR, filename);
+    const raw = fs.readFileSync(fullPath, "utf8");
+    const slug = filename.replace(/\.mdx$/, "");
+    return parsePost(slug, raw);
+  });
+
+  return posts
+    .filter((post) => isDev || !post.draft)
+    .filter((post) => post.date !== "")
+    .sort((a, b) => (a.date > b.date ? -1 : 1));
+}
+
+/**
+ * Get a single blog post by slug.
+ * Returns null if the post doesn't exist.
+ */
+export function getPostBySlug(slug: string): BlogPost | null {
+  const fullPath = path.join(BLOG_DIR, `${slug}.mdx`);
+  if (!fs.existsSync(fullPath)) return null;
+
+  const raw = fs.readFileSync(fullPath, "utf8");
+  return parsePost(slug, raw);
 }
 
 /**

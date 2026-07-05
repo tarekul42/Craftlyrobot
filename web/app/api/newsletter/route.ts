@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createApiHandler } from "@/lib/api-handler";
 import { prisma } from "@/lib/db";
 import { jsonOk } from "@/lib/api-response";
+import { devModeGuard } from "@/lib/dev-mode";
 import crypto from "crypto";
 
 const newsletterSchema = z.object({
@@ -21,7 +22,7 @@ export const { POST, GET, OPTIONS } = createApiHandler({
   handler: async ({ data }) => {
     const { email } = data;
 
-    if (!process.env.DATABASE_URL) {
+    if (devModeGuard("newsletter")) {
       console.log("[newsletter] (dev mode — not saved)", email);
       return jsonOk({ saved: false }, { route: "newsletter", mode: "dev" });
     }
@@ -31,7 +32,10 @@ export const { POST, GET, OPTIONS } = createApiHandler({
     });
 
     if (existing) {
-      return jsonOk({ subscribed: true, isNew: false }, { route: "newsletter" });
+      return jsonOk(
+        { subscribed: true, isNew: false },
+        { route: "newsletter" },
+      );
     }
 
     await prisma.newsletterSubscriber.create({

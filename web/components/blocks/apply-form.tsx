@@ -29,9 +29,13 @@ import {
   CardContent,
 } from "@/components/ui";
 import { Turnstile } from "@/components/ui/turnstile/turnstile";
+import { useFormSubmit } from "@/hooks/use-form-submit";
 
 const steps = [
-  { title: "Personal Info", fields: ["fullName", "email", "whatsapp"] as const },
+  {
+    title: "Personal Info",
+    fields: ["fullName", "email", "whatsapp"] as const,
+  },
   { title: "Role", fields: ["role", "department", "commitment"] as const },
   { title: "Skills", fields: ["skills", "portfolio"] as const },
   { title: "Why Craftly", fields: ["whyCraftly", "turnstileToken"] as const },
@@ -43,9 +47,11 @@ interface ApplyFormProps {
 
 export function ApplyForm({ className }: ApplyFormProps) {
   const [step, setStep] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const stepRef = useRef<HTMLDivElement>(null);
+
+  const { submit, submitted, submitError } = useFormSubmit({
+    url: "/api/apply",
+  });
 
   const form = useForm<ApplyFormValues>({
     resolver: zodResolver(applySchema),
@@ -76,7 +82,9 @@ export function ApplyForm({ className }: ApplyFormProps) {
   const validateStep = async () => {
     const fields = steps[step]?.fields;
     if (!fields) return false;
-    const output = await form.trigger(fields as unknown as (keyof ApplyFormValues)[]);
+    const output = await form.trigger(
+      fields as unknown as (keyof ApplyFormValues)[],
+    );
     return output;
   };
 
@@ -90,29 +98,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
   };
 
   const onSubmit = async (values: ApplyFormValues) => {
-    setSubmitError(null);
-    try {
-      const res = await fetch("/api/apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({}));
-        throw new Error(
-          error.message ?? `Request failed with status ${res.status}`,
-        );
-      }
-
-      setSubmitted(true);
-    } catch (e) {
-      setSubmitError(
-        e instanceof Error
-          ? e.message
-          : "Something went wrong. Please try again.",
-      );
-    }
+    await submit(values);
   };
 
   if (submitted) {
@@ -135,7 +121,7 @@ export function ApplyForm({ className }: ApplyFormProps) {
       <CardContent className="p-6">
         <div className="mb-6">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+            <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
               Step {step + 1} of {steps.length}
             </span>
             <span className="text-muted-foreground text-xs tabular-nums">
@@ -150,7 +136,9 @@ export function ApplyForm({ className }: ApplyFormProps) {
               }}
             />
           </div>
-          <h3 className="mt-3 text-lg font-semibold">{steps[step]?.title ?? ""}</h3>
+          <h3 className="mt-3 text-lg font-semibold">
+            {steps[step]?.title ?? ""}
+          </h3>
           <div aria-live="polite" aria-atomic="true" className="sr-only">
             {steps[step]?.title ?? ""} — step {step + 1} of {steps.length}
           </div>
@@ -162,244 +150,243 @@ export function ApplyForm({ className }: ApplyFormProps) {
           aria-busy={form.formState.isSubmitting}
         >
           <div ref={stepRef}>
-          {step === 0 && (
-            <div className="space-y-4">
-              <FormField
-                label="Full name"
-                htmlFor="fullName"
-                required
-                error={form.formState.errors.fullName?.message}
-              >
-                <Input
-                  {...form.register("fullName")}
-                  placeholder="Your name"
-                  autoComplete="name"
-                />
-              </FormField>
-
-              <FormField
-                label="Email"
-                htmlFor="email"
-                required
-                error={form.formState.errors.email?.message}
-              >
-                <Input
-                  {...form.register("email")}
-                  type="email"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                />
-              </FormField>
-
-              <FormField
-                label="WhatsApp number"
-                htmlFor="whatsapp"
-                required
-                error={form.formState.errors.whatsapp?.message}
-                hint="Include country code (e.g., +880...)"
-              >
-                <Input
-                  {...form.register("whatsapp")}
-                  placeholder="+880..."
-                  type="tel"
-                  autoComplete="tel"
-                />
-              </FormField>
-            </div>
-          )}
-
-          {step === 1 && (
-            <div className="space-y-4">
-              <FormField
-                label="Role you want"
-                htmlFor="role"
-                required
-                error={form.formState.errors.role?.message}
-              >
-                <Select
-                  value={form.watch("role")}
-                  onValueChange={(v) =>
-                    form.setValue("role", v as ApplyFormValues["role"], {
-                      shouldValidate: true,
-                    })
-                  }
+            {step === 0 && (
+              <div className="space-y-4">
+                <FormField
+                  label="Full name"
+                  htmlFor="fullName"
+                  required
+                  error={form.formState.errors.fullName?.message}
                 >
-                  <SelectTrigger id="role">
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roleOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
+                  <Input
+                    {...form.register("fullName")}
+                    placeholder="Your name"
+                    autoComplete="name"
+                  />
+                </FormField>
 
-              <FormField
-                label="Department"
-                htmlFor="department"
-                required
-                error={form.formState.errors.department?.message}
-              >
-                <Select
-                  value={form.watch("department")}
-                  onValueChange={(v) =>
-                    form.setValue(
-                      "department",
-                      v as ApplyFormValues["department"],
-                      { shouldValidate: true },
-                    )
-                  }
+                <FormField
+                  label="Email"
+                  htmlFor="email"
+                  required
+                  error={form.formState.errors.email?.message}
                 >
-                  <SelectTrigger id="department">
-                    <SelectValue placeholder="Select a department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {departmentOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
+                  <Input
+                    {...form.register("email")}
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                  />
+                </FormField>
 
-              <FormField
-                label="Time commitment"
-                htmlFor="commitment"
-                required
-                error={form.formState.errors.commitment?.message}
-              >
-                <Select
-                  value={form.watch("commitment")}
-                  onValueChange={(v) =>
-                    form.setValue(
-                      "commitment",
-                      v as ApplyFormValues["commitment"],
-                      { shouldValidate: true },
-                    )
-                  }
+                <FormField
+                  label="WhatsApp number"
+                  htmlFor="whatsapp"
+                  required
+                  error={form.formState.errors.whatsapp?.message}
+                  hint="Include country code (e.g., +880...)"
                 >
-                  <SelectTrigger id="commitment">
-                    <SelectValue placeholder="How much time?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {commitmentOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-          )}
+                  <Input
+                    {...form.register("whatsapp")}
+                    placeholder="+880..."
+                    type="tel"
+                    autoComplete="tel"
+                  />
+                </FormField>
+              </div>
+            )}
 
-          {step === 2 && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>
-                  Skills <span className="text-destructive">*</span>
-                </Label>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {skillOptions.map((skill) => {
-                    const checked = form.watch("skills").includes(skill);
-                    return (
-                      <label
-                        key={skill}
-                        className={cn(
-                          "flex cursor-pointer items-center gap-2 rounded-md border p-2 text-sm transition-colors",
-                          checked
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:bg-muted",
-                        )}
-                      >
-                        <Checkbox
-                          checked={checked}
-                          onCheckedChange={(val) => {
-                            const current = form.getValues("skills");
-                            if (val) {
-                              form.setValue("skills", [...current, skill], {
-                                shouldValidate: true,
-                              });
-                            } else {
-                              form.setValue(
-                                "skills",
-                                current.filter((s) => s !== skill),
-                                { shouldValidate: true },
-                              );
-                            }
-                          }}
-                        />
-                        <span>{skill}</span>
-                      </label>
-                    );
-                  })}
+            {step === 1 && (
+              <div className="space-y-4">
+                <FormField
+                  label="Role you want"
+                  htmlFor="role"
+                  required
+                  error={form.formState.errors.role?.message}
+                >
+                  <Select
+                    value={form.watch("role")}
+                    onValueChange={(v) =>
+                      form.setValue("role", v as ApplyFormValues["role"], {
+                        shouldValidate: true,
+                      })
+                    }
+                  >
+                    <SelectTrigger id="role">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roleOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+
+                <FormField
+                  label="Department"
+                  htmlFor="department"
+                  required
+                  error={form.formState.errors.department?.message}
+                >
+                  <Select
+                    value={form.watch("department")}
+                    onValueChange={(v) =>
+                      form.setValue(
+                        "department",
+                        v as ApplyFormValues["department"],
+                        { shouldValidate: true },
+                      )
+                    }
+                  >
+                    <SelectTrigger id="department">
+                      <SelectValue placeholder="Select a department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departmentOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+
+                <FormField
+                  label="Time commitment"
+                  htmlFor="commitment"
+                  required
+                  error={form.formState.errors.commitment?.message}
+                >
+                  <Select
+                    value={form.watch("commitment")}
+                    onValueChange={(v) =>
+                      form.setValue(
+                        "commitment",
+                        v as ApplyFormValues["commitment"],
+                        { shouldValidate: true },
+                      )
+                    }
+                  >
+                    <SelectTrigger id="commitment">
+                      <SelectValue placeholder="How much time?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {commitmentOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>
+                    Skills <span className="text-destructive">*</span>
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {skillOptions.map((skill) => {
+                      const checked = form.watch("skills").includes(skill);
+                      return (
+                        <label
+                          key={skill}
+                          className={cn(
+                            "flex cursor-pointer items-center gap-2 rounded-md border p-2 text-sm transition-colors",
+                            checked
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:bg-muted",
+                          )}
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(val) => {
+                              const current = form.getValues("skills");
+                              if (val) {
+                                form.setValue("skills", [...current, skill], {
+                                  shouldValidate: true,
+                                });
+                              } else {
+                                form.setValue(
+                                  "skills",
+                                  current.filter((s) => s !== skill),
+                                  { shouldValidate: true },
+                                );
+                              }
+                            }}
+                          />
+                          <span>{skill}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {form.formState.errors.skills && (
+                    <p role="alert" className="text-destructive text-xs">
+                      {form.formState.errors.skills.message}
+                    </p>
+                  )}
                 </div>
-                {form.formState.errors.skills && (
-                  <p role="alert" className="text-destructive text-xs">
-                    {form.formState.errors.skills.message}
-                  </p>
-                )}
+
+                <FormField
+                  label="Portfolio / GitHub (optional)"
+                  htmlFor="portfolio"
+                  error={form.formState.errors.portfolio?.message}
+                  hint="Link to your work — GitHub, personal site, Behance, etc."
+                >
+                  <Input
+                    {...form.register("portfolio")}
+                    placeholder="https://github.com/you"
+                    type="url"
+                  />
+                </FormField>
               </div>
+            )}
 
-              <FormField
-                label="Portfolio / GitHub (optional)"
-                htmlFor="portfolio"
-                error={form.formState.errors.portfolio?.message}
-                hint="Link to your work — GitHub, personal site, Behance, etc."
-              >
-                <Input
-                  {...form.register("portfolio")}
-                  placeholder="https://github.com/you"
-                  type="url"
-                />
-              </FormField>
-            </div>
-          )}
+            {step === 3 && (
+              <div className="space-y-4">
+                <FormField
+                  label="Why do you want to join Craftly?"
+                  htmlFor="whyCraftly"
+                  required
+                  error={form.formState.errors.whyCraftly?.message}
+                  hint="50 characters minimum. Tell us what draws you."
+                >
+                  <Textarea
+                    {...form.register("whyCraftly")}
+                    rows={5}
+                    placeholder="I want to join because..."
+                  />
+                </FormField>
 
-          {step === 3 && (
-            <div className="space-y-4">
-              <FormField
-                label="Why do you want to join Craftly?"
-                htmlFor="whyCraftly"
-                required
-                error={form.formState.errors.whyCraftly?.message}
-                hint="50 characters minimum. Tell us what draws you."
-              >
-                <Textarea
-                  {...form.register("whyCraftly")}
-                  rows={5}
-                  placeholder="I want to join because..."
-                />
-              </FormField>
-
-              <div>
-                <Label className="mb-2 block">Verification</Label>
-                <Turnstile
-                  onVerify={(token) =>
-                    form.setValue("turnstileToken", token, {
-                      shouldValidate: true,
-                    })
-                  }
-                  onError={() =>
-                    setSubmitError(
-                      "Bot verification failed. Please try again.",
-                    )
-                  }
-                  onExpire={() => form.setValue("turnstileToken", "")}
-                />
-                {form.formState.errors.turnstileToken && (
-                  <p role="alert" className="text-destructive mt-1 text-xs">
-                    {form.formState.errors.turnstileToken.message}
-                  </p>
-                )}
+                <div>
+                  <Label className="mb-2 block">Verification</Label>
+                  <Turnstile
+                    onVerify={(token) =>
+                      form.setValue("turnstileToken", token, {
+                        shouldValidate: true,
+                      })
+                    }
+                    onError={() =>
+                      form.setError("turnstileToken", {
+                        message: "Bot verification failed. Please try again.",
+                      })
+                    }
+                    onExpire={() => form.setValue("turnstileToken", "")}
+                  />
+                  {form.formState.errors.turnstileToken && (
+                    <p role="alert" className="text-destructive mt-1 text-xs">
+                      {form.formState.errors.turnstileToken.message}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-
+            )}
           </div>
 
           {submitError && (

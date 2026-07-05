@@ -1,43 +1,39 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { prisma } from "@/lib/prisma-client";
+import { devModeGuard } from "@/lib/dev-mode";
 
-const PRISMA_GLOBAL = Symbol.for("prisma-global");
+export { prisma };
 
-const globalForPrisma = globalThis as {
-  [PRISMA_GLOBAL]?: PrismaClient;
-};
-
-function createPrismaClient(): PrismaClient {
-  const log =
-    process.env.NODE_ENV === "development"
-      ? ["query", "error", "warn"]
-      : ["error"];
-
-  if (!process.env.DATABASE_URL) {
-    return new PrismaClient({ log: log as [] }) as unknown as PrismaClient;
-  }
-
-  const url = new URL(process.env.DATABASE_URL);
-  url.searchParams.set("connection_limit", "5");
-  url.searchParams.set("pool_timeout", "10");
-
-  const adapter = new PrismaPg({ connectionString: url.toString() });
-
-  return new PrismaClient({ adapter, log: log as [] }) as unknown as PrismaClient;
+interface SaveSuccess {
+  id: string;
 }
 
-function getPrismaClient(): PrismaClient {
-  if (!globalForPrisma[PRISMA_GLOBAL]) {
-    globalForPrisma[PRISMA_GLOBAL] = createPrismaClient();
-  }
-  return globalForPrisma[PRISMA_GLOBAL]!;
+interface SaveError {
+  code: "DB_UNAVAILABLE" | "UNIQUE_CONSTRAINT" | "UNKNOWN";
+  message: string;
 }
 
-export const prisma = new Proxy({} as PrismaClient, {
-  get(_, prop) {
-    return Reflect.get(getPrismaClient(), prop);
-  },
-});
+type SaveResult = SaveSuccess | SaveError;
+
+function isPrismaUniqueConstraintError(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code: unknown }).code === "P2002"
+  );
+}
+
+function saveError(err: unknown, entity: string): SaveError {
+  const message = err instanceof Error ? err.message : String(err);
+  console.error(`[db] Save ${entity} failed:`, message);
+  if (isPrismaUniqueConstraintError(err)) {
+    return {
+      code: "UNIQUE_CONSTRAINT",
+      message: `This ${entity} already exists.`,
+    };
+  }
+  return { code: "UNKNOWN", message: "An unexpected error occurred." };
+}
 
 export async function saveApplication(data: {
   fullName: string;
@@ -50,10 +46,13 @@ export async function saveApplication(data: {
   portfolio?: string;
   whyCraftly: string;
   ip: string;
-}): Promise<{ id: string } | null> {
-  if (!process.env.DATABASE_URL) {
+}): Promise<SaveResult> {
+  if (devModeGuard("db")) {
     console.log("[db] (dev mode — not saved)", data.fullName);
-    return null;
+    return {
+      code: "DB_UNAVAILABLE",
+      message: "Database not available in dev mode.",
+    };
   }
 
   try {
@@ -74,8 +73,7 @@ export async function saveApplication(data: {
     });
     return { id: application.id };
   } catch (err) {
-    console.error("[db] Save application failed:", err);
-    return null;
+    return saveError(err, "application");
   }
 }
 
@@ -85,10 +83,13 @@ export async function saveContactMessage(data: {
   subject: string;
   message: string;
   ip: string;
-}): Promise<{ id: string } | null> {
-  if (!process.env.DATABASE_URL) {
+}): Promise<SaveResult> {
+  if (devModeGuard("db")) {
     console.log("[db] (dev mode — not saved)", data.name);
-    return null;
+    return {
+      code: "DB_UNAVAILABLE",
+      message: "Database not available in dev mode.",
+    };
   }
 
   try {
@@ -104,7 +105,6 @@ export async function saveContactMessage(data: {
     });
     return { id: contact.id };
   } catch (err) {
-    console.error("[db] Save contact failed:", err);
-    return null;
+    return saveError(err, "contact message");
   }
 }
