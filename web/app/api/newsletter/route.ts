@@ -1,11 +1,7 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getClientIP } from "@/lib/turnstile";
-import { rateLimit } from "@/lib/rate-limit";
+import { createApiHandler } from "@/lib/api-handler";
 import { prisma } from "@/lib/db";
-import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "@/lib/api-response";
-import { logApiError } from "@/lib/api-error";
-import { checkOrigin, corsHeaders } from "@/lib/api-origin";
+import { jsonOk } from "@/lib/api-response";
 import crypto from "crypto";
 
 const newsletterSchema = z.object({
@@ -15,62 +11,21 @@ const newsletterSchema = z.object({
     .email("Please enter a valid email address"),
 });
 
-const MAX_BODY_SIZE = 10_000;
 const TOKEN_EXPIRY_MS = 48 * 60 * 60 * 1000;
 
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      Allow: "POST, OPTIONS",
-      ...corsHeaders(),
-    },
-  });
-}
+export const { POST, GET, OPTIONS } = createApiHandler({
+  schema: newsletterSchema,
+  routeName: "newsletter",
+  rateLimit: { limit: 3, windowMs: 24 * 60 * 60 * 1000 },
+  maxBodySize: 10_000,
+  handler: async ({ data }) => {
+    const { email } = data;
 
-export async function POST(req: Request) {
-  if (!checkOrigin(req)) {
-    return jsonForbidden();
-  }
+    if (!process.env.DATABASE_URL) {
+      console.log("[newsletter] (dev mode — not saved)", email);
+      return jsonOk({ saved: false }, { route: "newsletter", mode: "dev" });
+    }
 
-  const ip = getClientIP(req);
-
-  const limit = await rateLimit(`newsletter:${ip}`, {
-    limit: 3,
-    windowMs: 24 * 60 * 60 * 1000,
-  });
-  if (!limit.success) {
-    return jsonTooManyRequests(
-      "Too many signups. Please try again tomorrow.",
-      Math.ceil((limit.resetAt - Date.now()) / 1000),
-    );
-  }
-
-  const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
-  if (contentLength > MAX_BODY_SIZE) {
-    return jsonBadRequest("Request too large.");
-  }
-
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return jsonBadRequest("Invalid request body.");
-  }
-
-  const result = newsletterSchema.safeParse(body);
-  if (!result.success) {
-    return jsonBadRequest("Validation failed.", result.error.flatten().fieldErrors);
-  }
-
-  const { email } = result.data;
-
-  if (!process.env.DATABASE_URL) {
-    console.log("[newsletter] (dev mode — not saved)", email);
-    return jsonOk({ saved: false }, { route: "newsletter", mode: "dev" });
-  }
-
-  try {
     const existing = await prisma.newsletterSubscriber.findUnique({
       where: { email },
     });
@@ -89,12 +44,5 @@ export async function POST(req: Request) {
     });
 
     return jsonOk({ subscribed: true, isNew: true }, { route: "newsletter" });
-  } catch (error) {
-    logApiError("newsletter", error, req);
-    return jsonInternalError();
-  }
-}
-
-export function GET() {
-  return jsonMethodNotAllowed(["POST"]);
-}
+  },
+});
