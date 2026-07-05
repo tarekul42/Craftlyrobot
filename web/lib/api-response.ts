@@ -61,7 +61,3 @@ export function jsonMethodNotAllowed(allowed: string[]) {
 export function jsonInternalError(message = "Something went wrong. Please try again.") {
   return NextResponse.json({ ok: false, message } satisfies ApiError, { status: 500 });
 }
-
-export function apiError(message: string, status: number, code?: string) {
-  return NextResponse.json({ ok: false, message, code } satisfies ApiError, { status });
-}

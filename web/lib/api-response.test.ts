@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError, apiError } from "./api-response";
+import { jsonOk, jsonBadRequest, jsonForbidden, jsonTooManyRequests, jsonMethodNotAllowed, jsonInternalError } from "./api-response";
 
 describe("api-response", () => {
   it("jsonOk returns 200 with data", async () => {
@@ -53,10 +53,5 @@ describe("api-response", () => {
     expect(body).toEqual({ ok: false, message: "Something went wrong. Please try again." });
   });
 
-  it("apiError returns custom status and code", async () => {
-    const res = apiError("Not found", 404, "NOT_FOUND");
-    expect(res.status).toBe(404);
-    const body = await res.json();
-    expect(body).toEqual({ ok: false, message: "Not found", code: "NOT_FOUND" });
-  });
+
 });
